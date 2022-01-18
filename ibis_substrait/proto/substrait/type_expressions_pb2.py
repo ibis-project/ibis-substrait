@@ -1,0 +1,75 @@
+"""Generated protocol buffer code."""
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
+from google.protobuf import message as _message
+from google.protobuf import reflection as _reflection
+from google.protobuf import symbol_database as _symbol_database
+_sym_db = _symbol_database.Default()
+from ..substrait import type_pb2 as substrait_dot_type__pb2
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n substrait/type_expressions.proto\x12\tsubstrait\x1a\x14substrait/type.proto"\xc3$\n\x14DerivationExpression\x12-\n\x04bool\x18\x01 \x01(\x0b2\x17.substrait.Type.BooleanH\x00R\x04bool\x12$\n\x02i8\x18\x02 \x01(\x0b2\x12.substrait.Type.I8H\x00R\x02i8\x12\'\n\x03i16\x18\x03 \x01(\x0b2\x13.substrait.Type.I16H\x00R\x03i16\x12\'\n\x03i32\x18\x05 \x01(\x0b2\x13.substrait.Type.I32H\x00R\x03i32\x12\'\n\x03i64\x18\x07 \x01(\x0b2\x13.substrait.Type.I64H\x00R\x03i64\x12*\n\x04fp32\x18\n \x01(\x0b2\x14.substrait.Type.FP32H\x00R\x04fp32\x12*\n\x04fp64\x18\x0b \x01(\x0b2\x14.substrait.Type.FP64H\x00R\x04fp64\x120\n\x06string\x18\x0c \x01(\x0b2\x16.substrait.Type.StringH\x00R\x06string\x120\n\x06binary\x18\r \x01(\x0b2\x16.substrait.Type.BinaryH\x00R\x06binary\x129\n\ttimestamp\x18\x0e \x01(\x0b2\x19.substrait.Type.TimestampH\x00R\ttimestamp\x12*\n\x04date\x18\x10 \x01(\x0b2\x14.substrait.Type.DateH\x00R\x04date\x12*\n\x04time\x18\x11 \x01(\x0b2\x14.substrait.Type.TimeH\x00R\x04time\x12C\n\rinterval_year\x18\x13 \x01(\x0b2\x1c.substrait.Type.IntervalYearH\x00R\x0cintervalYear\x12@\n\x0cinterval_day\x18\x14 \x01(\x0b2\x1b.substrait.Type.IntervalDayH\x00R\x0bintervalDay\x12@\n\x0ctimestamp_tz\x18\x1d \x01(\x0b2\x1b.substrait.Type.TimestampTZH\x00R\x0btimestampTz\x12*\n\x04uuid\x18  \x01(\x0b2\x14.substrait.Type.UUIDH\x00R\x04uuid\x12T\n\nfixed_char\x18\x15 \x01(\x0b23.substrait.DerivationExpression.ExpressionFixedCharH\x00R\tfixedChar\x12M\n\x07varchar\x18\x16 \x01(\x0b21.substrait.DerivationExpression.ExpressionVarCharH\x00R\x07varchar\x12Z\n\x0cfixed_binary\x18\x17 \x01(\x0b25.substrait.DerivationExpression.ExpressionFixedBinaryH\x00R\x0bfixedBinary\x12M\n\x07decimal\x18\x18 \x01(\x0b21.substrait.DerivationExpression.ExpressionDecimalH\x00R\x07decimal\x12J\n\x06struct\x18\x19 \x01(\x0b20.substrait.DerivationExpression.ExpressionStructH\x00R\x06struct\x12D\n\x04list\x18\x1b \x01(\x0b2..substrait.DerivationExpression.ExpressionListH\x00R\x04list\x12A\n\x03map\x18\x1c \x01(\x0b2-.substrait.DerivationExpression.ExpressionMapH\x00R\x03map\x122\n\x14user_defined_pointer\x18\x1f \x01(\rH\x00R\x12userDefinedPointer\x120\n\x13type_parameter_name\x18! \x01(\tH\x00R\x11typeParameterName\x126\n\x16integer_parameter_name\x18" \x01(\tH\x00R\x14integerParameterName\x12)\n\x0finteger_literal\x18# \x01(\x05H\x00R\x0eintegerLiteral\x12D\n\x08unary_op\x18$ \x01(\x0b2\'.substrait.DerivationExpression.UnaryOpH\x00R\x07unaryOp\x12G\n\tbinary_op\x18% \x01(\x0b2(.substrait.DerivationExpression.BinaryOpH\x00R\x08binaryOp\x12A\n\x07if_else\x18& \x01(\x0b2&.substrait.DerivationExpression.IfElseH\x00R\x06ifElse\x12V\n\x0ereturn_program\x18\' \x01(\x0b2-.substrait.DerivationExpression.ReturnProgramH\x00R\rreturnProgram\x1a\xba\x01\n\x13ExpressionFixedChar\x127\n\x06length\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x06length\x12+\n\x11variation_pointer\x18\x02 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x03 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xb8\x01\n\x11ExpressionVarChar\x127\n\x06length\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x06length\x12+\n\x11variation_pointer\x18\x02 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x03 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xbc\x01\n\x15ExpressionFixedBinary\x127\n\x06length\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x06length\x12+\n\x11variation_pointer\x18\x02 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x03 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xf5\x01\n\x11ExpressionDecimal\x125\n\x05scale\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x05scale\x12=\n\tprecision\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\tprecision\x12+\n\x11variation_pointer\x18\x03 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x04 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xb5\x01\n\x10ExpressionStruct\x125\n\x05types\x18\x01 \x03(\x0b2\x1f.substrait.DerivationExpressionR\x05types\x12+\n\x11variation_pointer\x18\x02 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x03 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1aw\n\x15ExpressionNamedStruct\x12\x14\n\x05names\x18\x01 \x03(\tR\x05names\x12H\n\x06struct\x18\x02 \x01(\x0b20.substrait.DerivationExpression.ExpressionStructR\x06struct\x1a\xb1\x01\n\x0eExpressionList\x123\n\x04type\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x04type\x12+\n\x11variation_pointer\x18\x02 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x03 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xe5\x01\n\rExpressionMap\x121\n\x03key\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x03key\x125\n\x05value\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x05value\x12+\n\x11variation_pointer\x18\x03 \x01(\rR\x10variationPointer\x12=\n\x0bnullability\x18\x04 \x01(\x0e2\x1b.substrait.Type.NullabilityR\x0bnullability\x1a\xcc\x01\n\x06IfElse\x12B\n\x0cif_condition\x18\x01 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x0bifCondition\x12<\n\tif_return\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x08ifReturn\x12@\n\x0belse_return\x18\x03 \x01(\x0b2\x1f.substrait.DerivationExpressionR\nelseReturn\x1a\xd7\x01\n\x07UnaryOp\x12L\n\x07op_type\x18\x01 \x01(\x0e23.substrait.DerivationExpression.UnaryOp.UnaryOpTypeR\x06opType\x121\n\x03arg\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x03arg"K\n\x0bUnaryOpType\x12\x1d\n\x19UNARY_OP_TYPE_UNSPECIFIED\x10\x00\x12\x1d\n\x19UNARY_OP_TYPE_BOOLEAN_NOT\x10\x01\x1a\xb4\x04\n\x08BinaryOp\x12N\n\x07op_type\x18\x01 \x01(\x0e25.substrait.DerivationExpression.BinaryOp.BinaryOpTypeR\x06opType\x123\n\x04arg1\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x04arg1\x123\n\x04arg2\x18\x03 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x04arg2"\xed\x02\n\x0cBinaryOpType\x12\x1e\n\x1aBINARY_OP_TYPE_UNSPECIFIED\x10\x00\x12\x17\n\x13BINARY_OP_TYPE_PLUS\x10\x01\x12\x18\n\x14BINARY_OP_TYPE_MINUS\x10\x02\x12\x1b\n\x17BINARY_OP_TYPE_MULTIPLY\x10\x03\x12\x19\n\x15BINARY_OP_TYPE_DIVIDE\x10\x04\x12\x16\n\x12BINARY_OP_TYPE_MIN\x10\x05\x12\x16\n\x12BINARY_OP_TYPE_MAX\x10\x06\x12\x1f\n\x1bBINARY_OP_TYPE_GREATER_THAN\x10\x07\x12\x1c\n\x18BINARY_OP_TYPE_LESS_THAN\x10\x08\x12\x16\n\x12BINARY_OP_TYPE_AND\x10\t\x12\x15\n\x11BINARY_OP_TYPE_OR\x10\n\x12\x19\n\x15BINARY_OP_TYPE_EQUALS\x10\x0b\x12\x19\n\x15BINARY_OP_TYPE_COVERS\x10\x0c\x1a\x9a\x02\n\rReturnProgram\x12Z\n\x0bassignments\x18\x01 \x03(\x0b28.substrait.DerivationExpression.ReturnProgram.AssignmentR\x0bassignments\x12J\n\x10final_expression\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\x0ffinalExpression\x1aa\n\nAssignment\x12\x12\n\x04name\x18\x01 \x01(\tR\x04name\x12?\n\nexpression\x18\x02 \x01(\x0b2\x1f.substrait.DerivationExpressionR\nexpressionB\x06\n\x04kindB+\n\x12io.substrait.protoP\x01\xaa\x02\x12Substrait.Protobufb\x06proto3')
+_DERIVATIONEXPRESSION = DESCRIPTOR.message_types_by_name['DerivationExpression']
+_DERIVATIONEXPRESSION_EXPRESSIONFIXEDCHAR = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionFixedChar']
+_DERIVATIONEXPRESSION_EXPRESSIONVARCHAR = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionVarChar']
+_DERIVATIONEXPRESSION_EXPRESSIONFIXEDBINARY = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionFixedBinary']
+_DERIVATIONEXPRESSION_EXPRESSIONDECIMAL = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionDecimal']
+_DERIVATIONEXPRESSION_EXPRESSIONSTRUCT = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionStruct']
+_DERIVATIONEXPRESSION_EXPRESSIONNAMEDSTRUCT = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionNamedStruct']
+_DERIVATIONEXPRESSION_EXPRESSIONLIST = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionList']
+_DERIVATIONEXPRESSION_EXPRESSIONMAP = _DERIVATIONEXPRESSION.nested_types_by_name['ExpressionMap']
+_DERIVATIONEXPRESSION_IFELSE = _DERIVATIONEXPRESSION.nested_types_by_name['IfElse']
+_DERIVATIONEXPRESSION_UNARYOP = _DERIVATIONEXPRESSION.nested_types_by_name['UnaryOp']
+_DERIVATIONEXPRESSION_BINARYOP = _DERIVATIONEXPRESSION.nested_types_by_name['BinaryOp']
+_DERIVATIONEXPRESSION_RETURNPROGRAM = _DERIVATIONEXPRESSION.nested_types_by_name['ReturnProgram']
+_DERIVATIONEXPRESSION_RETURNPROGRAM_ASSIGNMENT = _DERIVATIONEXPRESSION_RETURNPROGRAM.nested_types_by_name['Assignment']
+_DERIVATIONEXPRESSION_UNARYOP_UNARYOPTYPE = _DERIVATIONEXPRESSION_UNARYOP.enum_types_by_name['UnaryOpType']
+_DERIVATIONEXPRESSION_BINARYOP_BINARYOPTYPE = _DERIVATIONEXPRESSION_BINARYOP.enum_types_by_name['BinaryOpType']
+DerivationExpression = _reflection.GeneratedProtocolMessageType('DerivationExpression', (_message.Message,), {'ExpressionFixedChar': _reflection.GeneratedProtocolMessageType('ExpressionFixedChar', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONFIXEDCHAR, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionVarChar': _reflection.GeneratedProtocolMessageType('ExpressionVarChar', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONVARCHAR, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionFixedBinary': _reflection.GeneratedProtocolMessageType('ExpressionFixedBinary', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONFIXEDBINARY, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionDecimal': _reflection.GeneratedProtocolMessageType('ExpressionDecimal', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONDECIMAL, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionStruct': _reflection.GeneratedProtocolMessageType('ExpressionStruct', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONSTRUCT, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionNamedStruct': _reflection.GeneratedProtocolMessageType('ExpressionNamedStruct', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONNAMEDSTRUCT, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionList': _reflection.GeneratedProtocolMessageType('ExpressionList', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONLIST, '__module__': 'substrait.type_expressions_pb2'}), 'ExpressionMap': _reflection.GeneratedProtocolMessageType('ExpressionMap', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_EXPRESSIONMAP, '__module__': 'substrait.type_expressions_pb2'}), 'IfElse': _reflection.GeneratedProtocolMessageType('IfElse', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_IFELSE, '__module__': 'substrait.type_expressions_pb2'}), 'UnaryOp': _reflection.GeneratedProtocolMessageType('UnaryOp', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_UNARYOP, '__module__': 'substrait.type_expressions_pb2'}), 'BinaryOp': _reflection.GeneratedProtocolMessageType('BinaryOp', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_BINARYOP, '__module__': 'substrait.type_expressions_pb2'}), 'ReturnProgram': _reflection.GeneratedProtocolMessageType('ReturnProgram', (_message.Message,), {'Assignment': _reflection.GeneratedProtocolMessageType('Assignment', (_message.Message,), {'DESCRIPTOR': _DERIVATIONEXPRESSION_RETURNPROGRAM_ASSIGNMENT, '__module__': 'substrait.type_expressions_pb2'}), 'DESCRIPTOR': _DERIVATIONEXPRESSION_RETURNPROGRAM, '__module__': 'substrait.type_expressions_pb2'}), 'DESCRIPTOR': _DERIVATIONEXPRESSION, '__module__': 'substrait.type_expressions_pb2'})
+_sym_db.RegisterMessage(DerivationExpression)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionFixedChar)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionVarChar)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionFixedBinary)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionDecimal)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionStruct)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionNamedStruct)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionList)
+_sym_db.RegisterMessage(DerivationExpression.ExpressionMap)
+_sym_db.RegisterMessage(DerivationExpression.IfElse)
+_sym_db.RegisterMessage(DerivationExpression.UnaryOp)
+_sym_db.RegisterMessage(DerivationExpression.BinaryOp)
+_sym_db.RegisterMessage(DerivationExpression.ReturnProgram)
+_sym_db.RegisterMessage(DerivationExpression.ReturnProgram.Assignment)
+if _descriptor._USE_C_DESCRIPTORS == False:
+    DESCRIPTOR._options = None
+    DESCRIPTOR._serialized_options = b'\n\x12io.substrait.protoP\x01\xaa\x02\x12Substrait.Protobuf'
+    _DERIVATIONEXPRESSION._serialized_start = 70
+    _DERIVATIONEXPRESSION._serialized_end = 4745
+    _DERIVATIONEXPRESSION_EXPRESSIONFIXEDCHAR._serialized_start = 1931
+    _DERIVATIONEXPRESSION_EXPRESSIONFIXEDCHAR._serialized_end = 2117
+    _DERIVATIONEXPRESSION_EXPRESSIONVARCHAR._serialized_start = 2120
+    _DERIVATIONEXPRESSION_EXPRESSIONVARCHAR._serialized_end = 2304
+    _DERIVATIONEXPRESSION_EXPRESSIONFIXEDBINARY._serialized_start = 2307
+    _DERIVATIONEXPRESSION_EXPRESSIONFIXEDBINARY._serialized_end = 2495
+    _DERIVATIONEXPRESSION_EXPRESSIONDECIMAL._serialized_start = 2498
+    _DERIVATIONEXPRESSION_EXPRESSIONDECIMAL._serialized_end = 2743
+    _DERIVATIONEXPRESSION_EXPRESSIONSTRUCT._serialized_start = 2746
+    _DERIVATIONEXPRESSION_EXPRESSIONSTRUCT._serialized_end = 2927
+    _DERIVATIONEXPRESSION_EXPRESSIONNAMEDSTRUCT._serialized_start = 2929
+    _DERIVATIONEXPRESSION_EXPRESSIONNAMEDSTRUCT._serialized_end = 3048
+    _DERIVATIONEXPRESSION_EXPRESSIONLIST._serialized_start = 3051
+    _DERIVATIONEXPRESSION_EXPRESSIONLIST._serialized_end = 3228
+    _DERIVATIONEXPRESSION_EXPRESSIONMAP._serialized_start = 3231
+    _DERIVATIONEXPRESSION_EXPRESSIONMAP._serialized_end = 3460
+    _DERIVATIONEXPRESSION_IFELSE._serialized_start = 3463
+    _DERIVATIONEXPRESSION_IFELSE._serialized_end = 3667
+    _DERIVATIONEXPRESSION_UNARYOP._serialized_start = 3670
+    _DERIVATIONEXPRESSION_UNARYOP._serialized_end = 3885
+    _DERIVATIONEXPRESSION_UNARYOP_UNARYOPTYPE._serialized_start = 3810
+    _DERIVATIONEXPRESSION_UNARYOP_UNARYOPTYPE._serialized_end = 3885
+    _DERIVATIONEXPRESSION_BINARYOP._serialized_start = 3888
+    _DERIVATIONEXPRESSION_BINARYOP._serialized_end = 4452
+    _DERIVATIONEXPRESSION_BINARYOP_BINARYOPTYPE._serialized_start = 4087
+    _DERIVATIONEXPRESSION_BINARYOP_BINARYOPTYPE._serialized_end = 4452
+    _DERIVATIONEXPRESSION_RETURNPROGRAM._serialized_start = 4455
+    _DERIVATIONEXPRESSION_RETURNPROGRAM._serialized_end = 4737
+    _DERIVATIONEXPRESSION_RETURNPROGRAM_ASSIGNMENT._serialized_start = 4640
+    _DERIVATIONEXPRESSION_RETURNPROGRAM_ASSIGNMENT._serialized_end = 4737

@@ -1,0 +1,6 @@
+plugins:
+  - name: python
+    out: ibis_substrait/proto
+  - name: mypy
+    out: ibis_substrait/proto
+version: v1
