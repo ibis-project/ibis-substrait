@@ -1,4 +1,4 @@
-# [Ibis] + [Substrait](https://substrait.io)
+# [Ibis](https://ibis-project.org) + [Substrait](https://substrait.io)
 
 This repo houses the Substrait compiler for ibis.
 
