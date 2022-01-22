@@ -23,9 +23,9 @@ jobs:
   niv-update:
     runs-on: ubuntu-latest
     needs:
-      - generate_updates
+      - get-niv-deps
     strategy:
-      matrix: ${{ fromJSON(needs.generate_updates.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.get-niv-deps.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
 
@@ -39,7 +39,7 @@ jobs:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix
 
-      - uses: cpcloud/niv-dep-info-action@main
+      - uses: cpcloud/niv-dep-info-action@v1.0.3
         id: get-current-commit
         with:
           dependency: ${{ matrix.dep }}
@@ -47,17 +47,14 @@ jobs:
       - name: update ${{ matrix.dep }}
         run: nix shell -f '<nixpkgs>' niv -c niv update ${{ matrix.dep }}
 
-      - uses: cpcloud/niv-dep-info-action@main
+      - uses: cpcloud/niv-dep-info-action@v1.0.3
         id: get-new-commit
         with:
           dependency: ${{ matrix.dep }}
 
       - name: create an output indicating whether a PR is needed
         id: needs-pr
-        run: |
-          set -euo pipefail
-
-          echo "::set-output name=did-change::${{ steps.get-current-commit.outputs.rev != steps.get-new-commit.outputs.rev }}"
+        run: echo "::set-output name=did-change::${{ steps.get-current-commit.outputs.rev != steps.get-new-commit.outputs.rev }}"
 
       - uses: tibdex/github-app-token@v1
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
