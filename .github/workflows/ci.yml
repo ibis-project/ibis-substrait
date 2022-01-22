@@ -123,6 +123,7 @@ jobs:
         run: ./ci/release/dry_run.sh
   release:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - nix
       - poetry
