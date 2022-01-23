@@ -39,7 +39,7 @@ jobs:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix
 
-      - uses: cpcloud/niv-dep-info-action@v1.0.3
+      - uses: cpcloud/niv-dep-info-action@v2.0.0
         id: get-current-commit
         with:
           dependency: ${{ matrix.dep }}
@@ -47,7 +47,7 @@ jobs:
       - name: update ${{ matrix.dep }}
         run: nix shell -f '<nixpkgs>' niv -c niv update ${{ matrix.dep }}
 
-      - uses: cpcloud/niv-dep-info-action@v1.0.3
+      - uses: cpcloud/niv-dep-info-action@v2.0.0
         id: get-new-commit
         with:
           dependency: ${{ matrix.dep }}
