@@ -8,7 +8,9 @@ set -euo pipefail
 poetry check
 
 # verify that the lock file is up to date
-PYTHONHASHSEED=0 poetry lock --no-update
+# we set PYTHONHASHSEED=some_constant here
+# to avoid reordering of poetry extras
+PYTHONHASHSEED=42 poetry lock --no-update
 git diff --exit-code poetry.lock
 
 # verify that we have a token available to push to pypi using set -u
