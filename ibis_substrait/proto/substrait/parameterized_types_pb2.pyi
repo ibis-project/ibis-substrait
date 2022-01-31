@@ -9,16 +9,16 @@ import google.protobuf.message
 from .. import substrait
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class ParameterizedType(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class TypeParameter(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         NAME_FIELD_NUMBER: builtins.int
         BOUNDS_FIELD_NUMBER: builtins.int
-        name: typing.Text = ...
+        name: typing.Text
 
         @property
         def bounds(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ParameterizedType]:
@@ -31,11 +31,11 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class IntegerParameter(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         NAME_FIELD_NUMBER: builtins.int
         RANGE_START_INCLUSIVE_FIELD_NUMBER: builtins.int
         RANGE_END_EXCLUSIVE_FIELD_NUMBER: builtins.int
-        name: typing.Text = ...
+        name: typing.Text
 
         @property
         def range_start_inclusive(self) -> global___ParameterizedType.NullableInteger:
@@ -55,9 +55,9 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class NullableInteger(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         VALUE_FIELD_NUMBER: builtins.int
-        value: builtins.int = ...
+        value: builtins.int
 
         def __init__(self, *, value: builtins.int=...) -> None:
             ...
@@ -66,7 +66,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedFixedChar(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         LENGTH_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
@@ -74,8 +74,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -87,7 +87,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedVarChar(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         LENGTH_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
@@ -95,8 +95,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -108,7 +108,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedFixedBinary(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         LENGTH_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
@@ -116,8 +116,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -129,7 +129,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedDecimal(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         SCALE_FIELD_NUMBER: builtins.int
         PRECISION_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
@@ -142,8 +142,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def precision(self) -> global___ParameterizedType.IntegerOption:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, scale: typing.Optional[global___ParameterizedType.IntegerOption]=..., precision: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -155,7 +155,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedStruct(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         TYPES_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
@@ -163,8 +163,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ParameterizedType]:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, types: typing.Optional[typing.Iterable[global___ParameterizedType]]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -173,7 +173,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedNamedStruct(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         NAMES_FIELD_NUMBER: builtins.int
         STRUCT_FIELD_NUMBER: builtins.int
 
@@ -196,7 +196,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedList(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         TYPE_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
@@ -204,8 +204,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def type(self) -> global___ParameterizedType:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, type: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -217,7 +217,7 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class ParameterizedMap(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         KEY_FIELD_NUMBER: builtins.int
         VALUE_FIELD_NUMBER: builtins.int
         VARIATION_POINTER_FIELD_NUMBER: builtins.int
@@ -230,8 +230,8 @@ class ParameterizedType(google.protobuf.message.Message):
         @property
         def value(self) -> global___ParameterizedType:
             ...
-        variation_pointer: builtins.int = ...
-        nullability: substrait.type_pb2.Type.Nullability.ValueType = ...
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
 
         def __init__(self, *, key: typing.Optional[global___ParameterizedType]=..., value: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
@@ -243,10 +243,10 @@ class ParameterizedType(google.protobuf.message.Message):
             ...
 
     class IntegerOption(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         LITERAL_FIELD_NUMBER: builtins.int
         PARAMETER_FIELD_NUMBER: builtins.int
-        literal: builtins.int = ...
+        literal: builtins.int
 
         @property
         def parameter(self) -> global___ParameterizedType.IntegerParameter:
@@ -380,7 +380,7 @@ class ParameterizedType(google.protobuf.message.Message):
     @property
     def map(self) -> global___ParameterizedType.ParameterizedMap:
         ...
-    user_defined_pointer: builtins.int = ...
+    user_defined_pointer: builtins.int
 
     @property
     def type_parameter(self) -> global___ParameterizedType.TypeParameter:

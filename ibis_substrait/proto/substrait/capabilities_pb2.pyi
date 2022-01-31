@@ -8,19 +8,19 @@ import google.protobuf.internal.containers
 import google.protobuf.message
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class Capabilities(google.protobuf.message.Message):
     """Defines a set of Capabilities that a system (producer or consumer) supports."""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class SimpleExtension(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         URI_FIELD_NUMBER: builtins.int
         FUNCTION_KEYS_FIELD_NUMBER: builtins.int
         TYPE_KEYS_FIELD_NUMBER: builtins.int
         TYPE_VARIATION_KEYS_FIELD_NUMBER: builtins.int
-        uri: typing.Text = ...
+        uri: typing.Text
 
         @property
         def function_keys(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]:

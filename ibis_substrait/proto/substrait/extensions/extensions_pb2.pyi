@@ -8,15 +8,15 @@ import google.protobuf.descriptor
 import google.protobuf.message
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class SimpleExtensionURI(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     EXTENSION_URI_ANCHOR_FIELD_NUMBER: builtins.int
     URI_FIELD_NUMBER: builtins.int
-    extension_uri_anchor: builtins.int = ...
+    extension_uri_anchor: builtins.int
     'A surrogate key used in the context of a single plan used to reference the\n    URI associated with an extension.\n    '
-    uri: typing.Text = ...
+    uri: typing.Text
     'The URI where this extension YAML can be retrieved. This is the "namespace"\n    of this extension.\n    '
 
     def __init__(self, *, extension_uri_anchor: builtins.int=..., uri: typing.Text=...) -> None:
@@ -30,19 +30,19 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
     """Describes a mapping between a specific extension entity and the uri where
     that extension can be found.
     """
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class ExtensionType(google.protobuf.message.Message):
         """Describes a Type"""
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         EXTENSION_URI_REFERENCE_FIELD_NUMBER: builtins.int
         TYPE_ANCHOR_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
-        extension_uri_reference: builtins.int = ...
+        extension_uri_reference: builtins.int
         'references the extension_uri_anchor defined for a specific extension URI.'
-        type_anchor: builtins.int = ...
+        type_anchor: builtins.int
         'A surrogate key used in the context of a single plan to reference a\n        specific extension type\n        '
-        name: typing.Text = ...
+        name: typing.Text
         'the name of the type in the defined extension YAML.'
 
         def __init__(self, *, extension_uri_reference: builtins.int=..., type_anchor: builtins.int=..., name: typing.Text=...) -> None:
@@ -52,15 +52,15 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
             ...
 
     class ExtensionTypeVariation(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         EXTENSION_URI_REFERENCE_FIELD_NUMBER: builtins.int
         TYPE_VARIATION_ANCHOR_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
-        extension_uri_reference: builtins.int = ...
+        extension_uri_reference: builtins.int
         'references the extension_uri_anchor defined for a specific extension URI.'
-        type_variation_anchor: builtins.int = ...
+        type_variation_anchor: builtins.int
         'A surrogate key used in the context of a single plan to reference a\n        specific type variation\n        '
-        name: typing.Text = ...
+        name: typing.Text
         'the name of the type in the defined extension YAML.'
 
         def __init__(self, *, extension_uri_reference: builtins.int=..., type_variation_anchor: builtins.int=..., name: typing.Text=...) -> None:
@@ -70,15 +70,15 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
             ...
 
     class ExtensionFunction(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         EXTENSION_URI_REFERENCE_FIELD_NUMBER: builtins.int
         FUNCTION_ANCHOR_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
-        extension_uri_reference: builtins.int = ...
+        extension_uri_reference: builtins.int
         'references the extension_uri_anchor defined for a specific extension URI.'
-        function_anchor: builtins.int = ...
+        function_anchor: builtins.int
         'A surrogate key used in the context of a single plan to reference a\n        specific function\n        '
-        name: typing.Text = ...
+        name: typing.Text
         'A simple name if there is only one impl for the function within the YAML.\n        A compound name, referencing that includes type short names if there is\n        more than one impl per name in the YAML.\n        '
 
         def __init__(self, *, extension_uri_reference: builtins.int=..., function_anchor: builtins.int=..., name: typing.Text=...) -> None:
@@ -119,7 +119,7 @@ class AdvancedExtension(google.protobuf.message.Message):
     """A generic object that can be used to embed additional extension information
     into the serialized substrait plan.
     """
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     OPTIMIZATION_FIELD_NUMBER: builtins.int
     ENHANCEMENT_FIELD_NUMBER: builtins.int
 
