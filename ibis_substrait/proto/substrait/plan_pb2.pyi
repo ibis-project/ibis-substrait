@@ -10,11 +10,11 @@ from .. import substrait
 from .. import substrait
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class PlanRel(google.protobuf.message.Message):
     """Either a relation or root relation"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     REL_FIELD_NUMBER: builtins.int
     ROOT_FIELD_NUMBER: builtins.int
 
@@ -45,7 +45,7 @@ class Plan(google.protobuf.message.Message):
     """Describe a set of operations to complete.
     For compactness sake, identifiers are normalized at the plan level.
     """
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     EXTENSION_URIS_FIELD_NUMBER: builtins.int
     EXTENSIONS_FIELD_NUMBER: builtins.int
     RELATIONS_FIELD_NUMBER: builtins.int

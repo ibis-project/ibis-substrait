@@ -10,43 +10,43 @@ import google.protobuf.message
 from .. import substrait
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class _AggregationPhase:
     ValueType = typing.NewType('ValueType', builtins.int)
     V: typing_extensions.TypeAlias = ValueType
 
 class _AggregationPhaseEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_AggregationPhase.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-    AGGREGATION_PHASE_UNSPECIFIED: AggregationPhase.ValueType = ...
-    AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: AggregationPhase.ValueType = ...
-    AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: AggregationPhase.ValueType = ...
-    AGGREGATION_PHASE_INITIAL_TO_RESULT: AggregationPhase.ValueType = ...
-    AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: AggregationPhase.ValueType = ...
+    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    AGGREGATION_PHASE_UNSPECIFIED: _AggregationPhase.ValueType
+    AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: _AggregationPhase.ValueType
+    AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: _AggregationPhase.ValueType
+    AGGREGATION_PHASE_INITIAL_TO_RESULT: _AggregationPhase.ValueType
+    AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: _AggregationPhase.ValueType
 
 class AggregationPhase(_AggregationPhase, metaclass=_AggregationPhaseEnumTypeWrapper):
     pass
-AGGREGATION_PHASE_UNSPECIFIED: AggregationPhase.ValueType = ...
-AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: AggregationPhase.ValueType = ...
-AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: AggregationPhase.ValueType = ...
-AGGREGATION_PHASE_INITIAL_TO_RESULT: AggregationPhase.ValueType = ...
-AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: AggregationPhase.ValueType = ...
+AGGREGATION_PHASE_UNSPECIFIED: AggregationPhase.ValueType
+AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: AggregationPhase.ValueType
+AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: AggregationPhase.ValueType
+AGGREGATION_PHASE_INITIAL_TO_RESULT: AggregationPhase.ValueType
+AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: AggregationPhase.ValueType
 global___AggregationPhase = AggregationPhase
 
 class Expression(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class Enum(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Empty(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             def __init__(self) -> None:
                 ...
         SPECIFIED_FIELD_NUMBER: builtins.int
         UNSPECIFIED_FIELD_NUMBER: builtins.int
-        specified: typing.Text = ...
+        specified: typing.Text
 
         @property
         def unspecified(self) -> global___Expression.Enum.Empty:
@@ -65,14 +65,14 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class Literal(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class VarChar(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             VALUE_FIELD_NUMBER: builtins.int
             LENGTH_FIELD_NUMBER: builtins.int
-            value: typing.Text = ...
-            length: builtins.int = ...
+            value: typing.Text
+            length: builtins.int
 
             def __init__(self, *, value: typing.Text=..., length: builtins.int=...) -> None:
                 ...
@@ -81,15 +81,15 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class Decimal(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             VALUE_FIELD_NUMBER: builtins.int
             PRECISION_FIELD_NUMBER: builtins.int
             SCALE_FIELD_NUMBER: builtins.int
-            value: builtins.bytes = ...
+            value: builtins.bytes
             'little-endian twos-complement integer representation of complete value\n            (ignoring precision) Always 16 bytes in length\n            '
-            precision: builtins.int = ...
+            precision: builtins.int
             'The maximum number of digits allowed in the value.\n            the maximum precision is 38.\n            '
-            scale: builtins.int = ...
+            scale: builtins.int
             'declared scale of decimal literal'
 
             def __init__(self, *, value: builtins.bytes=..., precision: builtins.int=..., scale: builtins.int=...) -> None:
@@ -99,10 +99,10 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class Map(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class KeyValue(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 KEY_FIELD_NUMBER: builtins.int
                 VALUE_FIELD_NUMBER: builtins.int
 
@@ -135,11 +135,11 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class IntervalYearToMonth(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             YEARS_FIELD_NUMBER: builtins.int
             MONTHS_FIELD_NUMBER: builtins.int
-            years: builtins.int = ...
-            months: builtins.int = ...
+            years: builtins.int
+            months: builtins.int
 
             def __init__(self, *, years: builtins.int=..., months: builtins.int=...) -> None:
                 ...
@@ -148,11 +148,11 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class IntervalDayToSecond(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             DAYS_FIELD_NUMBER: builtins.int
             SECONDS_FIELD_NUMBER: builtins.int
-            days: builtins.int = ...
-            seconds: builtins.int = ...
+            days: builtins.int
+            seconds: builtins.int
 
             def __init__(self, *, days: builtins.int=..., seconds: builtins.int=...) -> None:
                 ...
@@ -161,7 +161,7 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class Struct(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             FIELDS_FIELD_NUMBER: builtins.int
 
             @property
@@ -176,7 +176,7 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class List(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             VALUES_FIELD_NUMBER: builtins.int
 
             @property
@@ -216,20 +216,20 @@ class Expression(google.protobuf.message.Message):
         EMPTY_LIST_FIELD_NUMBER: builtins.int
         EMPTY_MAP_FIELD_NUMBER: builtins.int
         NULLABLE_FIELD_NUMBER: builtins.int
-        boolean: builtins.bool = ...
-        i8: builtins.int = ...
-        i16: builtins.int = ...
-        i32: builtins.int = ...
-        i64: builtins.int = ...
-        fp32: builtins.float = ...
-        fp64: builtins.float = ...
-        string: typing.Text = ...
-        binary: builtins.bytes = ...
-        timestamp: builtins.int = ...
+        boolean: builtins.bool
+        i8: builtins.int
+        i16: builtins.int
+        i32: builtins.int
+        i64: builtins.int
+        fp32: builtins.float
+        fp64: builtins.float
+        string: typing.Text
+        binary: builtins.bytes
+        timestamp: builtins.int
         'Timestamp in units of microseconds since the UNIX epoch.'
-        date: builtins.int = ...
+        date: builtins.int
         'Date in units of days since the UNIX epoch.'
-        time: builtins.int = ...
+        time: builtins.int
         'Time in units of microseconds past midnight'
 
         @property
@@ -239,12 +239,12 @@ class Expression(google.protobuf.message.Message):
         @property
         def interval_day_to_second(self) -> global___Expression.Literal.IntervalDayToSecond:
             ...
-        fixed_char: typing.Text = ...
+        fixed_char: typing.Text
 
         @property
         def var_char(self) -> global___Expression.Literal.VarChar:
             ...
-        fixed_binary: builtins.bytes = ...
+        fixed_binary: builtins.bytes
 
         @property
         def decimal(self) -> global___Expression.Literal.Decimal:
@@ -257,9 +257,9 @@ class Expression(google.protobuf.message.Message):
         @property
         def map(self) -> global___Expression.Literal.Map:
             ...
-        timestamp_tz: builtins.int = ...
+        timestamp_tz: builtins.int
         'Timestamp in units of microseconds since the UNIX epoch.'
-        uuid: builtins.bytes = ...
+        uuid: builtins.bytes
 
         @property
         def null(self) -> substrait.type_pb2.Type:
@@ -277,7 +277,7 @@ class Expression(google.protobuf.message.Message):
         @property
         def empty_map(self) -> substrait.type_pb2.Type.Map:
             ...
-        nullable: builtins.bool = ...
+        nullable: builtins.bool
         'whether the literal type should be treated as a nullable type. Applies to\n        all members of union other than the Typed null (which should directly\n        declare nullability).\n        '
 
         def __init__(self, *, boolean: builtins.bool=..., i8: builtins.int=..., i16: builtins.int=..., i32: builtins.int=..., i64: builtins.int=..., fp32: builtins.float=..., fp64: builtins.float=..., string: typing.Text=..., binary: builtins.bytes=..., timestamp: builtins.int=..., date: builtins.int=..., time: builtins.int=..., interval_year_to_month: typing.Optional[global___Expression.Literal.IntervalYearToMonth]=..., interval_day_to_second: typing.Optional[global___Expression.Literal.IntervalDayToSecond]=..., fixed_char: typing.Text=..., var_char: typing.Optional[global___Expression.Literal.VarChar]=..., fixed_binary: builtins.bytes=..., decimal: typing.Optional[global___Expression.Literal.Decimal]=..., struct: typing.Optional[global___Expression.Literal.Struct]=..., map: typing.Optional[global___Expression.Literal.Map]=..., timestamp_tz: builtins.int=..., uuid: builtins.bytes=..., null: typing.Optional[substrait.type_pb2.Type]=..., list: typing.Optional[global___Expression.Literal.List]=..., empty_list: typing.Optional[substrait.type_pb2.Type.List]=..., empty_map: typing.Optional[substrait.type_pb2.Type.Map]=..., nullable: builtins.bool=...) -> None:
@@ -293,11 +293,11 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class ScalarFunction(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
         ARGS_FIELD_NUMBER: builtins.int
         OUTPUT_TYPE_FIELD_NUMBER: builtins.int
-        function_reference: builtins.int = ...
+        function_reference: builtins.int
         'points to a function_anchor defined in this plan'
 
         @property
@@ -318,15 +318,15 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class WindowFunction(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Bound(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class Preceding(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 OFFSET_FIELD_NUMBER: builtins.int
-                offset: builtins.int = ...
+                offset: builtins.int
 
                 def __init__(self, *, offset: builtins.int=...) -> None:
                     ...
@@ -335,9 +335,9 @@ class Expression(google.protobuf.message.Message):
                     ...
 
             class Following(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 OFFSET_FIELD_NUMBER: builtins.int
-                offset: builtins.int = ...
+                offset: builtins.int
 
                 def __init__(self, *, offset: builtins.int=...) -> None:
                     ...
@@ -346,13 +346,13 @@ class Expression(google.protobuf.message.Message):
                     ...
 
             class CurrentRow(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
                 def __init__(self) -> None:
                     ...
 
             class Unbounded(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
                 def __init__(self) -> None:
                     ...
@@ -396,7 +396,7 @@ class Expression(google.protobuf.message.Message):
         PHASE_FIELD_NUMBER: builtins.int
         OUTPUT_TYPE_FIELD_NUMBER: builtins.int
         ARGS_FIELD_NUMBER: builtins.int
-        function_reference: builtins.int = ...
+        function_reference: builtins.int
         'points to a function_anchor defined in this plan'
 
         @property
@@ -414,7 +414,7 @@ class Expression(google.protobuf.message.Message):
         @property
         def lower_bound(self) -> global___Expression.WindowFunction.Bound:
             ...
-        phase: global___AggregationPhase.ValueType = ...
+        phase: global___AggregationPhase.ValueType
 
         @property
         def output_type(self) -> substrait.type_pb2.Type:
@@ -434,10 +434,10 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class IfThen(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class IfClause(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             IF_FIELD_NUMBER: builtins.int
             THEN_FIELD_NUMBER: builtins.int
 
@@ -470,7 +470,7 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class Cast(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         TYPE_FIELD_NUMBER: builtins.int
         INPUT_FIELD_NUMBER: builtins.int
 
@@ -492,10 +492,10 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class SwitchExpression(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class IfValue(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             IF_FIELD_NUMBER: builtins.int
             THEN_FIELD_NUMBER: builtins.int
 
@@ -528,7 +528,7 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class SingularOrList(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         VALUE_FIELD_NUMBER: builtins.int
         OPTIONS_FIELD_NUMBER: builtins.int
 
@@ -550,10 +550,10 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class MultiOrList(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Record(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             FIELDS_FIELD_NUMBER: builtins.int
 
             @property
@@ -583,13 +583,13 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class EmbeddedFunction(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class PythonPickleFunction(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             FUNCTION_FIELD_NUMBER: builtins.int
             PREREQUISITE_FIELD_NUMBER: builtins.int
-            function: builtins.bytes = ...
+            function: builtins.bytes
 
             @property
             def prerequisite(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]:
@@ -602,10 +602,10 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class WebAssemblyFunction(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             SCRIPT_FIELD_NUMBER: builtins.int
             PREREQUISITE_FIELD_NUMBER: builtins.int
-            script: builtins.bytes = ...
+            script: builtins.bytes
 
             @property
             def prerequisite(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]:
@@ -658,10 +658,10 @@ class Expression(google.protobuf.message.Message):
         (ordinalized in the internal representation here), [2] is a list offset
         and ['my_map_key'] is a reference into a map field.
         """
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class MapKey(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             MAP_KEY_FIELD_NUMBER: builtins.int
             CHILD_FIELD_NUMBER: builtins.int
 
@@ -685,10 +685,10 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class StructField(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             FIELD_FIELD_NUMBER: builtins.int
             CHILD_FIELD_NUMBER: builtins.int
-            field: builtins.int = ...
+            field: builtins.int
             'zero-indexed ordinal position of field in struct'
 
             @property
@@ -706,10 +706,10 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class ListElement(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             OFFSET_FIELD_NUMBER: builtins.int
             CHILD_FIELD_NUMBER: builtins.int
-            offset: builtins.int = ...
+            offset: builtins.int
             'zero-indexed ordinal position of element in list'
 
             @property
@@ -763,10 +763,10 @@ class Expression(google.protobuf.message.Message):
         Note that this does not fundamentally alter the structure of data beyond the
         elimination of unecessary elements.
         """
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Select(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             STRUCT_FIELD_NUMBER: builtins.int
             LIST_FIELD_NUMBER: builtins.int
             MAP_FIELD_NUMBER: builtins.int
@@ -796,7 +796,7 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class StructSelect(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             STRUCT_ITEMS_FIELD_NUMBER: builtins.int
 
             @property
@@ -810,10 +810,10 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class StructItem(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             FIELD_FIELD_NUMBER: builtins.int
             CHILD_FIELD_NUMBER: builtins.int
-            field: builtins.int = ...
+            field: builtins.int
 
             @property
             def child(self) -> global___Expression.MaskExpression.Select:
@@ -829,15 +829,15 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class ListSelect(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class ListSelectItem(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
                 class ListElement(google.protobuf.message.Message):
-                    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                    DESCRIPTOR: google.protobuf.descriptor.Descriptor
                     FIELD_FIELD_NUMBER: builtins.int
-                    field: builtins.int = ...
+                    field: builtins.int
 
                     def __init__(self, *, field: builtins.int=...) -> None:
                         ...
@@ -846,11 +846,11 @@ class Expression(google.protobuf.message.Message):
                         ...
 
                 class ListSlice(google.protobuf.message.Message):
-                    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                    DESCRIPTOR: google.protobuf.descriptor.Descriptor
                     START_FIELD_NUMBER: builtins.int
                     END_FIELD_NUMBER: builtins.int
-                    start: builtins.int = ...
-                    end: builtins.int = ...
+                    start: builtins.int
+                    end: builtins.int
 
                     def __init__(self, *, start: builtins.int=..., end: builtins.int=...) -> None:
                         ...
@@ -900,12 +900,12 @@ class Expression(google.protobuf.message.Message):
                 ...
 
         class MapSelect(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class MapKey(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 MAP_KEY_FIELD_NUMBER: builtins.int
-                map_key: typing.Text = ...
+                map_key: typing.Text
 
                 def __init__(self, *, map_key: typing.Text=...) -> None:
                     ...
@@ -914,9 +914,9 @@ class Expression(google.protobuf.message.Message):
                     ...
 
             class MapKeyExpression(google.protobuf.message.Message):
-                DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 MAP_KEY_EXPRESSION_FIELD_NUMBER: builtins.int
-                map_key_expression: typing.Text = ...
+                map_key_expression: typing.Text
 
                 def __init__(self, *, map_key_expression: typing.Text=...) -> None:
                     ...
@@ -956,7 +956,7 @@ class Expression(google.protobuf.message.Message):
         @property
         def select(self) -> global___Expression.MaskExpression.StructSelect:
             ...
-        maintain_singular_struct: builtins.bool = ...
+        maintain_singular_struct: builtins.bool
 
         def __init__(self, *, select: typing.Optional[global___Expression.MaskExpression.StructSelect]=..., maintain_singular_struct: builtins.bool=...) -> None:
             ...
@@ -971,11 +971,11 @@ class Expression(google.protobuf.message.Message):
         """A reference to an inner part of a complex object. Can reference reference a single
         element or a masked version of elements
         """
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class RootReference(google.protobuf.message.Message):
             """Singleton that expresses this FieldReference is rooted off the root incoming record type"""
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             def __init__(self) -> None:
                 ...
@@ -1081,29 +1081,29 @@ class Expression(google.protobuf.message.Message):
 global___Expression = Expression
 
 class SortField(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _SortDirection:
         ValueType = typing.NewType('ValueType', builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _SortDirectionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SortDirection.ValueType], builtins.type):
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-        SORT_DIRECTION_UNSPECIFIED: SortField.SortDirection.ValueType = ...
-        SORT_DIRECTION_ASC_NULLS_FIRST: SortField.SortDirection.ValueType = ...
-        SORT_DIRECTION_ASC_NULLS_LAST: SortField.SortDirection.ValueType = ...
-        SORT_DIRECTION_DESC_NULLS_FIRST: SortField.SortDirection.ValueType = ...
-        SORT_DIRECTION_DESC_NULLS_LAST: SortField.SortDirection.ValueType = ...
-        SORT_DIRECTION_CLUSTERED: SortField.SortDirection.ValueType = ...
+    class _SortDirectionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[SortField._SortDirection.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        SORT_DIRECTION_UNSPECIFIED: SortField._SortDirection.ValueType
+        SORT_DIRECTION_ASC_NULLS_FIRST: SortField._SortDirection.ValueType
+        SORT_DIRECTION_ASC_NULLS_LAST: SortField._SortDirection.ValueType
+        SORT_DIRECTION_DESC_NULLS_FIRST: SortField._SortDirection.ValueType
+        SORT_DIRECTION_DESC_NULLS_LAST: SortField._SortDirection.ValueType
+        SORT_DIRECTION_CLUSTERED: SortField._SortDirection.ValueType
 
     class SortDirection(_SortDirection, metaclass=_SortDirectionEnumTypeWrapper):
         pass
-    SORT_DIRECTION_UNSPECIFIED: SortField.SortDirection.ValueType = ...
-    SORT_DIRECTION_ASC_NULLS_FIRST: SortField.SortDirection.ValueType = ...
-    SORT_DIRECTION_ASC_NULLS_LAST: SortField.SortDirection.ValueType = ...
-    SORT_DIRECTION_DESC_NULLS_FIRST: SortField.SortDirection.ValueType = ...
-    SORT_DIRECTION_DESC_NULLS_LAST: SortField.SortDirection.ValueType = ...
-    SORT_DIRECTION_CLUSTERED: SortField.SortDirection.ValueType = ...
+    SORT_DIRECTION_UNSPECIFIED: SortField.SortDirection.ValueType
+    SORT_DIRECTION_ASC_NULLS_FIRST: SortField.SortDirection.ValueType
+    SORT_DIRECTION_ASC_NULLS_LAST: SortField.SortDirection.ValueType
+    SORT_DIRECTION_DESC_NULLS_FIRST: SortField.SortDirection.ValueType
+    SORT_DIRECTION_DESC_NULLS_LAST: SortField.SortDirection.ValueType
+    SORT_DIRECTION_CLUSTERED: SortField.SortDirection.ValueType
     EXPR_FIELD_NUMBER: builtins.int
     DIRECTION_FIELD_NUMBER: builtins.int
     COMPARISON_FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
@@ -1111,8 +1111,8 @@ class SortField(google.protobuf.message.Message):
     @property
     def expr(self) -> global___Expression:
         ...
-    direction: global___SortField.SortDirection.ValueType = ...
-    comparison_function_reference: builtins.int = ...
+    direction: global___SortField.SortDirection.ValueType
+    comparison_function_reference: builtins.int
 
     def __init__(self, *, expr: typing.Optional[global___Expression]=..., direction: global___SortField.SortDirection.ValueType=..., comparison_function_reference: builtins.int=...) -> None:
         ...
@@ -1128,13 +1128,13 @@ class SortField(google.protobuf.message.Message):
 global___SortField = SortField
 
 class AggregateFunction(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
     ARGS_FIELD_NUMBER: builtins.int
     SORTS_FIELD_NUMBER: builtins.int
     PHASE_FIELD_NUMBER: builtins.int
     OUTPUT_TYPE_FIELD_NUMBER: builtins.int
-    function_reference: builtins.int = ...
+    function_reference: builtins.int
     'points to a function_anchor defined in this plan'
 
     @property
@@ -1144,7 +1144,7 @@ class AggregateFunction(google.protobuf.message.Message):
     @property
     def sorts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SortField]:
         ...
-    phase: global___AggregationPhase.ValueType = ...
+    phase: global___AggregationPhase.ValueType
 
     @property
     def output_type(self) -> substrait.type_pb2.Type:

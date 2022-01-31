@@ -13,19 +13,19 @@ from .. import substrait
 from .. import substrait
 import typing
 import typing_extensions
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor = ...
+DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 class RelCommon(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class Direct(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         def __init__(self) -> None:
             ...
 
     class Emit(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         OUTPUT_MAPPING_FIELD_NUMBER: builtins.int
 
         @property
@@ -42,15 +42,15 @@ class RelCommon(google.protobuf.message.Message):
         """Changes to the operation that can influence efficiency/performance but
         should not impact correctness.
         """
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Stats(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             ROW_COUNT_FIELD_NUMBER: builtins.int
             RECORD_SIZE_FIELD_NUMBER: builtins.int
             ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
-            row_count: builtins.float = ...
-            record_size: builtins.float = ...
+            row_count: builtins.float
+            record_size: builtins.float
 
             @property
             def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
@@ -66,7 +66,8 @@ class RelCommon(google.protobuf.message.Message):
                 ...
 
         class RuntimeConstraint(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            """TODO: nodes, cpu threads/%, memory, iops, etc."""
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
             ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
 
             @property
@@ -140,10 +141,10 @@ class RelCommon(google.protobuf.message.Message):
 global___RelCommon = RelCommon
 
 class ReadRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class NamedTable(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         NAMES_FIELD_NUMBER: builtins.int
         ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
 
@@ -166,7 +167,7 @@ class ReadRel(google.protobuf.message.Message):
 
     class VirtualTable(google.protobuf.message.Message):
         """a table composed of literals."""
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         VALUES_FIELD_NUMBER: builtins.int
 
         @property
@@ -183,7 +184,7 @@ class ReadRel(google.protobuf.message.Message):
         """a stub type that can be used to extend/introduce new table types outside
         the specification.
         """
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         DETAIL_FIELD_NUMBER: builtins.int
 
         @property
@@ -200,24 +201,24 @@ class ReadRel(google.protobuf.message.Message):
             ...
 
     class LocalFiles(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class FileOrFiles(google.protobuf.message.Message):
-            DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class _FileFormat:
                 ValueType = typing.NewType('ValueType', builtins.int)
                 V: typing_extensions.TypeAlias = ValueType
 
-            class _FileFormatEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_FileFormat.ValueType], builtins.type):
-                DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-                FILE_FORMAT_UNSPECIFIED: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType = ...
-                FILE_FORMAT_PARQUET: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType = ...
+            class _FileFormatEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ReadRel.LocalFiles.FileOrFiles._FileFormat.ValueType], builtins.type):
+                DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+                FILE_FORMAT_UNSPECIFIED: ReadRel.LocalFiles.FileOrFiles._FileFormat.ValueType
+                FILE_FORMAT_PARQUET: ReadRel.LocalFiles.FileOrFiles._FileFormat.ValueType
 
             class FileFormat(_FileFormat, metaclass=_FileFormatEnumTypeWrapper):
                 pass
-            FILE_FORMAT_UNSPECIFIED: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType = ...
-            FILE_FORMAT_PARQUET: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType = ...
+            FILE_FORMAT_UNSPECIFIED: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType
+            FILE_FORMAT_PARQUET: ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType
             URI_PATH_FIELD_NUMBER: builtins.int
             URI_PATH_GLOB_FIELD_NUMBER: builtins.int
             URI_FILE_FIELD_NUMBER: builtins.int
@@ -226,16 +227,16 @@ class ReadRel(google.protobuf.message.Message):
             PARTITION_INDEX_FIELD_NUMBER: builtins.int
             START_FIELD_NUMBER: builtins.int
             LENGTH_FIELD_NUMBER: builtins.int
-            uri_path: typing.Text = ...
-            uri_path_glob: typing.Text = ...
-            uri_file: typing.Text = ...
-            uri_folder: typing.Text = ...
-            format: global___ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType = ...
-            partition_index: builtins.int = ...
+            uri_path: typing.Text
+            uri_path_glob: typing.Text
+            uri_file: typing.Text
+            uri_folder: typing.Text
+            format: global___ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType
+            partition_index: builtins.int
             'the index of the partition this item belongs to'
-            start: builtins.int = ...
+            start: builtins.int
             'the start position in byte to read from this item'
-            length: builtins.int = ...
+            length: builtins.int
             'the length in byte to read from this item'
 
             def __init__(self, *, uri_path: typing.Text=..., uri_path_glob: typing.Text=..., uri_file: typing.Text=..., uri_folder: typing.Text=..., format: global___ReadRel.LocalFiles.FileOrFiles.FileFormat.ValueType=..., partition_index: builtins.int=..., start: builtins.int=..., length: builtins.int=...) -> None:
@@ -328,7 +329,7 @@ class ReadRel(google.protobuf.message.Message):
 global___ReadRel = ReadRel
 
 class ProjectRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUT_FIELD_NUMBER: builtins.int
     EXPRESSIONS_FIELD_NUMBER: builtins.int
@@ -361,31 +362,31 @@ class ProjectRel(google.protobuf.message.Message):
 global___ProjectRel = ProjectRel
 
 class JoinRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _JoinType:
         ValueType = typing.NewType('ValueType', builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _JoinTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_JoinType.ValueType], builtins.type):
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-        JOIN_TYPE_UNSPECIFIED: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_INNER: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_OUTER: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_LEFT: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_RIGHT: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_SEMI: JoinRel.JoinType.ValueType = ...
-        JOIN_TYPE_ANTI: JoinRel.JoinType.ValueType = ...
+    class _JoinTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[JoinRel._JoinType.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        JOIN_TYPE_UNSPECIFIED: JoinRel._JoinType.ValueType
+        JOIN_TYPE_INNER: JoinRel._JoinType.ValueType
+        JOIN_TYPE_OUTER: JoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT: JoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT: JoinRel._JoinType.ValueType
+        JOIN_TYPE_SEMI: JoinRel._JoinType.ValueType
+        JOIN_TYPE_ANTI: JoinRel._JoinType.ValueType
 
     class JoinType(_JoinType, metaclass=_JoinTypeEnumTypeWrapper):
         pass
-    JOIN_TYPE_UNSPECIFIED: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_INNER: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_OUTER: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_LEFT: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_RIGHT: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_SEMI: JoinRel.JoinType.ValueType = ...
-    JOIN_TYPE_ANTI: JoinRel.JoinType.ValueType = ...
+    JOIN_TYPE_UNSPECIFIED: JoinRel.JoinType.ValueType
+    JOIN_TYPE_INNER: JoinRel.JoinType.ValueType
+    JOIN_TYPE_OUTER: JoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT: JoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT: JoinRel.JoinType.ValueType
+    JOIN_TYPE_SEMI: JoinRel.JoinType.ValueType
+    JOIN_TYPE_ANTI: JoinRel.JoinType.ValueType
     COMMON_FIELD_NUMBER: builtins.int
     LEFT_FIELD_NUMBER: builtins.int
     RIGHT_FIELD_NUMBER: builtins.int
@@ -413,7 +414,7 @@ class JoinRel(google.protobuf.message.Message):
     @property
     def post_join_filter(self) -> substrait.expression_pb2.Expression:
         ...
-    type: global___JoinRel.JoinType.ValueType = ...
+    type: global___JoinRel.JoinType.ValueType
 
     @property
     def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
@@ -430,7 +431,7 @@ class JoinRel(google.protobuf.message.Message):
 global___JoinRel = JoinRel
 
 class FetchRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUT_FIELD_NUMBER: builtins.int
     OFFSET_FIELD_NUMBER: builtins.int
@@ -444,8 +445,8 @@ class FetchRel(google.protobuf.message.Message):
     @property
     def input(self) -> global___Rel:
         ...
-    offset: builtins.int = ...
-    count: builtins.int = ...
+    offset: builtins.int
+    count: builtins.int
 
     @property
     def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
@@ -462,10 +463,10 @@ class FetchRel(google.protobuf.message.Message):
 global___FetchRel = FetchRel
 
 class AggregateRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class Grouping(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         GROUPING_EXPRESSIONS_FIELD_NUMBER: builtins.int
 
         @property
@@ -479,7 +480,7 @@ class AggregateRel(google.protobuf.message.Message):
             ...
 
     class Measure(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
         MEASURE_FIELD_NUMBER: builtins.int
         FILTER_FIELD_NUMBER: builtins.int
 
@@ -540,7 +541,7 @@ class AggregateRel(google.protobuf.message.Message):
 global___AggregateRel = AggregateRel
 
 class SortRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUT_FIELD_NUMBER: builtins.int
     SORTS_FIELD_NUMBER: builtins.int
@@ -573,7 +574,7 @@ class SortRel(google.protobuf.message.Message):
 global___SortRel = SortRel
 
 class FilterRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUT_FIELD_NUMBER: builtins.int
     CONDITION_FIELD_NUMBER: builtins.int
@@ -606,31 +607,31 @@ class FilterRel(google.protobuf.message.Message):
 global___FilterRel = FilterRel
 
 class SetRel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _SetOp:
         ValueType = typing.NewType('ValueType', builtins.int)
         V: typing_extensions.TypeAlias = ValueType
 
-    class _SetOpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_SetOp.ValueType], builtins.type):
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor = ...
-        SET_OP_UNSPECIFIED: SetRel.SetOp.ValueType = ...
-        SET_OP_MINUS_PRIMARY: SetRel.SetOp.ValueType = ...
-        SET_OP_MINUS_MULTISET: SetRel.SetOp.ValueType = ...
-        SET_OP_INTERSECTION_PRIMARY: SetRel.SetOp.ValueType = ...
-        SET_OP_INTERSECTION_MULTISET: SetRel.SetOp.ValueType = ...
-        SET_OP_UNION_DISTINCT: SetRel.SetOp.ValueType = ...
-        SET_OP_UNION_ALL: SetRel.SetOp.ValueType = ...
+    class _SetOpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[SetRel._SetOp.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        SET_OP_UNSPECIFIED: SetRel._SetOp.ValueType
+        SET_OP_MINUS_PRIMARY: SetRel._SetOp.ValueType
+        SET_OP_MINUS_MULTISET: SetRel._SetOp.ValueType
+        SET_OP_INTERSECTION_PRIMARY: SetRel._SetOp.ValueType
+        SET_OP_INTERSECTION_MULTISET: SetRel._SetOp.ValueType
+        SET_OP_UNION_DISTINCT: SetRel._SetOp.ValueType
+        SET_OP_UNION_ALL: SetRel._SetOp.ValueType
 
     class SetOp(_SetOp, metaclass=_SetOpEnumTypeWrapper):
         pass
-    SET_OP_UNSPECIFIED: SetRel.SetOp.ValueType = ...
-    SET_OP_MINUS_PRIMARY: SetRel.SetOp.ValueType = ...
-    SET_OP_MINUS_MULTISET: SetRel.SetOp.ValueType = ...
-    SET_OP_INTERSECTION_PRIMARY: SetRel.SetOp.ValueType = ...
-    SET_OP_INTERSECTION_MULTISET: SetRel.SetOp.ValueType = ...
-    SET_OP_UNION_DISTINCT: SetRel.SetOp.ValueType = ...
-    SET_OP_UNION_ALL: SetRel.SetOp.ValueType = ...
+    SET_OP_UNSPECIFIED: SetRel.SetOp.ValueType
+    SET_OP_MINUS_PRIMARY: SetRel.SetOp.ValueType
+    SET_OP_MINUS_MULTISET: SetRel.SetOp.ValueType
+    SET_OP_INTERSECTION_PRIMARY: SetRel.SetOp.ValueType
+    SET_OP_INTERSECTION_MULTISET: SetRel.SetOp.ValueType
+    SET_OP_UNION_DISTINCT: SetRel.SetOp.ValueType
+    SET_OP_UNION_ALL: SetRel.SetOp.ValueType
     COMMON_FIELD_NUMBER: builtins.int
     INPUTS_FIELD_NUMBER: builtins.int
     OP_FIELD_NUMBER: builtins.int
@@ -643,7 +644,7 @@ class SetRel(google.protobuf.message.Message):
     @property
     def inputs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Rel]:
         ...
-    op: global___SetRel.SetOp.ValueType = ...
+    op: global___SetRel.SetOp.ValueType
 
     @property
     def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
@@ -661,7 +662,7 @@ global___SetRel = SetRel
 
 class ExtensionSingleRel(google.protobuf.message.Message):
     """Stub to support extension with a single input"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUT_FIELD_NUMBER: builtins.int
     DETAIL_FIELD_NUMBER: builtins.int
@@ -690,7 +691,7 @@ global___ExtensionSingleRel = ExtensionSingleRel
 
 class ExtensionLeafRel(google.protobuf.message.Message):
     """Stub to support extension with a zero inputs"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     DETAIL_FIELD_NUMBER: builtins.int
 
@@ -714,7 +715,7 @@ global___ExtensionLeafRel = ExtensionLeafRel
 
 class ExtensionMultiRel(google.protobuf.message.Message):
     """Stub to support extension with multiple inputs"""
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
     INPUTS_FIELD_NUMBER: builtins.int
     DETAIL_FIELD_NUMBER: builtins.int
@@ -746,7 +747,7 @@ class RelRoot(google.protobuf.message.Message):
 
     This is for use at the root of a `Rel` tree.
     """
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     INPUT_FIELD_NUMBER: builtins.int
     NAMES_FIELD_NUMBER: builtins.int
 
@@ -771,7 +772,7 @@ class RelRoot(google.protobuf.message.Message):
 global___RelRoot = RelRoot
 
 class Rel(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor = ...
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
     READ_FIELD_NUMBER: builtins.int
     FILTER_FIELD_NUMBER: builtins.int
     FETCH_FIELD_NUMBER: builtins.int

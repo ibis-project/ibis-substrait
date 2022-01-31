@@ -1,5 +1,5 @@
-conda-lock/*.lock linguist-generated=true
 nix/sources.json linguist-generated=true
 nix/sources.nix linguist-generated=true
 poetry.lock linguist-generated=true
-setup.py linguist-generated=true
+ibis_substrait/proto/** linguist-generated=true
+proto/** linguist-generated=true
