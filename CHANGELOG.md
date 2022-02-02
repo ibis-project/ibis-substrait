@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [1.0.1](https://github.com/ibis-project/ibis-substrait/compare/v1.0.0...v1.0.1) (2022-02-02)
+
+
+### Bug Fixes
+
+* **deps:** fix gen-protos script and bump protos ([3a2b01b](https://github.com/ibis-project/ibis-substrait/commit/3a2b01bad8ccd9647ba60c13956f0d4c9979588d))
+
 # 1.0.0 (2022-01-18)
 
 
