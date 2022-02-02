@@ -102,7 +102,7 @@ jobs:
 
       - run: pip3 install poetry
       - run: poetry install
-      - run: poetry run pytest -ra
+      - run: poetry run pytest
   dry-run-release:
     runs-on: ubuntu-latest
     steps:
@@ -121,6 +121,16 @@ jobs:
 
       - name: run semantic-release
         run: ./ci/release/dry_run.sh
+  check-poetry-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip3 install poetry
+      - run: poetry lock --no-update
+        env:
+          PYTHONHASHSEED: "0"
+      - run: git diff --exit-code poetry.lock
   release:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
@@ -129,6 +139,7 @@ jobs:
       - poetry
       - pre-commit
       - dry-run-release
+      - check-poetry-lock
     steps:
       - uses: tibdex/github-app-token@v1
         id: generate_token
