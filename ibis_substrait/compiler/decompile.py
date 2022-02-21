@@ -5,6 +5,7 @@ The primary API here is :func:`decompile`.
 
 from __future__ import annotations
 
+import bisect
 import collections
 import datetime
 import functools
@@ -290,7 +291,7 @@ def _decompile_schema_remaining_rels(
 
 
 @functools.singledispatch
-def decompile(msg: Any, *args: Any) -> ir.Expr:
+def decompile(msg: Any, *args: Any, **kwargs: Any) -> ir.Expr:
     """Construct an ibis expression from a substrait `Rel`."""
     raise NotImplementedError(
         f"decompiling substrait IR type `{type(msg).__name__}` to an ibis "
@@ -367,11 +368,13 @@ def _decompile_named_table(
     return ibis.table(schema=schema, name=name)
 
 
-def _get_child_tables(child: ir.TableExpr) -> Sequence[ops.TableNode]:
+def _get_child_tables_and_field_offsets(
+    child: ir.TableExpr,
+) -> tuple[Sequence[ops.TableNode], list[int]]:
     child_op = child.op()
     if isinstance(child_op, ops.Join):
-        return [child_op.left, child_op.right]
-    return [child]
+        return [child_op.left, child_op.right], [0, len(child_op.left.schema())]
+    return [child], [0]
 
 
 @decompile.register
@@ -381,7 +384,8 @@ def _decompile_filter_rel(
     names: Deque[str],
 ) -> ir.TableExpr:
     child = decompile(filter_rel.input, decompiler, names)
-    predicate = decompile(filter_rel.condition, _get_child_tables(child), decompiler)
+    children, field_offsets = _get_child_tables_and_field_offsets(child)
+    predicate = decompile(filter_rel.condition, children, field_offsets, decompiler)
     return child.filter(predicate)
 
 
@@ -414,7 +418,12 @@ def _decompile_join_rel(
     left_child = decompile(join_rel.left, decompiler, names)
     right_child = decompile(join_rel.right, decompiler, names)
     join_method_name = _JOIN_METHOD_TABLE[join_rel.type]
-    predicates = decompile(join_rel.expression, [left_child, right_child], decompiler)
+    predicates = decompile(
+        join_rel.expression,
+        children=[left_child, right_child],
+        field_offsets=[0, len(left_child.schema())],
+        decompiler=decompiler,
+    )
     join_method = getattr(left_child, f"{join_method_name}_join")
     # TODO: implement post_join_filter
     return join_method(right_child, predicates=predicates)
@@ -427,8 +436,10 @@ def _decompile_sort_rel(
     names: Deque[str],
 ) -> ir.TableExpr:
     child = decompile(sort_rel.input, decompiler, names)
-    children = _get_child_tables(child)
-    sorts = [decompile(sort, children, decompiler) for sort in sort_rel.sorts]
+    children, field_offsets = _get_child_tables_and_field_offsets(child)
+    sorts = [
+        decompile(sort, children, field_offsets, decompiler) for sort in sort_rel.sorts
+    ]
     return child.sort_by(sorts)
 
 
@@ -475,10 +486,13 @@ def _remove_names_below(names: Deque[str], dtype: dt.DataType) -> None:
 def _decompile_with_name(
     expr: stexpr.Expression | stexpr.AggregateFunction,
     children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.ValueExpr:
-    ibis_expr = decompile(expr, children, decompiler).name(names.popleft())
+    ibis_expr = decompile(expr, children, field_offsets, decompiler).name(
+        names.popleft()
+    )
 
     # remove child names since those are encoded in the data type
     _remove_names_below(names, ibis_expr.type())
@@ -493,9 +507,9 @@ def _decompile_project_rel(
     names: Deque[str],
 ) -> ir.TableExpr:
     child = decompile(project_rel.input, decompiler, names)
-    children = _get_child_tables(child)
+    children, field_offsets = _get_child_tables_and_field_offsets(child)
     exprs = [
-        _decompile_with_name(expr, children, decompiler, names)
+        _decompile_with_name(expr, children, field_offsets, decompiler, names)
         for expr in project_rel.expressions
     ]
 
@@ -510,7 +524,7 @@ def _decompile_aggregate_rel(
 ) -> ir.TableExpr:
     # TODO: aggregate_rel.phase is ignored, do we need to preserve it?
     child = decompile(aggregate_rel.input, decompiler, names)
-    children = _get_child_tables(child)
+    children, field_offsets = _get_child_tables_and_field_offsets(child)
 
     # TODO: only a single grouping set is allowed, implement grouping sets in
     # ibis upstream
@@ -525,12 +539,24 @@ def _decompile_aggregate_rel(
                 "more than one field per grouping is not yet implemented"
             )
         by.extend(
-            _decompile_with_name(grouping_expression, children, decompiler, names)
+            _decompile_with_name(
+                grouping_expression,
+                children,
+                field_offsets,
+                decompiler,
+                names,
+            )
             for grouping_expression in grouping_expressions
         )
 
     metrics = [
-        _decompile_with_name(agg_rel_measure.measure, children, decompiler, names)
+        _decompile_with_name(
+            agg_rel_measure.measure,
+            children,
+            field_offsets,
+            decompiler,
+            names,
+        )
         for agg_rel_measure in aggregate_rel.measures
     ]
 
@@ -541,12 +567,16 @@ def _decompile_aggregate_rel(
 def _decompile_expression_aggregate_function(
     aggregate_function: stexpr.AggregateFunction,
     children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[aggregate_function.function_reference]
     function_name = extension.name
     op_type = getattr(ops, inflection.camelize(function_name))
-    args = [decompile(arg, children, decompiler) for arg in aggregate_function.args]
+    args = [
+        decompile(arg, children, field_offsets, decompiler)
+        for arg in aggregate_function.args
+    ]
 
     # XXX: handle table.count(); what an annoying hack
     if not args and issubclass(op_type, ops.Count):
@@ -628,6 +658,7 @@ class ExpressionDecompiler:
     def decompile_literal(
         literal: stexpr.Expression.Literal,
         _children: Sequence[ir.TableExpr],
+        _offsets: Sequence[int],
         _decompiler: SubstraitDecompiler,
     ) -> ir.ScalarExpr:
         value, dtype = decompile(literal)
@@ -637,6 +668,7 @@ class ExpressionDecompiler:
     def decompile_selection(
         ref: stexpr.Expression.FieldReference,
         children: Sequence[ir.TableExpr],
+        field_offsets: Sequence[int],
         _: SubstraitDecompiler,
     ) -> ir.ValueExpr:
         ref_type, ref_variant = which_one_of(ref, "reference_type")
@@ -655,31 +687,30 @@ class ExpressionDecompiler:
             direct_ref_variant,
             stexpr.Expression.ReferenceSegment.StructField,
         )
-        field_index = direct_ref_variant.field
+        absolute_offset = direct_ref_variant.field
 
-        # this is zero if not set, which coincides nicely with the length 1 of
-        # children in the case of no join; otherwise this value is the
-        # zero-based index of the relation involved in the join
-        child_relation_index = direct_ref_variant.child.struct_field.field
-        # get the child relation, commonly zeroth, but could be first in the
-        # case of a join
+        # get the index of the child relation from a sequence of field_offsets
+        child_relation_index = bisect.bisect_right(field_offsets, absolute_offset) - 1
         child = children[child_relation_index]
         # return the field of the child
-        return child[field_index]
+        relative_offset = absolute_offset - field_offsets[child_relation_index]
+        return child[relative_offset]
 
     @staticmethod
     def decompile_scalar_function(
         scalar_func: stexpr.Expression.ScalarFunction,
         children: Sequence[ir.TableExpr],
+        field_offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
     ) -> ir.ValueExpr:
-        return decompile(scalar_func, children, decompiler)
+        return decompile(scalar_func, children, field_offsets, decompiler)
 
 
 @decompile.register
 def _decompile_expression(
     msg: stexpr.Expression,
     children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
     rex_type_name, rex = which_one_of(msg, "rex_type")
@@ -688,21 +719,21 @@ def _decompile_expression(
         raise NotImplementedError(
             f"decompilation of {rex_type_name!r} expression variant not implemented"
         )
-    return method(rex, children, decompiler)
+    return method(rex, children, field_offsets, decompiler)
 
 
 @decompile.register
 def _decompile_expression_scalar_function(
     msg: stexpr.Expression.ScalarFunction,
     children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[msg.function_reference]
     function_name = extension.name
     op_type = getattr(ops, inflection.camelize(function_name))
-    expr = op_type(
-        *(decompile(arg, children, decompiler) for arg in msg.args)
-    ).to_expr()
+    args = [decompile(arg, children, field_offsets, decompiler) for arg in msg.args]
+    expr = op_type(*args).to_expr()
     output_type = _decompile_type(msg.output_type)
     if expr.type() != output_type:
         return expr.cast(output_type)
@@ -713,9 +744,10 @@ def _decompile_expression_scalar_function(
 def _decompile_expression_sort_field(
     msg: stexpr.SortField,
     children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
-    expr = decompile(msg.expr, children, decompiler)
+    expr = decompile(msg.expr, children, field_offsets, decompiler)
     sort_field_func = _decompile_sort_field_type(msg.direction)
     return sort_field_func(expr)
 
