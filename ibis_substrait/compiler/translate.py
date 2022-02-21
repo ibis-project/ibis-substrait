@@ -9,9 +9,10 @@ import collections
 import collections.abc
 import datetime
 import functools
+import itertools
 import operator
 import uuid
-from typing import Any, MutableMapping, Sequence, TypeVar
+from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
 
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
@@ -200,13 +201,13 @@ def _literal(
     op: ops.Literal,
     expr: ir.ScalarExpr,
     compiler: SubstraitCompiler,
-    **_: Any,
+    **kwargs: Any,
 ) -> stexpr.Expression:
     dtype = expr.type()
     value = op.value
     if value is None:
         return stexpr.Expression(
-            literal=stexpr.Expression.Literal(null=translate(dtype))
+            literal=stexpr.Expression.Literal(null=translate(dtype, **kwargs))
         )
     return stexpr.Expression(literal=translate_literal(dtype, op.value))
 
@@ -551,20 +552,18 @@ def table_column(
     expr: ir.ColumnExpr,
     _: SubstraitCompiler,
     *,
-    child_ordinals: MutableMapping[ops.TableNode, int] | None = None,
+    child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
 ) -> stexpr.Expression:
     schema = op.table.schema()
-    position = schema._name_locs[op.name]
+    relative_offset = schema._name_locs[op.name]
+    base_offset = (child_rel_field_offsets or {}).get(op.table.op(), 0)
+    absolute_offset = base_offset + relative_offset
     return stexpr.Expression(
         selection=stexpr.Expression.FieldReference(
+            root_reference=stexpr.Expression.FieldReference.RootReference(),
             direct_reference=stexpr.Expression.ReferenceSegment(
                 struct_field=stexpr.Expression.ReferenceSegment.StructField(
-                    field=position,
-                    child=stexpr.Expression.ReferenceSegment(
-                        struct_field=stexpr.Expression.ReferenceSegment.StructField(
-                            field=(child_ordinals or {}).get(op.table.op(), 0),
-                        ),
-                    ),
+                    field=absolute_offset,
                 ),
             ),
         )
@@ -585,10 +584,33 @@ def unbound_table(
     )
 
 
-def _get_child_ordinals(table: ir.TableExpr) -> dict[ops.TableNode, int]:
+def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode, int]:
+    """Return the offset of each of table's fields.
+
+    This function calculates the starting index of a relations fields, as if
+    all relations were part of a single flat schema.
+
+    Examples
+    --------
+    >>> import ibis
+    >>> t1 = ibis.table(
+    ...     [("a", "int64"), ("b", "string"), ("c", "array<int64>")],
+    ...     name="t1",
+    ... )
+    >>> t2 = ibis.table([("d", "string"), ("e", "map<string, float64>")], name="t2")
+    >>> expr = t1.join(t2, t1.b == t2.d)
+    >>> mapping = _get_child_relation_field_offsets(expr)
+    >>> mapping[t1.op()]  # the first relation is always zero
+    0
+    >>> mapping[t2.op()]  # first relation has 3 fields, so the second starts at 3
+    3
+    """
     table_op = table.op()
     if isinstance(table_op, ops.Join):
-        return {t: i for i, t in enumerate(table_op.root_tables())}
+        root_tables = table_op.root_tables()
+        accum = [0]
+        accum.extend(itertools.accumulate(len(t.schema) for t in root_tables[:-1]))
+        return dict(zip(root_tables, accum))
     return {}
 
 
@@ -597,17 +619,19 @@ def selection(
     op: ops.Selection,
     expr: ir.TableExpr,
     compiler: SubstraitCompiler,
+    child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
     **kwargs: Any,
 ) -> strel.Rel:
-    assert not kwargs.get(
-        "child_ordinals"
-    ), "non-None child_ordinals passed in to selection translation rule"
-    child_ordinals = _get_child_ordinals(op.table)
+    assert (
+        not child_rel_field_offsets
+    ), "non-empty child_rel_field_offsets passed in to selection translation rule"
+    child_rel_field_offsets = _get_child_relation_field_offsets(op.table)
     # source
     relation = translate(
         op.table,
         compiler,
-        child_ordinals=child_ordinals,
+        child_rel_field_offsets=child_rel_field_offsets,
+        **kwargs,
     )
 
     # filter
@@ -618,7 +642,8 @@ def selection(
                 condition=translate(
                     functools.reduce(operator.and_, op.predicates),
                     compiler,
-                    child_ordinals=child_ordinals,
+                    child_rel_field_offsets=child_rel_field_offsets,
+                    **kwargs,
                 ),
             )
         )
@@ -629,7 +654,12 @@ def selection(
             project=strel.ProjectRel(
                 input=relation,
                 expressions=[
-                    translate(selection, compiler, child_ordinals=child_ordinals)
+                    translate(
+                        selection,
+                        compiler,
+                        child_rel_field_offsets=child_rel_field_offsets,
+                        **kwargs,
+                    )
                     for selection in op.selections
                 ],
             )
@@ -641,7 +671,12 @@ def selection(
             sort=strel.SortRel(
                 input=relation,
                 sorts=[
-                    translate(key, compiler, child_ordinals=child_ordinals)
+                    translate(
+                        key,
+                        compiler,
+                        child_rel_field_offsets=child_rel_field_offsets,
+                        **kwargs,
+                    )
                     for key in op.sort_keys
                 ],
             )
@@ -692,7 +727,6 @@ def join(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> strel.Rel:
-    child_ordinals = _get_child_ordinals(expr)
     return strel.Rel(
         join=strel.JoinRel(
             left=translate(op.left, compiler, **kwargs),
@@ -700,7 +734,7 @@ def join(
             expression=translate(
                 functools.reduce(operator.and_, op.predicates),
                 compiler,
-                child_ordinals=child_ordinals,
+                **kwargs,
             ),
             type=_translate_join_type(op),
         )
@@ -716,7 +750,7 @@ def limit(
 ) -> strel.Rel:
     return strel.Rel(
         fetch=strel.FetchRel(
-            input=translate(op.table, compiler),
+            input=translate(op.table, compiler, **kwargs),
             offset=op.offset,
             count=op.n,
         )
