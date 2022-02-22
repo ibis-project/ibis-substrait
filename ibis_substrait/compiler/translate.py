@@ -597,6 +597,37 @@ def table_column(
     )
 
 
+@translate.register(ops.StructField)
+def struct_field(
+    op: ops.StructField,
+    _: ir.ColumnExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    child = translate(op.arg, compiler=compiler, **kwargs)
+    field_name = op.field
+    # TODO: store names/types inverse mapping on datatypes.Struct for O(1)
+    # access to field index
+    field_index = op.arg.type().names.index(field_name)
+
+    struct_field = child.selection.direct_reference.struct_field
+
+    # keep digging until we bottom out on the deepest child reference which
+    # becomes the parent for the returned reference
+    while struct_field.HasField("child"):
+        struct_field = struct_field.child.struct_field
+
+    struct_field.child.MergeFrom(
+        stalg.Expression.ReferenceSegment(
+            struct_field=stalg.Expression.ReferenceSegment.StructField(
+                field=field_index
+            )
+        )
+    )
+
+    return child
+
+
 @translate.register(ops.UnboundTable)
 def unbound_table(
     op: ops.UnboundTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any

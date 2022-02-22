@@ -219,16 +219,73 @@ def test_ibis_schema_to_substrait_schema():
 
 
 @pytest.mark.parametrize(("name", "expected_offset"), [("a", 0), ("b", 1), ("c", 2)])
+def test_simple_field_access(compiler, name, expected_offset):
+    t = ibis.table(
+        dict(
+            a="string",
+            b="struct<a: string, b: int64, c: float64>",
+            c="array<array<float64>>",
+        )
+    )
+    expr = t[name]
+    expected = json_format.ParseDict(
+        {
+            "selection": {
+                "direct_reference": {"struct_field": {"field": expected_offset}},
+                "root_reference": {},
+            }
+        },
+        stalg.Expression(),
+    )
+    result = translate(expr, compiler)
+    assert result == expected
+
+
+@pytest.mark.parametrize(("name", "expected_offset"), [("a", 0), ("b", 1), ("c", 2)])
 def test_struct_field_access(compiler, name, expected_offset):
-    t = ibis.table([("f", "struct<a: string, b: int64, c: float64>")])
+    t = ibis.table(dict(f="struct<a: string, b: int64, c: float64>"))
     expr = t.f[name]
     expected = json_format.ParseDict(
         {
             "selection": {
                 "direct_reference": {
                     "struct_field": {
-                        "field": expected_offset,
-                        "child": {"struct_field": {}},
+                        "field": 0,
+                        "child": {"struct_field": {"field": expected_offset}},
+                    }
+                },
+                "root_reference": {},
+            }
+        },
+        stalg.Expression(),
+    )
+    result = translate(expr, compiler)
+    assert result == expected
+
+
+def test_nested_struct_field_access(compiler):
+    t = ibis.table(
+        dict(f="struct<a: struct<a: int64, b: struct<a: int64, b: int64, c: int64>>>")
+    )
+    #        0  0    1    2
+    expr = t.f["a"]["b"]["c"]
+    expected = json_format.ParseDict(
+        {
+            "selection": {
+                "direct_reference": {
+                    "struct_field": {
+                        "field": 0,
+                        "child": {
+                            "struct_field": {
+                                "field": 0,
+                                "child": {
+                                    "struct_field": {
+                                        "field": 1,
+                                        "child": {"struct_field": {"field": 2}},
+                                    }
+                                },
+                            }
+                        },
                     }
                 },
                 "root_reference": {},

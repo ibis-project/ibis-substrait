@@ -489,9 +489,8 @@ def _decompile_with_name(
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.ValueExpr:
-    ibis_expr = decompile(expr, children, field_offsets, decompiler).name(
-        names.popleft()
-    )
+    expr_name = names.popleft()
+    ibis_expr = decompile(expr, children, field_offsets, decompiler).name(expr_name)
 
     # remove child names since those are encoded in the data type
     _remove_names_below(names, ibis_expr.type())
@@ -652,6 +651,25 @@ def _decompile_set_op_rel(
     )
 
 
+@functools.singledispatch
+def _get_field(
+    child: ir.TableExpr | ir.StructValue,
+    relative_offset: int,
+) -> ir.ValueExpr:
+    raise NotImplementedError(f"accessing field of type {type(child)} is not supported")
+
+
+@_get_field.register(ir.TableExpr)
+def _get_field_table_expr(child: ir.TableExpr, relative_offset: int) -> ir.ValueExpr:
+    return child[relative_offset]
+
+
+@_get_field.register(ir.StructValue)
+def _get_field_struct(child: ir.TableExpr, relative_offset: int) -> ir.ValueExpr:
+    field_type = child.type()
+    return child[field_type.names[relative_offset]]
+
+
 class ExpressionDecompiler:
     @staticmethod
     def decompile_literal(
@@ -664,11 +682,28 @@ class ExpressionDecompiler:
         return ibis.literal(value, type=dtype)
 
     @staticmethod
+    def _decompile_struct_field(
+        struct_field: stalg.Expression.ReferenceSegment.StructField,
+        field_offsets: Sequence[int],
+        children: Sequence[ir.TableExpr | ir.StructValue],
+    ) -> ir.ValueExpr:
+        absolute_offset = struct_field.field
+
+        # get the index of the child relation from a sequence of field_offsets
+        child_index = bisect.bisect_right(field_offsets, absolute_offset) - 1
+        child = children[child_index]
+
+        # return the field index of the child
+        relative_offset = absolute_offset - field_offsets[child_index]
+
+        return _get_field(child, relative_offset)
+
+    @staticmethod
     def decompile_selection(
         ref: stalg.Expression.FieldReference,
         children: Sequence[ir.TableExpr],
         field_offsets: Sequence[int],
-        _: SubstraitDecompiler,
+        decompiler: SubstraitDecompiler,
     ) -> ir.ValueExpr:
         ref_type, ref_variant = which_one_of(ref, "reference_type")
         if ref_type != "direct_reference":
@@ -678,22 +713,30 @@ class ExpressionDecompiler:
 
         assert isinstance(ref_variant, stalg.Expression.ReferenceSegment)
 
-        direct_ref_type, direct_ref_variant = which_one_of(
+        _, struct_field = which_one_of(
             ref_variant,
             "reference_type",
         )
         assert isinstance(
-            direct_ref_variant,
+            struct_field,
             stalg.Expression.ReferenceSegment.StructField,
         )
-        absolute_offset = direct_ref_variant.field
 
-        # get the index of the child relation from a sequence of field_offsets
-        child_relation_index = bisect.bisect_right(field_offsets, absolute_offset) - 1
-        child = children[child_relation_index]
-        # return the field of the child
-        relative_offset = absolute_offset - field_offsets[child_relation_index]
-        return child[relative_offset]
+        result = ExpressionDecompiler._decompile_struct_field(
+            struct_field,
+            field_offsets,
+            children,
+        )
+
+        while struct_field.HasField("child"):
+            struct_field = struct_field.child.struct_field
+            result = ExpressionDecompiler._decompile_struct_field(
+                struct_field,
+                field_offsets,
+                # the new child is always the previous result
+                children=[result],
+            )
+        return result
 
     @staticmethod
     def decompile_scalar_function(
