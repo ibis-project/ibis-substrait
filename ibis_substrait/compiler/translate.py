@@ -20,8 +20,7 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 from ibis import util
 
-from ..proto.substrait import expression_pb2 as stexpr
-from ..proto.substrait import relations_pb2 as strel
+from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import type_pb2 as stt
 from .core import SubstraitCompiler, _get_fields
 
@@ -192,7 +191,7 @@ def _expr(
     expr: ir.Expr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.Expression:
+) -> stalg.Expression:
     return translate(expr.op(), expr, compiler, **kwargs)
 
 
@@ -202,28 +201,28 @@ def _literal(
     expr: ir.ScalarExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.Expression:
+) -> stalg.Expression:
     dtype = expr.type()
     value = op.value
     if value is None:
-        return stexpr.Expression(
-            literal=stexpr.Expression.Literal(null=translate(dtype, **kwargs))
+        return stalg.Expression(
+            literal=stalg.Expression.Literal(null=translate(dtype, **kwargs))
         )
-    return stexpr.Expression(literal=translate_literal(dtype, op.value))
+    return stalg.Expression(literal=translate_literal(dtype, op.value))
 
 
 @functools.singledispatch
 def translate_literal(
     dtype: dt.DataType,
     op: object,
-) -> stexpr.Expression.Literal:
+) -> stalg.Expression.Literal:
     raise NotImplementedError(
         f"{dtype.__class__.__name__} literals are not yet implemented"
     )
 
 
 @translate.register
-def _null_literal(_: dt.Null, **kwargs: Any) -> stexpr.Expression.Literal:
+def _null_literal(_: dt.Null, **kwargs: Any) -> stalg.Expression.Literal:
     raise NotImplementedError("untyped null literals are not supported")
 
 
@@ -231,68 +230,68 @@ def _null_literal(_: dt.Null, **kwargs: Any) -> stexpr.Expression.Literal:
 def _literal_boolean(
     _: dt.Boolean,
     value: bool,
-) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(boolean=value)
+) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(boolean=value)
 
 
 @translate_literal.register
-def _literal_int8(_: dt.Int8, value: int) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(i8=value)
+def _literal_int8(_: dt.Int8, value: int) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(i8=value)
 
 
 @translate_literal.register
-def _literal_int16(_: dt.Int16, value: int) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(i16=value)
+def _literal_int16(_: dt.Int16, value: int) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(i16=value)
 
 
 @translate_literal.register
-def _literal_int32(_: dt.Int32, value: int) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(i32=value)
+def _literal_int32(_: dt.Int32, value: int) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(i32=value)
 
 
 @translate_literal.register
-def _literal_int64(_: dt.Int64, value: int) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(i64=value)
+def _literal_int64(_: dt.Int64, value: int) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(i64=value)
 
 
 @translate_literal.register
-def _literal_float32(_: dt.Float32, value: float) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(fp32=value)
+def _literal_float32(_: dt.Float32, value: float) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(fp32=value)
 
 
 @translate_literal.register
-def _literal_float64(_: dt.Float64, value: float) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(fp64=value)
+def _literal_float64(_: dt.Float64, value: float) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(fp64=value)
 
 
 @translate_literal.register
-def _literal_string(_: dt.String, value: str) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(string=value)
+def _literal_string(_: dt.String, value: str) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(string=value)
 
 
 @translate_literal.register
-def _literal_binary(_: dt.Binary, value: bytes) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(binary=value)
+def _literal_binary(_: dt.Binary, value: bytes) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(binary=value)
 
 
 @translate_literal.register
 def _literal_timestamp(
     dtype: dt.Timestamp,
     value: datetime.datetime,
-) -> stexpr.Expression.Literal:
+) -> stalg.Expression.Literal:
     micros_since_epoch = int(value.timestamp() * 1e6)
     if dtype.timezone is not None:
-        return stexpr.Expression.Literal(timestamp_tz=micros_since_epoch)
-    return stexpr.Expression.Literal(timestamp=micros_since_epoch)
+        return stalg.Expression.Literal(timestamp_tz=micros_since_epoch)
+    return stalg.Expression.Literal(timestamp=micros_since_epoch)
 
 
 @translate_literal.register
 def _literal_struct(
     dtype: dt.Struct,
     mapping: collections.OrderedDict,
-) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(
-        struct=stexpr.Expression.Literal.Struct(
+) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(
+        struct=stalg.Expression.Literal.Struct(
             fields=[
                 translate_literal(field_type, val)
                 for val, field_type in zip(mapping.values(), dtype.types)
@@ -305,13 +304,13 @@ def _literal_struct(
 def _literal_map(
     dtype: dt.Map,
     mapping: collections.abc.MutableMapping,
-) -> stexpr.Expression.Literal:
+) -> stalg.Expression.Literal:
     if not mapping:
-        return stexpr.Expression.Literal(empty_map=translate(dtype).map)
-    return stexpr.Expression.Literal(
-        map=stexpr.Expression.Literal.Map(
+        return stalg.Expression.Literal(empty_map=translate(dtype).map)
+    return stalg.Expression.Literal(
+        map=stalg.Expression.Literal.Map(
             key_values=[
-                stexpr.Expression.Literal.Map.KeyValue(
+                stalg.Expression.Literal.Map.KeyValue(
                     key=translate_literal(dtype.key_type, key),
                     value=translate_literal(dtype.value_type, value),
                 )
@@ -325,19 +324,19 @@ def _literal_map(
 def _literal_array(
     dtype: dt.Array,
     sequence: Sequence[T],
-) -> stexpr.Expression.Literal:
+) -> stalg.Expression.Literal:
     if not sequence:
-        return stexpr.Expression.Literal(empty_list=translate(dtype).list)
-    return stexpr.Expression.Literal(
-        list=stexpr.Expression.Literal.List(
+        return stalg.Expression.Literal(empty_list=translate(dtype).list)
+    return stalg.Expression.Literal(
+        list=stalg.Expression.Literal.List(
             values=[translate_literal(dtype.value_type, value) for value in sequence],
         )
     )
 
 
 @translate_literal.register(dt.UUID)
-def _literal_uuid(_: dt.UUID, value: str | uuid.UUID) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(uuid=uuid.UUID(hex=str(value)).bytes)
+def _literal_uuid(_: dt.UUID, value: str | uuid.UUID) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(uuid=uuid.UUID(hex=str(value)).bytes)
 
 
 _MINUTES_PER_HOUR = _SECONDS_PER_MINUTE = 60
@@ -355,8 +354,8 @@ def _time_to_micros(value: datetime.time) -> int:
 
 
 @translate_literal.register
-def _literal_time(time: dt.Time, value: datetime.time) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(time=_time_to_micros(value))
+def _literal_time(time: dt.Time, value: datetime.time) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(time=_time_to_micros(value))
 
 
 def _date_to_days(value: datetime.date) -> int:
@@ -365,43 +364,43 @@ def _date_to_days(value: datetime.date) -> int:
 
 
 @translate_literal.register
-def _literal_date(date: dt.Date, value: datetime.date) -> stexpr.Expression.Literal:
-    return stexpr.Expression.Literal(date=_date_to_days(value))
+def _literal_date(date: dt.Date, value: datetime.date) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(date=_date_to_days(value))
 
 
 @functools.singledispatch
-def translate_preceding(value: int | None) -> stexpr.Expression.WindowFunction.Bound:
+def translate_preceding(value: int | None) -> stalg.Expression.WindowFunction.Bound:
     raise NotImplementedError()
 
 
 @translate_preceding.register
-def _preceding_none(_: None) -> stexpr.Expression.WindowFunction.Bound:
-    return stexpr.Expression.WindowFunction.Bound(
-        unbounded=stexpr.Expression.WindowFunction.Bound.Unbounded()
+def _preceding_none(_: None) -> stalg.Expression.WindowFunction.Bound:
+    return stalg.Expression.WindowFunction.Bound(
+        unbounded=stalg.Expression.WindowFunction.Bound.Unbounded()
     )
 
 
 @translate_preceding.register
-def _preceding_int(offset: int) -> stexpr.Expression.WindowFunction.Bound:
-    return stexpr.Expression.WindowFunction.Bound(
-        preceding=stexpr.Expression.WindowFunction.Bound.Preceding(offset=offset)
+def _preceding_int(offset: int) -> stalg.Expression.WindowFunction.Bound:
+    return stalg.Expression.WindowFunction.Bound(
+        preceding=stalg.Expression.WindowFunction.Bound.Preceding(offset=offset)
     )
 
 
 @functools.singledispatch
-def translate_following(value: int | None) -> stexpr.Expression.WindowFunction.Bound:
+def translate_following(value: int | None) -> stalg.Expression.WindowFunction.Bound:
     raise NotImplementedError()
 
 
 @translate_following.register
-def _following_none(_: None) -> stexpr.Expression.WindowFunction.Bound:
+def _following_none(_: None) -> stalg.Expression.WindowFunction.Bound:
     return translate_preceding(_)
 
 
 @translate_following.register
-def _following_int(offset: int) -> stexpr.Expression.WindowFunction.Bound:
-    return stexpr.Expression.WindowFunction.Bound(
-        following=stexpr.Expression.WindowFunction.Bound.Following(offset=offset)
+def _following_int(offset: int) -> stalg.Expression.WindowFunction.Bound:
+    return stalg.Expression.WindowFunction.Bound(
+        following=stalg.Expression.WindowFunction.Bound.Following(offset=offset)
     )
 
 
@@ -409,8 +408,8 @@ def _translate_window_bounds(
     precedes: tuple[int, int] | int | None,
     follows: tuple[int, int] | int | None,
 ) -> tuple[
-    stexpr.Expression.WindowFunction.Bound,
-    stexpr.Expression.WindowFunction.Bound,
+    stalg.Expression.WindowFunction.Bound,
+    stalg.Expression.WindowFunction.Bound,
 ]:
     # all preceding or all following or one or the other
     preceding = util.promote_list(precedes)
@@ -448,10 +447,10 @@ def value_op(
     expr: ir.ValueExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.Expression:
+) -> stalg.Expression:
     # given the details of `op` -> function id
-    return stexpr.Expression(
-        scalar_function=stexpr.Expression.ScalarFunction(
+    return stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
             function_reference=compiler.function_id(expr),
             output_type=translate(expr.type()),
             args=[
@@ -469,19 +468,19 @@ def window_op(
     expr: ir.ValueExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.Expression:
+) -> stalg.Expression:
     lower_bound, upper_bound = _translate_window_bounds(
         op.window.preceding, op.window.following
     )
-    return stexpr.Expression(
-        window_function=stexpr.Expression.WindowFunction(
+    return stalg.Expression(
+        window_function=stalg.Expression.WindowFunction(
             function_reference=compiler.function_id(op.expr),
             partitions=[
                 translate(gb, compiler, **kwargs) for gb in op.window._group_by
             ],
             sorts=[translate(ob, compiler, **kwargs) for ob in op.window._order_by],
             output_type=translate(expr.type()),
-            phase=stexpr.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
+            phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
             args=[
                 translate(arg, compiler, **kwargs)
                 for arg in op.expr.op().args
@@ -499,12 +498,12 @@ def _reduction(
     expr: ir.ScalarExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.AggregateFunction:
-    return stexpr.AggregateFunction(
+) -> stalg.AggregateFunction:
+    return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
         args=[translate(op.arg, compiler, **kwargs)],
         sorts=[],  # TODO: ibis doesn't support this yet
-        phase=stexpr.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
+        phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
         output_type=translate(expr.type()),
     )
 
@@ -515,16 +514,16 @@ def _count(
     expr: ir.ScalarExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.AggregateFunction:
+) -> stalg.AggregateFunction:
     translated_args = []
     arg = op.arg
     if not isinstance(arg, ir.TableExpr):
         translated_args.append(translate(arg, compiler, **kwargs))
-    return stexpr.AggregateFunction(
+    return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
         args=translated_args,
         sorts=[],  # TODO: ibis doesn't support this yet
-        phase=stexpr.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
+        phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
         output_type=translate(expr.type()),
     )
 
@@ -535,12 +534,12 @@ def sort_key(
     expr: ir.SortExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> stexpr.SortField:
+) -> stalg.SortField:
     ordering = "ASC" if op.ascending else "DESC"
-    return stexpr.SortField(
+    return stalg.SortField(
         expr=translate(op.expr, compiler, **kwargs),
         direction=getattr(
-            stexpr.SortField.SortDirection,
+            stalg.SortField.SortDirection,
             f"SORT_DIRECTION_{ordering}_NULLS_FIRST",
         ),
     )
@@ -553,16 +552,16 @@ def table_column(
     _: SubstraitCompiler,
     *,
     child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
-) -> stexpr.Expression:
+) -> stalg.Expression:
     schema = op.table.schema()
     relative_offset = schema._name_locs[op.name]
     base_offset = (child_rel_field_offsets or {}).get(op.table.op(), 0)
     absolute_offset = base_offset + relative_offset
-    return stexpr.Expression(
-        selection=stexpr.Expression.FieldReference(
-            root_reference=stexpr.Expression.FieldReference.RootReference(),
-            direct_reference=stexpr.Expression.ReferenceSegment(
-                struct_field=stexpr.Expression.ReferenceSegment.StructField(
+    return stalg.Expression(
+        selection=stalg.Expression.FieldReference(
+            root_reference=stalg.Expression.FieldReference.RootReference(),
+            direct_reference=stalg.Expression.ReferenceSegment(
+                struct_field=stalg.Expression.ReferenceSegment.StructField(
                     field=absolute_offset,
                 ),
             ),
@@ -573,13 +572,13 @@ def table_column(
 @translate.register(ops.UnboundTable)
 def unbound_table(
     op: ops.UnboundTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any
-) -> strel.Rel:
-    return strel.Rel(
-        read=strel.ReadRel(
+) -> stalg.Rel:
+    return stalg.Rel(
+        read=stalg.ReadRel(
             # TODO: filter,
             # TODO: projection,
             base_schema=translate(op.schema),
-            named_table=strel.ReadRel.NamedTable(names=[op.name]),
+            named_table=stalg.ReadRel.NamedTable(names=[op.name]),
         )
     )
 
@@ -620,7 +619,7 @@ def selection(
     compiler: SubstraitCompiler,
     child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
     **kwargs: Any,
-) -> strel.Rel:
+) -> stalg.Rel:
     assert (
         not child_rel_field_offsets
     ), "non-empty child_rel_field_offsets passed in to selection translation rule"
@@ -635,8 +634,8 @@ def selection(
 
     # filter
     if op.predicates:
-        relation = strel.Rel(
-            filter=strel.FilterRel(
+        relation = stalg.Rel(
+            filter=stalg.FilterRel(
                 input=relation,
                 condition=translate(
                     functools.reduce(operator.and_, op.predicates),
@@ -649,8 +648,8 @@ def selection(
 
     # projection
     if op.selections:
-        relation = strel.Rel(
-            project=strel.ProjectRel(
+        relation = stalg.Rel(
+            project=stalg.ProjectRel(
                 input=relation,
                 expressions=[
                     translate(
@@ -666,8 +665,8 @@ def selection(
 
     # order by
     if op.sort_keys:
-        relation = strel.Rel(
-            sort=strel.SortRel(
+        relation = stalg.Rel(
+            sort=stalg.SortRel(
                 input=relation,
                 sorts=[
                     translate(
@@ -685,38 +684,38 @@ def selection(
 
 
 @functools.singledispatch
-def _translate_join_type(op: ops.Join) -> strel.JoinRel.JoinType.V:
+def _translate_join_type(op: ops.Join) -> stalg.JoinRel.JoinType.V:
     raise NotImplementedError(f"join type `{type(op).__name__}` not implemented")
 
 
 @_translate_join_type.register(ops.InnerJoin)
-def _translate_inner_join(_: ops.InnerJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_INNER
+def _translate_inner_join(_: ops.InnerJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_INNER
 
 
 @_translate_join_type.register(ops.OuterJoin)
-def _translate_outer_join(_: ops.OuterJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_OUTER
+def _translate_outer_join(_: ops.OuterJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_OUTER
 
 
 @_translate_join_type.register(ops.LeftJoin)
-def _translate_left_join(_: ops.LeftJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_LEFT
+def _translate_left_join(_: ops.LeftJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_LEFT
 
 
 @_translate_join_type.register(ops.RightJoin)
-def _translate_right_join(_: ops.RightJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_RIGHT
+def _translate_right_join(_: ops.RightJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_RIGHT
 
 
 @_translate_join_type.register(ops.LeftSemiJoin)
-def _translate_semi_join(_: ops.LeftSemiJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_SEMI
+def _translate_semi_join(_: ops.LeftSemiJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_SEMI
 
 
 @_translate_join_type.register(ops.LeftAntiJoin)
-def _translate_anti_join(_: ops.LeftAntiJoin) -> strel.JoinRel.JoinType.V:
-    return strel.JoinRel.JoinType.JOIN_TYPE_ANTI
+def _translate_anti_join(_: ops.LeftAntiJoin) -> stalg.JoinRel.JoinType.V:
+    return stalg.JoinRel.JoinType.JOIN_TYPE_ANTI
 
 
 @translate.register(ops.Join)
@@ -725,9 +724,9 @@ def join(
     expr: ir.TableExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> strel.Rel:
-    return strel.Rel(
-        join=strel.JoinRel(
+) -> stalg.Rel:
+    return stalg.Rel(
+        join=stalg.JoinRel(
             left=translate(op.left, compiler, **kwargs),
             right=translate(op.right, compiler, **kwargs),
             expression=translate(
@@ -746,9 +745,9 @@ def limit(
     expr: ir.Expr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> strel.Rel:
-    return strel.Rel(
-        fetch=strel.FetchRel(
+) -> stalg.Rel:
+    return stalg.Rel(
+        fetch=stalg.FetchRel(
             input=translate(op.table, compiler, **kwargs),
             offset=op.offset,
             count=op.n,
@@ -757,27 +756,27 @@ def limit(
 
 
 @functools.singledispatch
-def translate_set_op_type(op: ops.SetOp) -> strel.SetRel.SetOp.V:
+def translate_set_op_type(op: ops.SetOp) -> stalg.SetRel.SetOp.V:
     raise NotImplementedError(
         f"set operation `{type(op).__name__}` not yet implemented"
     )
 
 
 @translate_set_op_type.register(ops.Union)
-def set_op_type_union(op: ops.Union) -> strel.SetRel.SetOp.V:
+def set_op_type_union(op: ops.Union) -> stalg.SetRel.SetOp.V:
     if op.distinct:
-        return strel.SetRel.SetOp.SET_OP_UNION_DISTINCT
-    return strel.SetRel.SetOp.SET_OP_UNION_ALL
+        return stalg.SetRel.SetOp.SET_OP_UNION_DISTINCT
+    return stalg.SetRel.SetOp.SET_OP_UNION_ALL
 
 
 @translate_set_op_type.register(ops.Intersection)
-def set_op_type_intersection(op: ops.Intersection) -> strel.SetRel.SetOp.V:
-    return strel.SetRel.SetOp.SET_OP_INTERSECTION_PRIMARY
+def set_op_type_intersection(op: ops.Intersection) -> stalg.SetRel.SetOp.V:
+    return stalg.SetRel.SetOp.SET_OP_INTERSECTION_PRIMARY
 
 
 @translate_set_op_type.register(ops.Difference)
-def set_op_type_difference(op: ops.Difference) -> strel.SetRel.SetOp.V:
-    return strel.SetRel.SetOp.SET_OP_MINUS_PRIMARY
+def set_op_type_difference(op: ops.Difference) -> stalg.SetRel.SetOp.V:
+    return stalg.SetRel.SetOp.SET_OP_MINUS_PRIMARY
 
 
 @translate.register(ops.SetOp)
@@ -786,9 +785,9 @@ def set_op(
     expr: ir.TableExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> strel.Rel:
-    return strel.Rel(
-        set=strel.SetRel(
+) -> stalg.Rel:
+    return stalg.Rel(
+        set=stalg.SetRel(
             inputs=[
                 translate(op.left, compiler, **kwargs),
                 translate(op.right, compiler, **kwargs),
@@ -804,7 +803,7 @@ def aggregation(
     expr: ir.TableExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
-) -> strel.Rel:
+) -> stalg.Rel:
     if op.having:
         raise NotImplementedError("`having` not yet implemented")
 
@@ -824,20 +823,20 @@ def aggregation(
     # table when decompiling
     if op.sort_keys:
         sorts = [translate(key, compiler, **kwargs) for key in op.sort_keys]
-        input = strel.Rel(sort=strel.SortRel(input=input, sorts=sorts))
+        input = stalg.Rel(sort=stalg.SortRel(input=input, sorts=sorts))
 
-    aggregate = strel.AggregateRel(
+    aggregate = stalg.AggregateRel(
         input=input,
         groupings=[
-            strel.AggregateRel.Grouping(
+            stalg.AggregateRel.Grouping(
                 grouping_expressions=[translate(by, compiler, **kwargs)]
             )
             for by in op.by
         ],
         measures=[
-            strel.AggregateRel.Measure(measure=translate(metric, compiler, **kwargs))
+            stalg.AggregateRel.Measure(measure=translate(metric, compiler, **kwargs))
             for metric in op.metrics
         ],
     )
 
-    return strel.Rel(aggregate=aggregate)
+    return stalg.Rel(aggregate=aggregate)

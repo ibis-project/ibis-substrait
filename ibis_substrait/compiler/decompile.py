@@ -22,9 +22,8 @@ import inflection
 import pytz
 import toolz
 
-from ..proto.substrait import expression_pb2 as stexpr
+from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
-from ..proto.substrait import relations_pb2 as strel
 from ..proto.substrait import type_pb2 as stt
 from .core import SubstraitDecompiler, _get_fields, which_one_of
 from .translate import _MICROSECONDS_PER_SECOND, _MINUTES_PER_HOUR, _SECONDS_PER_MINUTE
@@ -270,22 +269,22 @@ def _decompile_schema_named_struct(schema: stt.NamedStruct) -> sch.Schema:
 
 
 @decompile_schema.register
-def _decompile_schema_rel(rel: strel.Rel) -> sch.Schema:
+def _decompile_schema_rel(rel: stalg.Rel) -> sch.Schema:
     _, variant = which_one_of(rel, "rel_type")
     return decompile_schema(variant)
 
 
 @decompile_schema.register
-def _decompile_schema_type_named_struct(read_rel: strel.ReadRel) -> sch.Schema:
+def _decompile_schema_type_named_struct(read_rel: stalg.ReadRel) -> sch.Schema:
     """Turn a Substrait ``TypeNamedStruct`` into an ibis schema."""
     return decompile_schema(read_rel.base_schema)
 
 
-@decompile_schema.register(strel.FilterRel)
-@decompile_schema.register(strel.FetchRel)
-@decompile_schema.register(strel.SortRel)
+@decompile_schema.register(stalg.FilterRel)
+@decompile_schema.register(stalg.FetchRel)
+@decompile_schema.register(stalg.SortRel)
 def _decompile_schema_remaining_rels(
-    rel: strel.FilterRel | strel.FetchRel | strel.SortRel,
+    rel: stalg.FilterRel | stalg.FetchRel | stalg.SortRel,
 ) -> sch.Schema:
     return decompile_schema(rel.input)
 
@@ -323,7 +322,7 @@ def _rename_schema(schema: ibis.Schema, names: Sequence[str]) -> ibis.Schema:
 
 @decompile.register
 def _decompile_rel_root(
-    rel_root: strel.RelRoot,
+    rel_root: stalg.RelRoot,
     decompiler: SubstraitDecompiler,
 ) -> ir.TableExpr:
     return decompile(rel_root.input, decompiler, collections.deque(rel_root.names))
@@ -331,7 +330,7 @@ def _decompile_rel_root(
 
 @decompile.register
 def _decompile_rel(
-    rel: strel.Rel,
+    rel: stalg.Rel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -341,7 +340,7 @@ def _decompile_rel(
 
 @decompile.register
 def _decompile_read_rel(
-    read_rel: strel.ReadRel,
+    read_rel: stalg.ReadRel,
     decompiler: SubstraitDecompiler,
     _names: Deque[str],
 ) -> ir.TableExpr:
@@ -352,7 +351,7 @@ def _decompile_read_rel(
 
 @decompile.register
 def _decompile_named_table(
-    named_table: strel.ReadRel.NamedTable,
+    named_table: stalg.ReadRel.NamedTable,
     schema: ibis.Schema,
     decompiler: SubstraitDecompiler,
 ) -> ir.TableExpr:
@@ -379,7 +378,7 @@ def _get_child_tables_and_field_offsets(
 
 @decompile.register
 def _decompile_filter_rel(
-    filter_rel: strel.FilterRel,
+    filter_rel: stalg.FilterRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -391,7 +390,7 @@ def _decompile_filter_rel(
 
 @decompile.register
 def _decompile_fetch_rel(
-    fetch_rel: strel.FetchRel,
+    fetch_rel: stalg.FetchRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -400,18 +399,18 @@ def _decompile_fetch_rel(
 
 
 _JOIN_METHOD_TABLE = {
-    strel.JoinRel.JoinType.JOIN_TYPE_INNER: "inner",
-    strel.JoinRel.JoinType.JOIN_TYPE_OUTER: "outer",
-    strel.JoinRel.JoinType.JOIN_TYPE_LEFT: "left",
-    strel.JoinRel.JoinType.JOIN_TYPE_RIGHT: "right",
-    strel.JoinRel.JoinType.JOIN_TYPE_SEMI: "semi",
-    strel.JoinRel.JoinType.JOIN_TYPE_ANTI: "anti",
+    stalg.JoinRel.JoinType.JOIN_TYPE_INNER: "inner",
+    stalg.JoinRel.JoinType.JOIN_TYPE_OUTER: "outer",
+    stalg.JoinRel.JoinType.JOIN_TYPE_LEFT: "left",
+    stalg.JoinRel.JoinType.JOIN_TYPE_RIGHT: "right",
+    stalg.JoinRel.JoinType.JOIN_TYPE_SEMI: "semi",
+    stalg.JoinRel.JoinType.JOIN_TYPE_ANTI: "anti",
 }
 
 
 @decompile.register
 def _decompile_join_rel(
-    join_rel: strel.JoinRel,
+    join_rel: stalg.JoinRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -431,7 +430,7 @@ def _decompile_join_rel(
 
 @decompile.register
 def _decompile_sort_rel(
-    sort_rel: strel.SortRel,
+    sort_rel: stalg.SortRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -484,7 +483,7 @@ def _remove_names_below(names: Deque[str], dtype: dt.DataType) -> None:
 
 
 def _decompile_with_name(
-    expr: stexpr.Expression | stexpr.AggregateFunction,
+    expr: stalg.Expression | stalg.AggregateFunction,
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
@@ -502,7 +501,7 @@ def _decompile_with_name(
 
 @decompile.register
 def _decompile_project_rel(
-    project_rel: strel.ProjectRel,
+    project_rel: stalg.ProjectRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -518,7 +517,7 @@ def _decompile_project_rel(
 
 @decompile.register
 def _decompile_aggregate_rel(
-    aggregate_rel: strel.AggregateRel,
+    aggregate_rel: stalg.AggregateRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -565,7 +564,7 @@ def _decompile_aggregate_rel(
 
 @decompile.register
 def _decompile_expression_aggregate_function(
-    aggregate_function: stexpr.AggregateFunction,
+    aggregate_function: stalg.AggregateFunction,
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
@@ -620,16 +619,16 @@ class SetOpDecompiler:
 
 
 def _decompile_set_op(
-    left: strel.Rel,
-    right: strel.Rel,
+    left: stalg.Rel,
+    right: stalg.Rel,
     *,
-    op: strel.SetRel.SetOp.V,
+    op: stalg.SetRel.SetOp.V,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
     left_expr = decompile(left, decompiler, names)
     right_expr = decompile(right, decompiler, names)
-    name = strel.SetRel.SetOp.Name(op)
+    name = stalg.SetRel.SetOp.Name(op)
     method = getattr(SetOpDecompiler, f"decompile_{name}", None)
     if method is None:
         raise NotImplementedError(f"set operation not yet implemented: `{name}`")
@@ -638,7 +637,7 @@ def _decompile_set_op(
 
 @decompile.register
 def _decompile_set_op_rel(
-    set_rel: strel.SetRel,
+    set_rel: stalg.SetRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
 ) -> ir.TableExpr:
@@ -656,7 +655,7 @@ def _decompile_set_op_rel(
 class ExpressionDecompiler:
     @staticmethod
     def decompile_literal(
-        literal: stexpr.Expression.Literal,
+        literal: stalg.Expression.Literal,
         _children: Sequence[ir.TableExpr],
         _offsets: Sequence[int],
         _decompiler: SubstraitDecompiler,
@@ -666,7 +665,7 @@ class ExpressionDecompiler:
 
     @staticmethod
     def decompile_selection(
-        ref: stexpr.Expression.FieldReference,
+        ref: stalg.Expression.FieldReference,
         children: Sequence[ir.TableExpr],
         field_offsets: Sequence[int],
         _: SubstraitDecompiler,
@@ -677,7 +676,7 @@ class ExpressionDecompiler:
                 f"decompilation of `{ref_type}` references are not yet implemented"
             )
 
-        assert isinstance(ref_variant, stexpr.Expression.ReferenceSegment)
+        assert isinstance(ref_variant, stalg.Expression.ReferenceSegment)
 
         direct_ref_type, direct_ref_variant = which_one_of(
             ref_variant,
@@ -685,7 +684,7 @@ class ExpressionDecompiler:
         )
         assert isinstance(
             direct_ref_variant,
-            stexpr.Expression.ReferenceSegment.StructField,
+            stalg.Expression.ReferenceSegment.StructField,
         )
         absolute_offset = direct_ref_variant.field
 
@@ -698,7 +697,7 @@ class ExpressionDecompiler:
 
     @staticmethod
     def decompile_scalar_function(
-        scalar_func: stexpr.Expression.ScalarFunction,
+        scalar_func: stalg.Expression.ScalarFunction,
         children: Sequence[ir.TableExpr],
         field_offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
@@ -708,7 +707,7 @@ class ExpressionDecompiler:
 
 @decompile.register
 def _decompile_expression(
-    msg: stexpr.Expression,
+    msg: stalg.Expression,
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
@@ -724,7 +723,7 @@ def _decompile_expression(
 
 @decompile.register
 def _decompile_expression_scalar_function(
-    msg: stexpr.Expression.ScalarFunction,
+    msg: stalg.Expression.ScalarFunction,
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
@@ -742,7 +741,7 @@ def _decompile_expression_scalar_function(
 
 @decompile.register
 def _decompile_expression_sort_field(
-    msg: stexpr.SortField,
+    msg: stalg.SortField,
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
@@ -753,16 +752,16 @@ def _decompile_expression_sort_field(
 
 
 def _decompile_sort_field_type(
-    sort_type: stexpr.SortField.SortDirection.V,
+    sort_type: stalg.SortField.SortDirection.V,
 ) -> Callable[[T], Any]:
     if sort_type in {
-        stexpr.SortField.SortDirection.SORT_DIRECTION_ASC_NULLS_FIRST,
-        stexpr.SortField.SortDirection.SORT_DIRECTION_ASC_NULLS_LAST,
+        stalg.SortField.SortDirection.SORT_DIRECTION_ASC_NULLS_FIRST,
+        stalg.SortField.SortDirection.SORT_DIRECTION_ASC_NULLS_LAST,
     }:
         return toolz.identity
     elif sort_type in {
-        stexpr.SortField.SortDirection.SORT_DIRECTION_DESC_NULLS_FIRST,
-        stexpr.SortField.SortDirection.SORT_DIRECTION_DESC_NULLS_LAST,
+        stalg.SortField.SortDirection.SORT_DIRECTION_DESC_NULLS_FIRST,
+        stalg.SortField.SortDirection.SORT_DIRECTION_DESC_NULLS_LAST,
     }:
         return ibis.desc
     else:
@@ -814,7 +813,7 @@ class LiteralDecompiler:
 
     @staticmethod
     def decompile_list(
-        value: stexpr.Expression.Literal.List,
+        value: stalg.Expression.Literal.List,
     ) -> tuple[list[T], dt.Array]:
         assert value.values, "Empty list found, expected non-empty list"
         values, types = zip(*map(decompile, value.values))
@@ -857,7 +856,7 @@ class LiteralDecompiler:
 
     @staticmethod
     def decompile_map(
-        value: stexpr.Expression.Literal.Map,
+        value: stalg.Expression.Literal.Map,
     ) -> tuple[dict[K, V], dt.Map]:
         result = {}
 
@@ -897,8 +896,8 @@ def _time_from_micros(value: int) -> datetime.time:
     )
 
 
-@decompile.register(stexpr.Expression.Literal)
-def _decompile_literal(msg: stexpr.Expression.Literal) -> tuple[T, dt.DataType]:
+@decompile.register(stalg.Expression.Literal)
+def _decompile_literal(msg: stalg.Expression.Literal) -> tuple[T, dt.DataType]:
     literal_type_name, literal = which_one_of(msg, "literal_type")
     method = getattr(LiteralDecompiler, f"decompile_{literal_type_name}", None)
     if method is None:

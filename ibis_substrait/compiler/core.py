@@ -10,8 +10,8 @@ import ibis.expr.datatypes as dt
 import ibis.expr.types as ir
 import inflection
 
+from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
-from ..proto.substrait import relations_pb2 as strel
 from ..proto.substrait.extensions import extensions_pb2 as ste
 
 
@@ -78,7 +78,7 @@ class SubstraitCompiler:
 
         expr_schema = expr.materialize().schema()
         rel = stp.PlanRel(
-            root=strel.RelRoot(
+            root=stalg.RelRoot(
                 input=translate(expr.op(), expr, self),
                 names=translate(expr_schema).names,
             )
