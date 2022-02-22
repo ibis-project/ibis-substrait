@@ -6,6 +6,7 @@ import pytest
 from google.protobuf import json_format
 
 from ibis_substrait.compiler.translate import translate
+from ibis_substrait.proto.substrait import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
@@ -215,3 +216,25 @@ def test_ibis_schema_to_substrait_schema():
         ),
     )
     assert translate(input) == expected
+
+
+@pytest.mark.parametrize(("name", "expected_offset"), [("a", 0), ("b", 1), ("c", 2)])
+def test_struct_field_access(compiler, name, expected_offset):
+    t = ibis.table([("f", "struct<a: string, b: int64, c: float64>")])
+    expr = t.f[name]
+    expected = json_format.ParseDict(
+        {
+            "selection": {
+                "direct_reference": {
+                    "struct_field": {
+                        "field": expected_offset,
+                        "child": {"struct_field": {}},
+                    }
+                },
+                "root_reference": {},
+            }
+        },
+        stalg.Expression(),
+    )
+    result = translate(expr, compiler)
+    assert result == expected
