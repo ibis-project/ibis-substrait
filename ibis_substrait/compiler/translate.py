@@ -608,8 +608,7 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
     table_op = table.op()
     if isinstance(table_op, ops.Join):
         root_tables = table_op.root_tables()
-        accum = [0]
-        accum.extend(itertools.accumulate(len(t.schema) for t in root_tables[:-1]))
+        accum = itertools.accumulate((len(t.schema) for t in root_tables), initial=0)
         return dict(zip(root_tables, accum))
     return {}
 
