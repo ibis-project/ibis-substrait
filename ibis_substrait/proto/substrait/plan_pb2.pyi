@@ -19,16 +19,16 @@ class PlanRel(google.protobuf.message.Message):
     ROOT_FIELD_NUMBER: builtins.int
 
     @property
-    def rel(self) -> substrait.relations_pb2.Rel:
+    def rel(self) -> substrait.algebra_pb2.Rel:
         """Any relation"""
         pass
 
     @property
-    def root(self) -> substrait.relations_pb2.RelRoot:
+    def root(self) -> substrait.algebra_pb2.RelRoot:
         """The root of a relation tree"""
         pass
 
-    def __init__(self, *, rel: typing.Optional[substrait.relations_pb2.Rel]=..., root: typing.Optional[substrait.relations_pb2.RelRoot]=...) -> None:
+    def __init__(self, *, rel: typing.Optional[substrait.algebra_pb2.Rel]=..., root: typing.Optional[substrait.algebra_pb2.RelRoot]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['rel', b'rel', 'rel_type', b'rel_type', 'root', b'root']) -> builtins.bool:

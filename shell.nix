@@ -34,6 +34,7 @@ let
       cp -fr ${pkgs.substrait}/proto "$proto_dir"
       find "$proto_dir" -type d -exec chmod u+rwx {} +
       find "$proto_dir" -type f -exec chmod u+rw {} +
+      rm -rf ./ibis_substrait/proto
       buf generate
       protol --in-place --create-package --python-out "./ibis_substrait/proto" buf
     '';
