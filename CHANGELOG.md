@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [1.0.2](https://github.com/ibis-project/ibis-substrait/compare/v1.0.1...v1.0.2) (2022-02-22)
+
+
+### Bug Fixes
+
+* fix broken field offset construction ([7c41b55](https://github.com/ibis-project/ibis-substrait/commit/7c41b555f22f01db4c57252dded07ce8c2b678bc))
+
 ## [1.0.1](https://github.com/ibis-project/ibis-substrait/compare/v1.0.0...v1.0.1) (2022-02-02)
 
 
