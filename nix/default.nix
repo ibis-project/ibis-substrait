@@ -12,10 +12,9 @@ import sources.nixpkgs {
       substrait = pkgs.fetchFromGitHub {
         owner = "substrait-io";
         repo = "substrait";
-        rev = "50e56f24fa9939b7f38e873570e44ceb13a97a14";
-        sha256 = "sha256-19HzCXcWT1/YlStHu276moa+H4O2SxGv0gTH9UxqsI4=";
+        rev = "9d9805be19c1d606dc2811395f203857db782872";
+        sha256 = "sha256-VarDeSsOc8B7IMtG4T6Ely7VPUZSU7PrhQoy44HZLkE=";
       };
-      # substrait = ../../substrait;
 
       mkPoetryEnv = python: pkgs.poetry2nix.mkPoetryEnv {
         inherit python;
