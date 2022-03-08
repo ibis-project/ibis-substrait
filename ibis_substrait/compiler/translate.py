@@ -583,6 +583,36 @@ def unbound_table(
     )
 
 
+@translate.register(ops.LocalTable)
+def local_table(
+    op: ops.LocalTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any
+) -> stalg.Rel:
+    def path_type_of(name : str | None):
+        if name is None:
+            raise ValueError("local table name is None")
+        if name.startswith("file://"):
+            return "uri_folder" if name.endswith("/") else "uri_file"
+        else:
+            return "uri_path_glob" if name.contains("*") else "uri_path"
+    def format_of(name : str | None):
+        return (stalg.ReadRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_PARQUET
+                if name.endswith(".parquet")
+                else stalg.ReadRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_UNSPECIFIED)
+    return stalg.Rel(
+        read=stalg.ReadRel(
+            # TODO: filter,
+            # TODO: projection,
+            base_schema=translate(op.schema),
+            local_files=stalg.ReadRel.LocalFiles(
+                items=[stalg.ReadRel.LocalFiles.FileOrFiles(**{
+                    path_type_of(op.name): op.name,
+                    "format": format_of(op.name),
+                })]
+            ),
+        )
+    )
+
+
 def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode, int]:
     """Return the offset of each of table's fields.
 
