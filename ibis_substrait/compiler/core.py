@@ -76,7 +76,7 @@ class SubstraitCompiler:
         """Construct a Substrait plan from an ibis table expression."""
         from .translate import translate
 
-        expr_schema = expr.materialize().schema()
+        expr_schema = expr.schema()
         rel = stp.PlanRel(
             root=stalg.RelRoot(
                 input=translate(expr.op(), expr, self),
