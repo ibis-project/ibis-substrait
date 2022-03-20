@@ -37,7 +37,7 @@ pytest-randomly = "^3.10.1"
 pyupgrade = "^2.26.0"
 types-protobuf = "^3.18.1"
 mypy-protobuf = "^3.0.0"
-pytz = "^2021.3"
+pytz = "^2022.1"
 types-pytz = "^2021.3.4"
 
 [tool.pytest.ini_options]
