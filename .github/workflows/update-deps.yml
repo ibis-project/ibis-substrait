@@ -99,7 +99,7 @@ jobs:
           github-token: ${{ steps.generate-pr-approval-token.outputs.token }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
 
-      - uses: peter-evans/enable-pull-request-automerge@v1
+      - uses: peter-evans/enable-pull-request-automerge@v2
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         with:
           token: ${{ steps.generate-pr-token.outputs.token }}
