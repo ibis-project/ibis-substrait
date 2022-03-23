@@ -80,7 +80,7 @@ jobs:
           basehead: ${{ steps.get-current-commit.outputs.rev }}...${{ steps.get-new-commit.outputs.rev }}
           include-merge-commits: false
 
-      - uses: peter-evans/create-pull-request@v3
+      - uses: peter-evans/create-pull-request@v4
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         id: create-pr
         with:
