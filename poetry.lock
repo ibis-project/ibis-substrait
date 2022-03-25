@@ -339,7 +339,7 @@ testing = ["pytest", "pytest-benchmark"]
 name = "protobuf"
 version = "3.19.4"
 description = "Protocol Buffers"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -584,7 +584,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "8f5081a31d9c04d9eaf70453ab3f66a1cedef857e376682e5fae5c7eeb47c16f"
+content-hash = "8cd75b0644776fb06c8a90e09b2786316fb4a8e929ba7753c23a3e0fdbc521af"
 
 [metadata.files]
 astunparse = [
