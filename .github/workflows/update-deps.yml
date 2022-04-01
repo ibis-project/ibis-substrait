@@ -10,7 +10,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: output dependency list
         id: set-matrix
@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.get-niv-deps.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: cachix/install-nix-action@v16
         with:
@@ -80,7 +80,7 @@ jobs:
           basehead: ${{ steps.get-current-commit.outputs.rev }}...${{ steps.get-new-commit.outputs.rev }}
           include-merge-commits: false
 
-      - uses: peter-evans/create-pull-request@v3
+      - uses: peter-evans/create-pull-request@v4
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         id: create-pr
         with:
@@ -93,13 +93,13 @@ jobs:
           body: ${{ steps.compare-commits.outputs.differences }}
           labels: dependencies,autorebase:opt-in
 
-      - uses: juliangruber/approve-pull-request-action@v1.1.0
+      - uses: juliangruber/approve-pull-request-action@v1.1.1
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         with:
           github-token: ${{ steps.generate-pr-approval-token.outputs.token }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
 
-      - uses: peter-evans/enable-pull-request-automerge@v1
+      - uses: peter-evans/enable-pull-request-automerge@v2
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         with:
           token: ${{ steps.generate-pr-token.outputs.token }}
