@@ -21,10 +21,20 @@ def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
 
 
 class SubstraitCompiler:
-    def __init__(self) -> None:
-        """Initialize the compiler."""
+    def __init__(self, uri: str | None = None) -> None:
+        """Initialize the compiler.
+
+        Parameters
+        ----------
+        uri
+            The extension URI to use, if any.
+        """
         # start at id 1 because 0 is the default proto value for the type
-        self.extension_uri = ste.SimpleExtensionURI(extension_uri_anchor=1)
+        self.extension_uri = (
+            ste.SimpleExtensionURI(extension_uri_anchor=1)
+            if uri is None
+            else ste.SimpleExtensionURI(extension_uri_anchor=1, uri=uri)
+        )
         self.function_extensions: dict[
             tuple[Hashable, ...],
             ste.SimpleExtensionDeclaration.ExtensionFunction,
