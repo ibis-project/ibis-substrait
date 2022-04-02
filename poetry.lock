@@ -345,7 +345,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "protoletariat"
-version = "0.7.5"
+version = "0.8.0"
 description = "Python protocol buffers for the rest of us"
 category = "dev"
 optional = false
@@ -584,7 +584,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "8cd75b0644776fb06c8a90e09b2786316fb4a8e929ba7753c23a3e0fdbc521af"
+content-hash = "0b6f533d7f62feff5677bfe424fb4d6222ea7fbb92e4c2d5040e01b25abf11bf"
 
 [metadata.files]
 astunparse = [
@@ -821,8 +821,8 @@ protobuf = [
     {file = "protobuf-3.19.4.tar.gz", hash = "sha256:9df0c10adf3e83015ced42a9a7bd64e13d06c4cf45c340d2c63020ea04499d0a"},
 ]
 protoletariat = [
-    {file = "protoletariat-0.7.5-py3-none-any.whl", hash = "sha256:16b77f63c124877cb95448661515fa699ebdbb076af091546ec02daa7bce51ed"},
-    {file = "protoletariat-0.7.5.tar.gz", hash = "sha256:c45cf4926a1e5366409ff086629f8cdbbbb3699c1bfe834872629fc53cc136a3"},
+    {file = "protoletariat-0.8.0-py3-none-any.whl", hash = "sha256:3393a61788faa48bbe32dbffd018c70ba3ebcbcf26d863f40305c5c9d5540126"},
+    {file = "protoletariat-0.8.0.tar.gz", hash = "sha256:af08f6050fc68c729a5523c9d1f4865ea507269106aac67221d78f1e8e95d4ca"},
 ]
 py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
