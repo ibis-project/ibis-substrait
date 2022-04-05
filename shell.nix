@@ -30,7 +30,7 @@ let
       proto_dir=./proto
       mkdir -p "$proto_dir"
       chmod u+rwx "$proto_dir"
-      rm -rf "$proto_dir"
+      rm -r "$proto_dir"
       cp -fr ${pkgs.substrait}/proto "$proto_dir"
       find "$proto_dir" -type d -exec chmod u+rwx {} +
       find "$proto_dir" -type f -exec chmod u+rw {} +
