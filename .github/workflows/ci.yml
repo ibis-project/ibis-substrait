@@ -46,6 +46,7 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community,poetry2nix
 
+      - run: nix develop --ignore-environment -f shell.nix -c mypy .
       - run: nix develop --ignore-environment -f shell.nix -c pre-commit run --all-files
   nix:
     runs-on: ${{ matrix.os }}
