@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+# [2.1.0](https://github.com/ibis-project/ibis-substrait/compare/v2.0.0...v2.1.0) (2022-04-05)
+
+
+### Features
+
+* **compiler:** expose extension uri parameter in constructor ([7a7fee4](https://github.com/ibis-project/ibis-substrait/commit/7a7fee47d19a52510fde71af0aaa96372b18c1cb))
+
 # [2.0.0](https://github.com/ibis-project/ibis-substrait/compare/v1.0.2...v2.0.0) (2022-02-22)
 
 
