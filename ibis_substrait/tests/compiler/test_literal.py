@@ -117,7 +117,7 @@ literal_cases = pytest.mark.parametrize(
         ),
         # date
         pytest.param(
-            ibis.date(DATE),
+            ibis.date(DATE.isoformat()),
             stalg.Expression(literal=stalg.Expression.Literal(date=DATE_DAYS)),
             id="date",
         ),
