@@ -8,17 +8,20 @@ from __future__ import annotations
 import collections
 import collections.abc
 import datetime
+import decimal
 import functools
 import itertools
 import operator
 import uuid
 from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
 
+import ibis
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 from ibis import util
+from packaging import version
 
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import type_pb2 as stt
@@ -265,6 +268,11 @@ def _literal_float64(_: dt.Float64, value: float) -> stalg.Expression.Literal:
 
 
 @translate_literal.register
+def _literal_decimal(_: dt.Decimal, value: decimal.Decimal) -> stalg.Expression.Literal:
+    raise NotImplementedError
+
+
+@translate_literal.register
 def _literal_string(_: dt.String, value: str) -> stalg.Expression.Literal:
     return stalg.Expression.Literal(string=value)
 
@@ -439,6 +447,19 @@ def _translate_window_bounds(
         raise ValueError(f"following must be length 1 or 2 got: {len(following)}")
 
     return translate_preceding(*preceding), translate_following(*following)
+
+
+if version.parse(ibis.__version__) >= version.parse("3.0.0"):
+
+    @translate.register(ops.Alias)
+    def alias_op(
+        op: ops.Alias,
+        expr: ir.ValueExpr,
+        compiler: SubstraitCompiler,
+        **kwargs: Any,
+    ) -> stalg.Expression:
+        # For an alias, dispatch on the underlying argument
+        return translate(op.arg.op(), op.arg, compiler, **kwargs)
 
 
 @translate.register(ops.ValueOp)

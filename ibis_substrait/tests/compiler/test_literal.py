@@ -303,7 +303,7 @@ def test_literal(compiler, expr, ir):
 
 
 @pytest.mark.xfail(
-    raises=ibis.common.exceptions.IbisTypeError,
+    raises=(ibis.common.exceptions.IbisTypeError, NotImplementedError),
     reason="Ibis doesn't allow decimal values through validation",
 )
 def test_decimal_literal(compiler):
