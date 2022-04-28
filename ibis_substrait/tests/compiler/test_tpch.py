@@ -1,6 +1,8 @@
 from datetime import date
 
+import ibis
 import pytest
+from packaging import version
 
 from ibis_substrait.compiler.decompile import decompile
 
@@ -26,6 +28,10 @@ def tpch1(lineitem):
     )
 
 
+@pytest.mark.xfail(
+    version.parse("2.1.1") < version.parse(ibis.__version__) <= version.parse("3.0.2"),
+    reason="issue with unbounded decimal precision fixed on ibis-master",
+)
 def test_tpch1(tpch1, lineitem, compiler):
     plan = compiler.compile(tpch1)
     assert plan.SerializeToString()

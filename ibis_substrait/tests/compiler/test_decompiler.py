@@ -1,6 +1,7 @@
 import ibis
 import ibis.expr.datatypes as dt
 import pytest
+from packaging import version
 
 from ibis_substrait.compiler.decompile import decompile, decompile_schema
 from ibis_substrait.proto.substrait import type_pb2 as stt
@@ -27,7 +28,7 @@ def t():
 
 @pytest.fixture
 def s():
-    return ibis.table([("c", "string"), ("d", "int64")], name="t")
+    return ibis.table([("c", "string"), ("d", "int64")], name="s")
 
 
 @pytest.mark.parametrize(
@@ -139,10 +140,33 @@ def test_decompile_schema(t):
 @pytest.mark.parametrize(
     "join_type",
     [
-        "inner",
-        "outer",
-        "left",
-        pytest.param("right", marks=[pytest.mark.xfail(raises=AttributeError)]),
+        pytest.param(
+            "inner",
+            marks=[
+                pytest.mark.xfail(
+                    version.parse(ibis.__version__) >= version.parse("3.0.0"),
+                    reason="roundtrip joins broken on 3.x",
+                )
+            ],
+        ),
+        pytest.param(
+            "outer",
+            marks=[
+                pytest.mark.xfail(
+                    version.parse(ibis.__version__) >= version.parse("3.0.0"),
+                    reason="roundtrip joins broken on 3.x",
+                )
+            ],
+        ),
+        pytest.param(
+            "left",
+            marks=[
+                pytest.mark.xfail(
+                    version.parse(ibis.__version__) >= version.parse("3.0.0"),
+                    reason="roundtrip joins broken on 3.x",
+                )
+            ],
+        ),
         "semi",
         "anti",
     ],
@@ -152,5 +176,32 @@ def test_decompile_join(t, s, compiler, join_type):
     expr = method(s, predicates=["c"])[t.a, t.b, s.d]
     plan = compiler.compile(expr)
     # TODO: only a single relation per plan is supported right now
+    (result,) = decompile(plan)
+    assert result.equals(expr)
+
+
+@pytest.mark.skipif(
+    version.parse(ibis.__version__) < version.parse("3.0.0"),
+    reason="Different failure mode on 2.1.1",
+)
+@pytest.mark.xfail(
+    version.parse(ibis.__version__) >= version.parse("3.0.0"),
+    reason="roundtrip joins broken on 3.x",
+)
+def test_decompile_right_join_ibis3(t, s, compiler):
+    expr = t.right_join(s, predicates=["c"])[t.a, t.b, s.d]
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
+
+
+@pytest.mark.skipif(
+    version.parse(ibis.__version__) >= version.parse("3"),
+    reason="Different failure mode on 3.x",
+)
+@pytest.mark.xfail(raises=AttributeError)
+def test_decompile_right_join_ibis2(t, s, compiler):
+    expr = t.right_join(s, predicates=["c"])[t.a, t.b, s.d]
+    plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
