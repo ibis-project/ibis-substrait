@@ -20,9 +20,9 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-ibis-framework = "^2.0.0"
-inflection = "^0.5.1"
+ibis-framework = ">=2,<4"
 protobuf = "^3.19.4"
+platformdirs = "<2.5.2"
 
 [tool.poetry.dev-dependencies]
 black = "^21.9b0"
@@ -40,6 +40,7 @@ types-protobuf = "^3.18.1"
 mypy-protobuf = "^3.0.0"
 pytz = "^2022.1"
 types-pytz = "^2021.3.4"
+ipython = "^8.2.0"
 
 [tool.pytest.ini_options]
 xfail_strict = true
