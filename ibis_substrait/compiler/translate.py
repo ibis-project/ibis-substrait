@@ -106,7 +106,12 @@ def _decimal(dtype: dt.Decimal) -> stt.Type:
 def _timestamp(dtype: dt.Timestamp) -> stt.Type:
     nullability = _nullability(dtype)
     if dtype.timezone is not None:
-        return stt.Type(timestamp_tz=stt.Type.TimestampTZ(nullability=nullability))
+        return stt.Type(
+            timestamp_tz=stt.Type.TimestampTZ(
+                tz=dtype.timezone,
+                nullability=nullability
+            )
+        )
     return stt.Type(timestamp=stt.Type.Timestamp(nullability=nullability))
 
 

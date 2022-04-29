@@ -105,6 +105,7 @@ message Type {
   message TimestampTZ {
     uint32 type_variation_reference = 1;
     Nullability nullability = 2;
+    string tz = 3;
   }
 
   message IntervalYear {

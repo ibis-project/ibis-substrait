@@ -190,13 +190,15 @@ class Type(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
         TYPE_VARIATION_REFERENCE_FIELD_NUMBER: builtins.int
         NULLABILITY_FIELD_NUMBER: builtins.int
+        TZ_FIELD_NUMBER: builtins.int
         type_variation_reference: builtins.int
         nullability: global___Type.Nullability.ValueType
+        tz: typing.Text
 
-        def __init__(self, *, type_variation_reference: builtins.int=..., nullability: global___Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, type_variation_reference: builtins.int=..., nullability: global___Type.Nullability.ValueType=..., tz: typing.Text=...) -> None:
             ...
 
-        def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_variation_reference', b'type_variation_reference']) -> None:
+        def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_variation_reference', b'type_variation_reference', 'tz', b'tz']) -> None:
             ...
 
     class IntervalYear(google.protobuf.message.Message):
