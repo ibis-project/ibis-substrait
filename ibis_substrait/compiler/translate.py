@@ -108,8 +108,7 @@ def _timestamp(dtype: dt.Timestamp) -> stt.Type:
     if dtype.timezone is not None:
         return stt.Type(
             timestamp_tz=stt.Type.TimestampTZ(
-                tz=dtype.timezone,
-                nullability=nullability
+                tz=dtype.timezone, nullability=nullability
             )
         )
     return stt.Type(timestamp=stt.Type.Timestamp(nullability=nullability))
