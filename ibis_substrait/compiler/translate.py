@@ -647,6 +647,13 @@ def selection(
         )
 
     # projection
+    selections = [
+        col
+        for sel in op.selections
+        for col in (
+            sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+        )
+    ]
     if op.selections:
         relation = stalg.Rel(
             project=stalg.ProjectRel(
@@ -658,7 +665,7 @@ def selection(
                         child_rel_field_offsets=child_rel_field_offsets,
                         **kwargs,
                     )
-                    for selection in op.selections
+                    for selection in selections
                 ],
             )
         )

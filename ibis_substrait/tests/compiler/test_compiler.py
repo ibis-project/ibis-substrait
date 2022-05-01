@@ -85,6 +85,65 @@ def test_struct_literal(compiler):
     assert js
 
 
+def test_translate_table_expansion(compiler):
+    t = ibis.table([("a", "int32"), ("b", "int64")], name="table0")
+    expr = t.mutate(c=t.a + t.b)
+    result = translate(expr, compiler)
+    expected = {
+        "project": {
+            "input": {
+                "read": {
+                    "baseSchema": {
+                        "names": ["a", "b"],
+                        "struct": {
+                            "types": [
+                                {"i32": {"nullability": "NULLABILITY_NULLABLE"}},
+                                {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
+                            ]
+                        },
+                    },
+                    "namedTable": {"names": ["table0"]},
+                }
+            },
+            "expressions": [
+                {
+                    "selection": {
+                        "directReference": {"structField": {}},
+                        "rootReference": {},
+                    }
+                },
+                {
+                    "selection": {
+                        "directReference": {"structField": {"field": 1}},
+                        "rootReference": {},
+                    }
+                },
+                {
+                    "scalarFunction": {
+                        "functionReference": 1,
+                        "args": [
+                            {
+                                "selection": {
+                                    "directReference": {"structField": {}},
+                                    "rootReference": {},
+                                }
+                            },
+                            {
+                                "selection": {
+                                    "directReference": {"structField": {"field": 1}},
+                                    "rootReference": {},
+                                }
+                            },
+                        ],
+                        "outputType": {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
+                    }
+                },
+            ],
+        }
+    }
+    assert to_dict(result) == expected
+
+
 def test_ibis_schema_to_substrait_schema():
     input = ibis.schema(
         [
