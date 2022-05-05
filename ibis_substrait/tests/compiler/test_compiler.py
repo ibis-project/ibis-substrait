@@ -9,6 +9,7 @@ from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
+NULLABILITY_REQUIRED = stt.Type.Nullability.NULLABILITY_REQUIRED
 
 
 @pytest.fixture
@@ -208,7 +209,8 @@ def test_ibis_schema_to_substrait_schema():
                     )
                 ),
                 stt.Type(i64=stt.Type.I64(nullability=NULLABILITY_NULLABLE)),
-            ]
+            ],
+            nullability=NULLABILITY_REQUIRED,
         ),
     )
     assert translate(input) == expected
