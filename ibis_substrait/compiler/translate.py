@@ -101,7 +101,11 @@ def _time(dtype: dt.Time) -> stt.Type:
 @translate.register
 def _decimal(dtype: dt.Decimal) -> stt.Type:
     return stt.Type(
-        decimal=stt.Type.Decimal(scale=dtype.scale, precision=dtype.precision)
+        decimal=stt.Type.Decimal(
+            scale=dtype.scale,
+            precision=dtype.precision,
+            nullability=_nullability(dtype),
+        )
     )
 
 
@@ -185,7 +189,10 @@ def _schema(schema: sch.Schema) -> stt.NamedStruct:
 
     return stt.NamedStruct(
         names=names,
-        struct=stt.Type.Struct(types=list(map(translate, schema.types))),
+        struct=stt.Type.Struct(
+            types=list(map(translate, schema.types)),
+            nullability=stt.Type.Nullability.NULLABILITY_REQUIRED,
+        ),
     )
 
 
