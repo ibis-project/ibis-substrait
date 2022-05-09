@@ -26,6 +26,7 @@ from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
 from ..proto.substrait import type_pb2 as stt
 from .core import SubstraitDecompiler, _get_fields, which_one_of
+from .mapping import SUBSTRAIT_IBIS_OP_MAPPING
 from .translate import _MICROSECONDS_PER_SECOND, _MINUTES_PER_HOUR, _SECONDS_PER_MINUTE
 
 T = TypeVar("T")
@@ -730,7 +731,7 @@ def _decompile_expression_scalar_function(
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[msg.function_reference]
     function_name = extension.name
-    op_type = getattr(ops, inflection.camelize(function_name))
+    op_type = getattr(ops, SUBSTRAIT_IBIS_OP_MAPPING[function_name])
     args = [decompile(arg, children, field_offsets, decompiler) for arg in msg.args]
     expr = op_type(*args).to_expr()
     output_type = _decompile_type(msg.output_type)

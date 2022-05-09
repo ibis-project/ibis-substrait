@@ -8,11 +8,11 @@ from typing import Any, Hashable, Iterator
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.types as ir
-import inflection
 
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
 from ..proto.substrait.extensions import extensions_pb2 as ste
+from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 
 
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
@@ -36,7 +36,7 @@ class SubstraitCompiler:
             else ste.SimpleExtensionURI(extension_uri_anchor=1, uri=uri)
         )
         self.function_extensions: dict[
-            tuple[Hashable, ...],
+            str | tuple[Hashable, ...],
             ste.SimpleExtensionDeclaration.ExtensionFunction,
         ] = {}
         self.type_extensions: dict[
@@ -66,19 +66,16 @@ class SubstraitCompiler:
         """
         op = expr.op()
         op_type = type(op)
-        type_args = tuple(
-            arg.type() for arg in op.args if isinstance(arg, ir.ValueExpr)
-        )
-        key = op_type, *type_args
+        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
         try:
-            function_extension = self.function_extensions[key]
+            function_extension = self.function_extensions[op_name]
         except KeyError:
             function_extension = self.function_extensions[
-                key
+                op_name
             ] = ste.SimpleExtensionDeclaration.ExtensionFunction(
                 extension_uri_reference=self.extension_uri.extension_uri_anchor,
                 function_anchor=next(self.id_generator),
-                name=inflection.underscore(op_type.__name__),
+                name=op_name,
             )
         return function_extension.function_anchor
 
