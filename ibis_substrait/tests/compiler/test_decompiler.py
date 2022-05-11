@@ -205,3 +205,13 @@ def test_decompile_right_join_ibis2(t, s, compiler):
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
+
+
+def test_nested_struct_field_access(compiler):
+    t = ibis.table(
+        dict(a="struct<b: struct<c: int64, d: struct<e: int64, f: int64, g: int64>>>")
+    )
+    expr = t[t.a["b"]["d"]["g"]]
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
