@@ -22,7 +22,7 @@ classifiers = [
 python = ">=3.8,<3.11"
 ibis-framework = ">=2,<4"
 protobuf = "^3.19.4"
-platformdirs = "<2.5.2"
+platformdirs = "<2.5.3"
 packaging = "^21.3"
 
 [tool.poetry.dev-dependencies]
