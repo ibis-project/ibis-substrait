@@ -97,10 +97,11 @@ def test_translate_table_expansion(compiler):
                     "baseSchema": {
                         "names": ["a", "b"],
                         "struct": {
+                            "nullability": "NULLABILITY_REQUIRED",
                             "types": [
                                 {"i32": {"nullability": "NULLABILITY_NULLABLE"}},
                                 {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
-                            ]
+                            ],
                         },
                     },
                     "namedTable": {"names": ["table0"]},
