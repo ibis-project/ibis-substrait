@@ -28,7 +28,7 @@ packaging = "^21.3"
 protobuf = ">=3.19,<3.20"
 
 [tool.poetry.dev-dependencies]
-black = "^21.9b0"
+black = ">=22.1,<23"
 flake8 = "^4.0.0"
 isort = "^5.9.3"
 mypy = "^0.950"
