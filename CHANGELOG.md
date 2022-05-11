@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+### [2.3.1](https://github.com/ibis-project/ibis-substrait/compare/v2.3.0...v2.3.1) (2022-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency platformdirs to <2.5.3 ([43030e4](https://github.com/ibis-project/ibis-substrait/commit/43030e4a906972df86621b1598f99326630094e1))
+
 ## [2.3.0](https://github.com/ibis-project/ibis-substrait/compare/v2.2.1...v2.3.0) (2022-05-11)
 
 
