@@ -1,6 +1,20 @@
 Release Notes
 ---
 
+## [2.3.0](https://github.com/ibis-project/ibis-substrait/compare/v2.2.1...v2.3.0) (2022-05-11)
+
+
+### Features
+
+* add mappings for ibis ops <-> substrait scalar functions ([dc81c58](https://github.com/ibis-project/ibis-substrait/commit/dc81c582f3e4b07e44c943998401fd6db5516e5b))
+
+
+### Bug Fixes
+
+* bring ibis-substrait in line spec as per validator ([fc000bb](https://github.com/ibis-project/ibis-substrait/commit/fc000bbe4165494417e872a566d70d12b25f0a47))
+* dispatch underlying op for aliases and decimal literal ([66e93e1](https://github.com/ibis-project/ibis-substrait/commit/66e93e156c98f3bb3024124fb62b3533a02c4895))
+* use `isoformat` for creating date literal ([c8d008f](https://github.com/ibis-project/ibis-substrait/commit/c8d008f415137e15f858459149cf7122ac8a1362))
+
 ### [2.2.1](https://github.com/ibis-project/ibis-substrait/compare/v2.2.0...v2.2.1) (2022-05-11)
 
 
