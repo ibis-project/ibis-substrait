@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-ibis-framework = "^2.0.0"
+ibis-framework = "^3.0.0"
 inflection = "^0.5.1"
 protobuf = "^3.19.4"
 
