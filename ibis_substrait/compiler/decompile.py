@@ -18,7 +18,6 @@ import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
-import inflection
 import pytz
 import toolz
 
@@ -572,7 +571,7 @@ def _decompile_expression_aggregate_function(
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[aggregate_function.function_reference]
     function_name = extension.name
-    op_type = getattr(ops, inflection.camelize(function_name))
+    op_type = getattr(ops, SUBSTRAIT_IBIS_OP_MAPPING[function_name])
     args = [
         decompile(arg, children, field_offsets, decompiler)
         for arg in aggregate_function.args
