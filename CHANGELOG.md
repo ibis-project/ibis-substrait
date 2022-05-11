@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+# [2.2.0](https://github.com/ibis-project/ibis-substrait/compare/v2.1.0...v2.2.0) (2022-05-11)
+
+
+### Features
+
+* **compiler:** expand table expression to its columns ([abbdf19](https://github.com/ibis-project/ibis-substrait/commit/abbdf194dc551ac5844aa5570ab58eabeb3cbb22))
+
 # [2.1.0](https://github.com/ibis-project/ibis-substrait/compare/v2.0.0...v2.1.0) (2022-04-05)
 
 
