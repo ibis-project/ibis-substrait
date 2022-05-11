@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+### [2.2.1](https://github.com/ibis-project/ibis-substrait/compare/v2.2.0...v2.2.1) (2022-05-11)
+
+
+### Bug Fixes
+
+* **version:** add version to dunder init ([cf3040c](https://github.com/ibis-project/ibis-substrait/commit/cf3040c02c47485f8d34161bd4adde357d285eaa))
+
 # [2.2.0](https://github.com/ibis-project/ibis-substrait/compare/v2.1.0...v2.2.0) (2022-05-11)
 
 
