@@ -30,7 +30,6 @@ import sources.nixpkgs {
         );
       };
 
-      ibisSubstraitDevEnv37 = pkgs.mkPoetryEnv pkgs.python37;
       ibisSubstraitDevEnv38 = pkgs.mkPoetryEnv pkgs.python38;
       ibisSubstraitDevEnv39 = pkgs.mkPoetryEnv pkgs.python39;
       ibisSubstraitDevEnv310 = pkgs.mkPoetryEnv pkgs.python310;

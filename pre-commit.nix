@@ -55,7 +55,7 @@ in
 
       pyupgrade = {
         enable = true;
-        entry = "pyupgrade --py37-plus";
+        entry = "pyupgrade --py38-plus";
         types = [ "python" ];
         excludes = [ protoExcludePattern ];
       };
