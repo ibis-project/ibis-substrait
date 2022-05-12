@@ -3,11 +3,11 @@ self: super:
 {
   protobuf = super.protobuf.overridePythonAttrs (
     old: {
-      nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ self.pyext ];
-      propagatedNativeBuildInputs = (old.propagatedNativeBuildInputs or [ ]) ++ [
+      nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [ self.pyext ];
+      propagatedNativeBuildInputs = old.propagatedNativeBuildInputs or [ ] ++ [
         pkgs.buildPackages.protobuf
       ];
-      buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.buildPackages.protobuf ];
+      buildInputs = old.buildInputs or [ ] ++ [ pkgs.buildPackages.protobuf ];
       preConfigure = ''
         export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
         export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
@@ -26,10 +26,24 @@ self: super:
   );
 
   ibis-framework = super.ibis-framework.overridePythonAttrs (attrs: {
-    nativeBuildInputs = (attrs.nativeBuildInputs or [ ]) ++ [ self.poetry-core ];
+    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.poetry-core ];
   });
 
   protoletariat = super.protoletariat.overridePythonAttrs (attrs: {
-    nativeBuildInputs = (attrs.nativeBuildInputs or [ ]) ++ [ self.poetry-core ];
+    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.poetry-core ];
+  });
+
+  traitlets = super.traitlets.overridePythonAttrs (attrs: {
+    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.flit-core ];
+  });
+
+  pandas = super.pandas.overridePythonAttrs (_: {
+    format = "setuptools";
+    enableParallelBuilding = true;
+  });
+
+  pydantic = super.pydantic.overridePythonAttrs (_: {
+    format = "setuptools";
+    enableParallelBuilding = true;
   });
 }
