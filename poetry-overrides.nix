@@ -30,10 +30,6 @@ self: super:
     }
   );
 
-  ibis-framework = super.ibis-framework.overridePythonAttrs (attrs: {
-    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.poetry-core ];
-  });
-
   protoletariat = super.protoletariat.overridePythonAttrs (attrs: {
     nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.poetry-core ];
   });
