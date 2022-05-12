@@ -747,6 +747,15 @@ class ExpressionDecompiler:
     ) -> ir.ValueExpr:
         return decompile(scalar_func, children, field_offsets, decompiler)
 
+    @staticmethod
+    def decompile_if_then(
+        if_then: stalg.Expression.IfThen,
+        children: Sequence[ir.TableExpr],
+        offsets: Sequence[int],
+        decompiler: SubstraitDecompiler,
+    ) -> ir.ValueExpr:
+        return decompile(if_then, children, offsets, decompiler)
+
 
 @decompile.register
 def _decompile_expression(
@@ -809,6 +818,38 @@ def _decompile_sort_field_type(
         return ibis.desc
     else:
         raise NotImplementedError(f"unknown sort type when decompiling: `{sort_type}`")
+
+
+@decompile.register
+def _decompile_expression_if_then(
+    msg: stalg.Expression.IfThen,
+    children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
+    decompiler: SubstraitDecompiler,
+) -> ir.ValueExpr:
+    ifs, thens = zip(
+        *[
+            (
+                decompile(getattr(_if, "if"), children, field_offsets, decompiler),
+                decompile(_if.then, children, field_offsets, decompiler),
+            )
+            for _if in msg.ifs
+        ]
+    )
+    base_col = ifs[0].op().left
+    if len(ifs) > 1:
+        assert all(
+            _if.op().left.get_name() == base_col.get_name() for _if in ifs[1:]
+        ), "SimpleCase should compare against same column"
+
+    base_case = base_col.case()
+    for case, result in zip((_if.op().right for _if in ifs), thens):
+        base_case = base_case.when(case, result)
+    base_case = base_case.else_(
+        decompile(getattr(msg, "else"), children, field_offsets, decompiler)
+    ).end()
+
+    return base_case
 
 
 class LiteralDecompiler:

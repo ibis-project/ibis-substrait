@@ -906,3 +906,25 @@ def aggregation(
     )
 
     return stalg.Rel(aggregate=aggregate)
+
+
+@translate.register(ops.SimpleCase)
+def _simple_case(
+    op: ops.SimpleCase,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    # the field names for an `if_then` are `if` and `else` which means we need
+    # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
+    _ifs = []
+    for case, result in zip(op.cases, op.results):
+        _if = {
+            "if": translate(op.base == case, compiler, **kwargs),
+            "then": translate(result, compiler, **kwargs),
+        }
+        _ifs.append(stalg.Expression.IfThen.IfClause(**_if))
+
+    _else = {"else": translate(op.default, compiler, **kwargs)}
+
+    return stalg.Expression(if_then=stalg.Expression.IfThen(ifs=_ifs, **_else))
