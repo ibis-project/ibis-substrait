@@ -37,7 +37,7 @@ jobs:
         uses: cachix/cachix-action@v10
         with:
           name: ibis-substrait
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - uses: cpcloud/niv-dep-info-action@v2.0.2
         id: get-current-commit
