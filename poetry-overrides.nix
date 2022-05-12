@@ -1,4 +1,11 @@
 { pkgs, ... }:
+let
+  parallelizeSetuptoolsBuild = drv: drv.overridePythonAttrs (attrs: {
+    format = "setuptools";
+    enableParallelBuilding = true;
+    setupPyBuildFlags = attrs.setupPyBuildFlags or [ ] ++ [ "--parallel" "$NIX_BUILD_CORES" ];
+  });
+in
 self: super:
 {
   protobuf = super.protobuf.overridePythonAttrs (
@@ -37,13 +44,6 @@ self: super:
     nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.flit-core ];
   });
 
-  pandas = super.pandas.overridePythonAttrs (_: {
-    format = "setuptools";
-    enableParallelBuilding = true;
-  });
-
-  pydantic = super.pydantic.overridePythonAttrs (_: {
-    format = "setuptools";
-    enableParallelBuilding = true;
-  });
+  pandas = parallelizeSetuptoolsBuild super.pandas;
+  pydantic = parallelizeSetuptoolsBuild super.pydantic;
 }
