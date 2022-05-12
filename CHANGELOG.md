@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.5.0](https://github.com/ibis-project/ibis-substrait/compare/v2.4.0...v2.5.0) (2022-05-12)
+
+
+### Features
+
+* add ops.SimpleCase to translate and decompile ([a12b4e3](https://github.com/ibis-project/ibis-substrait/commit/a12b4e3e3060fa06b191258dae686ecb80f0d4c8))
+
 ## [2.4.0](https://github.com/ibis-project/ibis-substrait/compare/v2.3.2...v2.4.0) (2022-05-12)
 
 
