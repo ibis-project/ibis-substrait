@@ -27,7 +27,7 @@ jobs:
       - uses: cachix/cachix-action@v10
         with:
           name: ibis-substrait
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - name: commitlint
         run: nix shell -L -f '<nixpkgs>' commitlint -c commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.sha }} --verbose
@@ -44,7 +44,7 @@ jobs:
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - run: nix develop --ignore-environment -f shell.nix -c mypy .
       - run: nix develop --ignore-environment -f shell.nix -c pre-commit run --all-files
@@ -71,7 +71,7 @@ jobs:
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - name: build package and run tests
         run: nix build --keep-going --print-build-logs --file . --argstr python ${{ matrix.python-version }}
@@ -117,7 +117,7 @@ jobs:
       - uses: cachix/cachix-action@v10
         with:
           name: ibis-substrait
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - name: run semantic-release
         run: ./ci/release/dry_run.sh
@@ -159,7 +159,7 @@ jobs:
       - uses: cachix/cachix-action@v10
         with:
           name: ibis-substrait
-          extraPullNames: nix-community,poetry2nix
+          extraPullNames: nix-community,poetry2nix,ibis
 
       - name: run semantic-release
         run: ./ci/release/run.sh
