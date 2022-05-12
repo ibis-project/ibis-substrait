@@ -60,10 +60,6 @@ jobs:
           - "38"
           - "39"
           - "310"
-        exclude:
-          # macos python3 3.10 is broken in nixos-unstable-small
-          - os: macos-latest
-            python-version: "310"
     steps:
       - uses: actions/checkout@v3
 
