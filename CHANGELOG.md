@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+### [2.3.2](https://github.com/ibis-project/ibis-substrait/compare/v2.3.1...v2.3.2) (2022-05-12)
+
+
+### Bug Fixes
+
+* **deps:** pin protobuf to 3.19 ([a448875](https://github.com/ibis-project/ibis-substrait/commit/a448875e17625c8e8d90c09d7a4652911b2c7319))
+
 ### [2.3.1](https://github.com/ibis-project/ibis-substrait/compare/v2.3.0...v2.3.1) (2022-05-11)
 
 
