@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.4.0](https://github.com/ibis-project/ibis-substrait/compare/v2.3.2...v2.4.0) (2022-05-12)
+
+
+### Features
+
+* **struct:** add struct field access ([26c329a](https://github.com/ibis-project/ibis-substrait/commit/26c329a8c5398bd161524b0d45c874a15045f15f))
+
 ### [2.3.2](https://github.com/ibis-project/ibis-substrait/compare/v2.3.1...v2.3.2) (2022-05-12)
 
 
