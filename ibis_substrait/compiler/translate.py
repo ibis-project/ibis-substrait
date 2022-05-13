@@ -937,10 +937,14 @@ def _contains(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
+    if not isinstance(op.options, (collections.abc.Sequence, ir.ListExpr)):
+        options = [translate(op.options, compiler, **kwargs)]
+    else:
+        options = [translate(value, compiler, **kwargs) for value in op.options]
     return stalg.Expression(
         singular_or_list=stalg.Expression.SingularOrList(
             value=translate(op.value, compiler, **kwargs),
-            options=[translate(value, compiler, **kwargs) for value in op.options],
+            options=options,
         )
     )
 
