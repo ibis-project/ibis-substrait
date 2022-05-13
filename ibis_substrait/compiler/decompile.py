@@ -756,6 +756,15 @@ class ExpressionDecompiler:
     ) -> ir.ValueExpr:
         return decompile(if_then, children, offsets, decompiler)
 
+    @staticmethod
+    def decompile_singular_or_list(
+        singular_or_list: stalg.Expression.SingularOrList,
+        children: Sequence[ir.TableExpr],
+        offsets: Sequence[int],
+        decompiler: SubstraitDecompiler,
+    ) -> ir.ValueExpr:
+        return decompile(singular_or_list, children, offsets, decompiler)
+
 
 @decompile.register
 def _decompile_expression(
@@ -850,6 +859,19 @@ def _decompile_expression_if_then(
     ).end()
 
     return base_case
+
+
+@decompile.register
+def _decompile_expression_singular_or_list(
+    msg: stalg.Expression.SingularOrList,
+    children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
+    decompiler: SubstraitDecompiler,
+) -> ir.ValueExpr:
+    column = decompile(msg.value, children, field_offsets, decompiler)
+    return column.isin(
+        [decompile(value, children, field_offsets, decompiler) for value in msg.options]
+    )
 
 
 class LiteralDecompiler:
