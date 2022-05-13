@@ -10,10 +10,11 @@ import collections.abc
 import datetime
 import decimal
 import functools
+import glob
 import itertools
 import operator
 import uuid
-from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Dict, Mapping, MutableMapping, Sequence, TypeVar
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -28,6 +29,12 @@ from ..proto.substrait import type_pb2 as stt
 from .core import SubstraitCompiler, _get_fields
 
 T = TypeVar("T")
+
+
+def _dict_add(dict1: dict[Any, Any], dict2: dict[Any, Any]) -> dict[Any, Any]:
+    dict_both = dict1.copy()
+    dict_both.update(dict2)
+    return dict_both
 
 
 def _nullability(dtype: dt.DataType) -> stt.Type.Nullability.V:
@@ -638,6 +645,110 @@ def unbound_table(
             # TODO: projection,
             base_schema=translate(op.schema),
             named_table=stalg.ReadRel.NamedTable(names=[op.name]),
+        )
+    )
+
+
+def _path_type_of(name: str | None) -> str:
+    if name is None:
+        raise ValueError("name is None")
+    if name.startswith("file://"):
+        return "uri_folder" if name.endswith("/") else "uri_file"
+    else:
+        return "uri_path_glob" if glob.has_magic(name) else "uri_path"
+
+
+def _read_format_of(name: str | None) -> int:
+    return (
+        stalg.ReadRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_PARQUET
+        if name is not None and name.endswith(".parquet")
+        else stalg.ReadRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_UNSPECIFIED
+    )
+
+
+def _write_format_of(name: str | None) -> int:
+    return (
+        stalg.WriteRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_PARQUET
+        if name is not None and name.endswith(".parquet")
+        else stalg.WriteRel.LocalFiles.FileOrFiles.FileFormat.FILE_FORMAT_UNSPECIFIED
+    )
+
+
+@translate.register(ops.LocalTable)
+def local_table(
+    op: ops.LocalTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any
+) -> stalg.Rel:
+    return stalg.Rel(
+        read=stalg.ReadRel(
+            # TODO: filter,
+            # TODO: projection,
+            base_schema=translate(op.schema),
+            local_files=stalg.ReadRel.LocalFiles(
+                items=[
+                    stalg.ReadRel.LocalFiles.FileOrFiles(
+                        **{
+                            _path_type_of(op.name): op.name,
+                            "format": _read_format_of(op.name),
+                        }
+                    )
+                ]
+            ),
+        )
+    )
+
+
+@translate.register(ops.AsOfMerge)
+def as_of_merge(
+    op: ops.AsOfMerge, expr: ir.TableExpr, compiler: SubstraitCompiler, **kwargs: Any
+) -> stalg.Rel:
+    return stalg.Rel(
+        as_of_merge=stalg.AsOfMergeRel(
+            inputs=[
+                translate(
+                    t,
+                    compiler,
+                    **_dict_add(
+                        kwargs,
+                        {
+                            "child_rel_field_offsets": (
+                                _get_child_relation_field_offsets(t)
+                            )
+                        },
+                    ),
+                )
+                for t in op.tables
+            ],
+            v1=stalg.AsOfMergeRel.AsOfMergeV1(
+                key_fields=[translate(col, compiler) for col in op.key_columns],
+                time_fields=[translate(col, compiler) for col in op.time_columns],
+                tolerance=op.tolerance,
+            ),
+        )
+    )
+
+
+@translate.register(ops.LocalWrite)
+def local_write(
+    op: ops.LocalWrite, expr: ir.TableExpr, compiler: SubstraitCompiler, **kwargs: Any
+) -> stalg.Rel:
+    return stalg.Rel(
+        write=stalg.WriteRel(
+            input=translate(
+                op.table,
+                compiler,
+                child_rel_field_offsets=_get_child_relation_field_offsets(op.table),
+                **kwargs,
+            ),
+            local_files=stalg.WriteRel.LocalFiles(
+                items=[
+                    stalg.WriteRel.LocalFiles.FileOrFiles(
+                        **{
+                            _path_type_of(op.name): op.name,
+                            "format": _write_format_of(op.name),
+                        }
+                    )
+                ]
+            ),
         )
     )
 

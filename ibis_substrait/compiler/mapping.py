@@ -4,6 +4,9 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Any": "any",
     "Between": "between",
     "Cast": "cast",
+    "Clip": "clip",
+    "ClipLower": "clip_lower",
+    "ClipUpper": "clip_upper",
     "Contains": "contains",
     "Count": "count",
     "CountDistinct": "countdistinct",
@@ -18,9 +21,11 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Mean": "mean",
     "Min": "min",
     "Multiply": "*",  # wrong but using for duckdb compatibility right now
+    "Negate": "negate",
     "Not": "not",
     "NotEquals": "not_equal",
     "Or": "or",
+    "Power": "power",
     "StringLength": "string_length",  # don't know
     "StringSQLLike": "like",
     "Substring": "substring",
