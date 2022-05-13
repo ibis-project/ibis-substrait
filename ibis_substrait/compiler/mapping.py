@@ -3,7 +3,6 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "And": "and",
     "Any": "any",
     "Between": "between",
-    "Cast": "cast",
     "Count": "count",
     "CountDistinct": "countdistinct",
     "Divide": "/",  # wrong but using for duckdb compatibility right now
