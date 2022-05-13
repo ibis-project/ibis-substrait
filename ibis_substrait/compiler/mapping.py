@@ -4,7 +4,6 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Any": "any",
     "Between": "between",
     "Cast": "cast",
-    "Contains": "contains",
     "Count": "count",
     "CountDistinct": "countdistinct",
     "Divide": "/",  # wrong but using for duckdb compatibility right now
@@ -26,7 +25,6 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Substring": "substring",
     "Subtract": "-",  # wrong but using for duckdb compatibility right now
     "Sum": "sum",
-    "ValueList": "values",
 }
 
 SUBSTRAIT_IBIS_OP_MAPPING = {v: k for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items()}

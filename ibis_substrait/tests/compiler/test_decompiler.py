@@ -228,3 +228,13 @@ def test_decompile_if_then(t, compiler):
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
+
+
+def test_singular_or_list(compiler):
+    t = ibis.table([("bork", dt.string)], name="t")
+
+    expr = t.filter(t.bork.isin(["ork", "bork"]))
+
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)

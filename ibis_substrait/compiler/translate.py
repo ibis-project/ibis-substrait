@@ -928,3 +928,18 @@ def _simple_case(
     _else = {"else": translate(op.default, compiler, **kwargs)}
 
     return stalg.Expression(if_then=stalg.Expression.IfThen(ifs=_ifs, **_else))
+
+
+@translate.register(ops.Contains)
+def _contains(
+    op: ops.Contains,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    return stalg.Expression(
+        singular_or_list=stalg.Expression.SingularOrList(
+            value=translate(op.value, compiler, **kwargs),
+            options=[translate(value, compiler, **kwargs) for value in op.options],
+        )
+    )
