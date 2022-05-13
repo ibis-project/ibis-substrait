@@ -943,3 +943,17 @@ def _contains(
             options=[translate(value, compiler, **kwargs) for value in op.options],
         )
     )
+
+
+@translate.register(ops.Cast)
+def _cast(
+    op: ops.Cast,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    return stalg.Expression(
+        cast=stalg.Expression.Cast(
+            type=translate(op.to), input=translate(op.arg, compiler, **kwargs)
+        )
+    )

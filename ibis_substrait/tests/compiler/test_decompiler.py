@@ -238,3 +238,11 @@ def test_singular_or_list(compiler):
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
+
+
+def test_cast(compiler):
+    t = ibis.table([("bork32", dt.float32)], name="t")
+    expr = t[t.bork32.cast("float64").name("bork64")]
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
