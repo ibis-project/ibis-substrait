@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.6.0](https://github.com/ibis-project/ibis-substrait/compare/v2.5.0...v2.6.0) (2022-05-13)
+
+
+### Features
+
+* add ops.Contains -> singular_or_list translation ([d768ea3](https://github.com/ibis-project/ibis-substrait/commit/d768ea32ec1dbe92121f5dd3a3e1a0e568a34f1a))
+
 ## [2.5.0](https://github.com/ibis-project/ibis-substrait/compare/v2.4.0...v2.5.0) (2022-05-12)
 
 
