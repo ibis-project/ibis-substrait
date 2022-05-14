@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.7.0](https://github.com/ibis-project/ibis-substrait/compare/v2.6.0...v2.7.0) (2022-05-14)
+
+
+### Features
+
+* add ops.Cast to translator and decompiler ([911b2fd](https://github.com/ibis-project/ibis-substrait/commit/911b2fd25d742d2c035057e8907104dc2e42d50f))
+
 ## [2.6.0](https://github.com/ibis-project/ibis-substrait/compare/v2.5.0...v2.6.0) (2022-05-13)
 
 
