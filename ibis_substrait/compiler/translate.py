@@ -938,15 +938,28 @@ def _contains(
     **kwargs: Any,
 ) -> stalg.Expression:
     if not isinstance(op.options, (collections.abc.Sequence, ir.ListExpr)):
-        options = [translate(op.options, compiler, **kwargs)]
-    else:
-        options = [translate(value, compiler, **kwargs) for value in op.options]
-    return stalg.Expression(
-        singular_or_list=stalg.Expression.SingularOrList(
-            value=translate(op.value, compiler, **kwargs),
-            options=options,
+        # Column expression
+        options = op.options  # options may be unnamed (which prevents projection)
+        if not options.has_name():
+            options = options.name("tmp")
+        return stalg.Expression(
+            subquery=stalg.Expression.Subquery(
+                in_predicate=stalg.Expression.Subquery.InPredicate(
+                    needles=[translate(op.value, compiler, **kwargs)],
+                    haystack=translate(
+                        options.to_projection(),
+                        compiler,
+                    ),
+                )
+            )
         )
-    )
+    else:
+        return stalg.Expression(
+            singular_or_list=stalg.Expression.SingularOrList(
+                value=translate(op.value, compiler, **kwargs),
+                options=[translate(value, compiler, **kwargs) for value in op.options],
+            )
+        )
 
 
 @translate.register(ops.Cast)
