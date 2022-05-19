@@ -909,8 +909,9 @@ def aggregation(
 
 
 @translate.register(ops.SimpleCase)
-def _simple_case(
-    op: ops.SimpleCase,
+@translate.register(ops.SearchedCase)
+def _simple_searched_case(
+    op: ops.SimpleCase | ops.SearchedCase,
     expr: ir.TableExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
@@ -919,8 +920,9 @@ def _simple_case(
     # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
     _ifs = []
     for case, result in zip(op.cases, op.results):
+        if_expr = case if not hasattr(op, "base") else op.base == case
         _if = {
-            "if": translate(op.base == case, compiler, **kwargs),
+            "if": translate(if_expr, compiler, **kwargs),
             "then": translate(result, compiler, **kwargs),
         }
         _ifs.append(stalg.Expression.IfThen.IfClause(**_if))
