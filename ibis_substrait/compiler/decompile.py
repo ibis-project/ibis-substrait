@@ -854,20 +854,49 @@ def _decompile_expression_if_then(
             for _if in msg.ifs
         ]
     )
-    base_col = ifs[0].op().left
+    base_op = ifs[0].op()
+
+    return decompile(base_op, msg, children, field_offsets, decompiler, ifs, thens)
+
+
+@decompile.register
+def _decompile_if_then_comparison(
+    base_op: ops.Comparison,
+    msg: stalg.Expression.IfThen,
+    children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
+    decompiler: SubstraitDecompiler,
+    ifs: Sequence[ir.ValueExpr],
+    thens: Sequence[ir.ValueExpr],
+) -> ir.ValueExpr:
     if len(ifs) > 1:
         assert all(
-            _if.op().left.get_name() == base_col.get_name() for _if in ifs[1:]
+            _if.op().left.get_name() == base_op.left.get_name() for _if in ifs[1:]
         ), "SimpleCase should compare against same column"
-
-    base_case = base_col.case()
+    base_case = base_op.left.case()
     for case, result in zip((_if.op().right for _if in ifs), thens):
         base_case = base_case.when(case, result)
-    base_case = base_case.else_(
+    return base_case.else_(
         decompile(getattr(msg, "else"), children, field_offsets, decompiler)
     ).end()
 
-    return base_case
+
+@decompile.register
+def _decompile_if_then_stringlike(
+    base_op: ops.StringSQLLike,
+    msg: stalg.Expression.IfThen,
+    children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
+    decompiler: SubstraitDecompiler,
+    ifs: Sequence[ir.ValueExpr],
+    thens: Sequence[ir.ValueExpr],
+) -> ir.ValueExpr:
+    assert len(thens) == 1, "only one result in a stringlike"
+
+    return base_op.arg.like(base_op.pattern).ifelse(
+        thens[0],
+        decompile(getattr(msg, "else"), children, field_offsets, decompiler),
+    )
 
 
 @decompile.register
