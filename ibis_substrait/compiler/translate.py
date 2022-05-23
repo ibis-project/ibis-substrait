@@ -957,3 +957,32 @@ def _cast(
             type=translate(op.to), input=translate(op.arg, compiler, **kwargs)
         )
     )
+
+
+@translate.register(ops.ExistsSubquery)
+def _exists_subquery(
+    op: ops.ExistsSubquery,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+
+    tuples = stalg.Rel(
+        filter=stalg.FilterRel(
+            input=translate(op.foreign_table, compiler),
+            condition=translate(
+                functools.reduce(operator.and_, op.predicates),
+                compiler,
+                **kwargs,
+            ),
+        )
+    )
+
+    return stalg.Expression(
+        subquery=stalg.Expression.Subquery(
+            set_predicate=stalg.Expression.Subquery.SetPredicate(
+                predicate_op=stalg.Expression.Subquery.SetPredicate.PREDICATE_OP_EXISTS,
+                tuples=tuples,
+            )
+        )
+    )
