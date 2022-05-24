@@ -7,6 +7,7 @@ from typing import Any, Hashable, Iterator
 
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
+import ibis.expr.operations as ops
 import ibis.expr.types as ir
 
 from ..proto.substrait import algebra_pb2 as stalg
@@ -64,18 +65,39 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
+        from .translate import translate
+
         op = expr.op()
-        op_type = type(op)
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+        if isinstance(op, ops.VectorizedUDF):
+            op_name = op.func.__wrapped__.__name__
+            import base64
+
+            import cloudpickle
+        else:
+            op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
         try:
             function_extension = self.function_extensions[op_name]
         except KeyError:
+            ste_decl = ste.SimpleExtensionDeclaration
             function_extension = self.function_extensions[
                 op_name
-            ] = ste.SimpleExtensionDeclaration.ExtensionFunction(
+            ] = ste_decl.ExtensionFunction(
                 extension_uri_reference=self.extension_uri.extension_uri_anchor,
                 function_anchor=next(self.id_generator),
                 name=op_name,
+                udf=None
+                if not isinstance(op, ops.VectorizedUDF)
+                else (
+                    ste_decl.ExtensionFunction.UserDefinedFunction(
+                        code=base64.b64encode(
+                            cloudpickle.dumps(op.func.__wrapped__)
+                        ).decode("utf-8"),
+                        summary=op.func_summary or op.func.__wrapped__.__name__,
+                        description=op.func_desc or op.func.__wrapped__.__doc__,
+                        input_types=[translate(typ) for typ in op.input_type],
+                        output_type=translate(op.return_type),
+                    )
+                ),
             )
         return function_extension.function_anchor
 

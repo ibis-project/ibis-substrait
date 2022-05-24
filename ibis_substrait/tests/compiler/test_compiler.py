@@ -4,6 +4,7 @@ import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
+from ibis.udf.vectorized import analytic, elementwise
 
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import algebra_pb2 as stalg
@@ -295,3 +296,53 @@ def test_nested_struct_field_access(compiler):
     )
     result = translate(expr, compiler)
     assert result == expected
+
+
+@analytic(input_type=[dt.double], output_type=dt.double)
+def zscore(series):  # note the use of aggregate functions
+    return (series - series.mean()) / series.std()
+
+
+@analytic(
+    input_type=[dt.double],
+    output_type=dt.Struct(["demean", "zscore"], [dt.double, dt.double]),
+)
+def demean_and_zscore(v):
+    """Compute demeaned and zscore values of the input"""
+    mean = v.mean()
+    std = v.std()
+    return v - mean, (v - mean) / std
+
+
+@elementwise(
+    input_type=[dt.double],
+    output_type=dt.Struct(["twice", "add_2"], [dt.double, dt.double]),
+)
+def twice_and_add_2(v):
+    """Compute twice and add_2 values of the input"""
+    return 2 * v, v + 2
+
+
+@elementwise(input_type=[dt.double], output_type=dt.double)
+def twice(v):
+    """Compute twice the value of the input"""
+    return 2 * v
+
+
+def test_vectorized_udf(t, compiler):
+    tbl = ibis.table(
+        [
+            ("key", "string"),
+            ("value", "int64"),
+        ]
+    )
+    # win = ibis.window(preceding=None, following=None, group_by='key')
+    expr = tbl.mutate(
+        # demean_and_zscore(tbl['value']).over(win).destructure()
+        # twice_and_add_2(tbl['value']).destructure()
+        twice(tbl["value"]).name("twice")
+    )
+    result = compiler.compile(expr)
+    js = to_dict(result)
+    with open("blah", "w") as f:
+        f.write(str(js))
