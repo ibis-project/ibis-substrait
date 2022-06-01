@@ -4,9 +4,11 @@ import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
+from ibis.udf.vectorized import elementwise
 
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait import plan_pb2 as stpln
 from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
@@ -294,4 +296,125 @@ def test_nested_struct_field_access(compiler):
         stalg.Expression(),
     )
     result = translate(expr, compiler)
+    assert result == expected
+
+
+@elementwise(input_type=[dt.double], output_type=dt.double)
+def twice(v):
+    """Compute twice the value of the input"""
+    return 2 * v
+
+
+def test_vectorized_udf(t, compiler):
+    tbl = ibis.table(
+        [
+            ("key", "string"),
+            ("value", "int64"),
+        ]
+    )
+    expr = tbl.mutate(twice(tbl["value"]).name("twice"))
+    code = (
+        "gAWV1wIAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwNX2J1aWx0aW5fdHlwZZST"
+        + "lIwKTGFtYmRhVHlwZZSFlFKUKGgCjAhDb2RlVHlwZZSFlFKUKEsBSwBLAEsBSwJLQ0MIZAF8"
+        + "ABQAUwCUjCRDb21wdXRlIHR3aWNlIHRoZSB2YWx1ZSBvZiB0aGUgaW5wdXSUSwKGlCmMAXaU"
+        + "hZSMYC9tbnQvdXNlcjEvdHNjb250cmFjdC9naXRodWIvcnRwc3cvaWJpcy1zdWJzdHJhaXQv"
+        + "aWJpc19zdWJzdHJhaXQvdGVzdHMvY29tcGlsZXIvdGVzdF9jb21waWxlci5weZSMBXR3aWNl"
+        + "lE0uAUMCAAOUKSl0lFKUfZQojAtfX3BhY2thZ2VfX5SMHWliaXNfc3Vic3RyYWl0LnRlc3Rz"
+        + "LmNvbXBpbGVylIwIX19uYW1lX1+UjCtpYmlzX3N1YnN0cmFpdC50ZXN0cy5jb21waWxlci50"
+        + "ZXN0X2NvbXBpbGVylIwIX19maWxlX1+UjGAvbW50L3VzZXIxL3RzY29udHJhY3QvZ2l0aHVi"
+        + "L3J0cHN3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rl"
+        + "c3RfY29tcGlsZXIucHmUdU5OTnSUUpSMHGNsb3VkcGlja2xlLmNsb3VkcGlja2xlX2Zhc3SU"
+        + "jBJfZnVuY3Rpb25fc2V0c3RhdGWUk5RoG32UfZQoaBZoD4wMX19xdWFsbmFtZV9flGgPjA9f"
+        + "X2Fubm90YXRpb25zX1+UfZSMDl9fa3dkZWZhdWx0c19flE6MDF9fZGVmYXVsdHNfX5ROjApf"
+        + "X21vZHVsZV9flGgXjAdfX2RvY19flGgKjAtfX2Nsb3N1cmVfX5ROjBdfY2xvdWRwaWNrbGVf"
+        + "c3VibW9kdWxlc5RdlIwLX19nbG9iYWxzX1+UfZR1hpSGUjAu"
+    )
+    nullable = "NULLABILITY_NULLABLE"
+    expected = json_format.ParseDict(
+        {
+            "extensionUris": [{"extensionUriAnchor": 1}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "twice",
+                        "udf": {
+                            "code": code,
+                            "summary": "twice",
+                            "description": "Compute twice the value of the input",
+                            "inputTypes": [{"fp64": {"nullability": nullable}}],
+                            "outputType": {"fp64": {"nullability": nullable}},
+                        },
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "project": {
+                                "input": {
+                                    "read": {
+                                        "baseSchema": {
+                                            "names": ["key", "value"],
+                                            "struct": {
+                                                "types": [
+                                                    {
+                                                        "string": {
+                                                            "nullability": nullable
+                                                        }
+                                                    },
+                                                    {"i64": {"nullability": nullable}},
+                                                ],
+                                                "nullability": "NULLABILITY_REQUIRED",
+                                            },
+                                        },
+                                        "namedTable": {"names": ["unbound_table_12"]},
+                                    }
+                                },
+                                "expressions": [
+                                    {
+                                        "selection": {
+                                            "directReference": {"structField": {}},
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "selection": {
+                                            "directReference": {
+                                                "structField": {"field": 1}
+                                            },
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "scalarFunction": {
+                                            "functionReference": 1,
+                                            "args": [
+                                                {
+                                                    "selection": {
+                                                        "directReference": {
+                                                            "structField": {"field": 1}
+                                                        },
+                                                        "rootReference": {},
+                                                    }
+                                                }
+                                            ],
+                                            "outputType": {
+                                                "fp64": {"nullability": nullable}
+                                            },
+                                        }
+                                    },
+                                ],
+                            }
+                        },
+                        "names": ["key", "value", "twice"],
+                    }
+                }
+            ],
+        },
+        stpln.Plan(),
+    )
+    result = compiler.compile(expr)
     assert result == expected

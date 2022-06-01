@@ -490,6 +490,27 @@ def value_op(
     )
 
 
+@translate.register(ops.VectorizedUDF)
+def vectorized_udf_op(
+    op: ops.VectorizedUDF,
+    expr: ir.ValueExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    # given the details of `op` -> function id
+    return stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
+            function_reference=compiler.function_id(expr),
+            output_type=translate(expr.type()),
+            args=[
+                translate(arg, compiler, **kwargs)
+                for arg in op.func_args
+                if isinstance(arg, ir.Expr)
+            ],
+        )
+    )
+
+
 @translate.register(ops.WindowOp)
 def window_op(
     op: ops.WindowOp,
