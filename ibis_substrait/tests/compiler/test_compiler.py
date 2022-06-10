@@ -8,6 +8,7 @@ from ibis.udf.vectorized import analytic, elementwise
 
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait import plan_pb2 as stpln
 from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
@@ -320,13 +321,15 @@ def demean_and_zscore(v):
 )
 def twice_and_add_2(v):
     """Compute twice and add_2 values of the input"""
-    return 2 * v, v + 2
+    import pyarrow.compute as pc
+    return pc.multiply(v, 2), pc.add(v, 2)
 
 
 @elementwise(input_type=[dt.double], output_type=dt.double)
 def twice(v):
     """Compute twice the value of the input"""
-    return 2 * v
+    import pyarrow.compute as pc
+    return pc.multiply(v, 2)
 
 
 def test_vectorized_udf(t, compiler):
@@ -346,3 +349,236 @@ def test_vectorized_udf(t, compiler):
     js = to_dict(result)
     with open("blah", "w") as f:
         f.write(str(js))
+
+
+def _test_add(add_func, expected):
+    from ibis_substrait.compiler.core import SubstraitCompiler
+    compiler = SubstraitCompiler(uri="https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml")
+    tbl = ibis.table({"volume": "double"})
+    expr = add_func(tbl)
+    result = compiler.compile(expr)
+    assert result == expected
+
+
+def test_udf_add():
+    code = (
+        "gAWVGgMAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwNX2J1aWx0aW5fdHlwZZSTlIwKTGFt" +
+        "YmRhVHlwZZSFlFKUKGgCjAhDb2RlVHlwZZSFlFKUKEsBSwBLAEsCSwRLQ0MYZAFkAmwAbQF9AQEAfAGg" +
+        "AnwAZAOhAlMAlCiMJENvbXB1dGUgdHdpY2UgdGhlIHZhbHVlIG9mIHRoZSBpbnB1dJRLAE5LAnSUjA9w" +
+        "eWFycm93LmNvbXB1dGWUjAdjb21wdXRllIwIbXVsdGlwbHmUh5SMAXaUjAJwY5SGlIxgL21udC91c2Vy" +
+        "MS90c2NvbnRyYWN0L2dpdGh1Yi9ydHBzdy9pYmlzLXN1YnN0cmFpdC9pYmlzX3N1YnN0cmFpdC90ZXN0" +
+        "cy9jb21waWxlci90ZXN0X2NvbXBpbGVyLnB5lIwFdHdpY2WUTUgBQwQAAwwBlCkpdJRSlH2UKIwLX19w" +
+        "YWNrYWdlX1+UjB1pYmlzX3N1YnN0cmFpdC50ZXN0cy5jb21waWxlcpSMCF9fbmFtZV9flIwraWJpc19z" +
+        "dWJzdHJhaXQudGVzdHMuY29tcGlsZXIudGVzdF9jb21waWxlcpSMCF9fZmlsZV9flIxgL21udC91c2Vy" +
+        "MS90c2NvbnRyYWN0L2dpdGh1Yi9ydHBzdy9pYmlzLXN1YnN0cmFpdC9pYmlzX3N1YnN0cmFpdC90ZXN0" +
+        "cy9jb21waWxlci90ZXN0X2NvbXBpbGVyLnB5lHVOTk50lFKUjBxjbG91ZHBpY2tsZS5jbG91ZHBpY2ts" +
+        "ZV9mYXN0lIwSX2Z1bmN0aW9uX3NldHN0YXRllJOUaCB9lH2UKGgbaBSMDF9fcXVhbG5hbWVfX5RoFIwP" +
+        "X19hbm5vdGF0aW9uc19flH2UjA5fX2t3ZGVmYXVsdHNfX5ROjAxfX2RlZmF1bHRzX1+UTowKX19tb2R1" +
+        "bGVfX5RoHIwHX19kb2NfX5RoCowLX19jbG9zdXJlX1+UTowXX2Nsb3VkcGlja2xlX3N1Ym1vZHVsZXOU" +
+        "XZSMC19fZ2xvYmFsc19flH2UdYaUhlIwLg=="
+    )
+    expected = json_format.ParseDict(
+        {
+          "extensionUris": [
+            {
+              "extensionUriAnchor": 1,
+              "uri": "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
+            }
+          ],
+          "extensions": [
+            {
+              "extensionFunction": {
+                "extensionUriReference": 1,
+                "functionAnchor": 1,
+                "name": "twice",
+                "udf": {
+                  "code": code,
+                  "summary": "twice",
+                  "description": "Compute twice the value of the input",
+                  "inputTypes": [
+                    {
+                      "fp64": {
+                        "nullability": "NULLABILITY_NULLABLE"
+                      }
+                    }
+                  ],
+                  "outputType": {
+                    "fp64": {
+                      "nullability": "NULLABILITY_NULLABLE"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "relations": [
+            {
+              "root": {
+                "input": {
+                  "project": {
+                    "input": {
+                      "read": {
+                        "baseSchema": {
+                          "names": [
+                            "volume"
+                          ],
+                          "struct": {
+                            "types": [
+                              {
+                                "fp64": {
+                                  "nullability": "NULLABILITY_NULLABLE"
+                                }
+                              }
+                            ],
+                            "nullability": "NULLABILITY_REQUIRED"
+                          }
+                        },
+                        "namedTable": {
+                          "names": [
+                            "unbound_table_0"
+                          ]
+                        }
+                      }
+                    },
+                    "expressions": [
+                      {
+                        "selection": {
+                          "directReference": {
+                            "structField": {}
+                          },
+                          "rootReference": {}
+                        }
+                      },
+                      {
+                        "scalarFunction": {
+                          "functionReference": 1,
+                          "args": [
+                            {
+                              "selection": {
+                                "directReference": {
+                                  "structField": {}
+                                },
+                                "rootReference": {}
+                              }
+                            }
+                          ],
+                          "outputType": {
+                            "fp64": {
+                              "nullability": "NULLABILITY_NULLABLE"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "names": [
+                  "volume",
+                  "twice_volume"
+                ]
+              }
+            }
+          ]
+        },
+        stpln.Plan(),
+    )
+    add_func = lambda tbl: tbl.mutate(twice(tbl["volume"]).name("twice_volume"))
+    _test_add(add_func, expected)
+
+
+def test_reg_add():
+    expected = json_format.ParseDict(
+        {
+          "extensionUris": [
+            {
+              "extensionUriAnchor": 1,
+              "uri": "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
+            }
+          ],
+          "extensions": [
+            {
+              "extensionFunction": {
+                "extensionUriReference": 1,
+                "functionAnchor": 1,
+                "name": "*"
+              }
+            }
+          ],
+          "relations": [
+            {
+              "root": {
+                "input": {
+                  "project": {
+                    "input": {
+                      "read": {
+                        "baseSchema": {
+                          "names": [
+                            "volume"
+                          ],
+                          "struct": {
+                            "types": [
+                              {
+                                "fp64": {
+                                  "nullability": "NULLABILITY_NULLABLE"
+                                }
+                              }
+                            ],
+                            "nullability": "NULLABILITY_REQUIRED"
+                          }
+                        },
+                        "namedTable": {
+                          "names": [
+                            "unbound_table_0"
+                          ]
+                        }
+                      }
+                    },
+                    "expressions": [
+                      {
+                        "selection": {
+                          "directReference": {
+                            "structField": {}
+                          },
+                          "rootReference": {}
+                        }
+                      },
+                      {
+                        "scalarFunction": {
+                          "functionReference": 1,
+                          "args": [
+                            {
+                              "selection": {
+                                "directReference": {
+                                  "structField": {}
+                                },
+                                "rootReference": {}
+                              }
+                            },
+                            {
+                              "literal": {
+                                "i8": 2
+                              }
+                            }
+                          ],
+                          "outputType": {
+                            "fp64": {
+                              "nullability": "NULLABILITY_NULLABLE"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "names": [
+                  "volume",
+                  "twice_volume"
+                ]
+              }
+            }
+          ]
+        },
+        stpln.Plan(),
+    )
+    add_func = lambda tbl: tbl.mutate(twice_volume=tbl["volume"] * 2)
+    _test_add(add_func, expected)
