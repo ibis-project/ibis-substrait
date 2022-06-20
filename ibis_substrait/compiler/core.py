@@ -7,8 +7,8 @@ from typing import Any, Hashable, Iterator
 
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
-import ibis.expr.operations as ops
 import ibis.expr.types as ir
+from ibis.expr.operations.vectorized import VectorizedUDF
 
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
@@ -68,7 +68,7 @@ class SubstraitCompiler:
         from .translate import translate
 
         op = expr.op()
-        if isinstance(op, ops.VectorizedUDF):
+        if isinstance(op, VectorizedUDF):
             op_name = op.func.__wrapped__.__name__
             import base64
 
@@ -86,7 +86,7 @@ class SubstraitCompiler:
                 function_anchor=next(self.id_generator),
                 name=op_name,
                 udf=None
-                if not isinstance(op, ops.VectorizedUDF)
+                if not isinstance(op, VectorizedUDF)
                 else (
                     ste_decl.ExtensionFunction.UserDefinedFunction(
                         code=base64.b64encode(
