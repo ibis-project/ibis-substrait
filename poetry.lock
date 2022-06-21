@@ -207,9 +207,9 @@ tabulate = ">=0.8.9,<1"
 toolz = ">=0.11,<0.12"
 
 [package.extras]
-all = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver (>=0.1,<0.3)", "dask[dataframe,array] (>=2021.10.0)", "datafusion (>=0.4,<0.6)", "duckdb (>=0.3.2,<0.4.0)", "duckdb-engine (>=0.1.8,<0.2.0)", "fsspec (>=2022.1.0)", "GeoAlchemy2 (>=0.6.3,<0.12)", "geopandas (>=0.6,<0.11)", "graphviz (>=0.16,<0.21)", "impyla[kerberos] (>=0.17,<0.19)", "lz4 (>=3.1.10,<5)", "psycopg2 (>=2.8.4,<3)", "pyarrow (>=1,<8)", "pymysql (>=1,<2)", "pyspark (>=3,<4)", "requests (>=2,<3)", "Shapely (>=1.6,<1.8.2)", "sqlalchemy (>=1.4,<2.0)"]
+all = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver (>=0.1,<0.3)", "dask[array,dataframe] (>=2021.10.0)", "datafusion (>=0.4,<0.6)", "duckdb (>=0.3.2,<0.4.0)", "duckdb-engine (>=0.1.8,<0.2.0)", "fsspec (>=2022.1.0)", "GeoAlchemy2 (>=0.6.3,<0.12)", "geopandas (>=0.6,<0.11)", "graphviz (>=0.16,<0.21)", "impyla[kerberos] (>=0.17,<0.19)", "lz4 (>=3.1.10,<5)", "psycopg2 (>=2.8.4,<3)", "pyarrow (>=1,<8)", "pymysql (>=1,<2)", "pyspark (>=3,<4)", "requests (>=2,<3)", "Shapely (>=1.6,<1.8.2)", "sqlalchemy (>=1.4,<2.0)"]
 clickhouse = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver (>=0.1,<0.3)", "lz4 (>=3.1.10,<5)"]
-dask = ["dask[dataframe,array] (>=2021.10.0)", "pyarrow (>=1,<8)"]
+dask = ["dask[array,dataframe] (>=2021.10.0)", "pyarrow (>=1,<8)"]
 datafusion = ["datafusion (>=0.4,<0.6)"]
 duckdb = ["duckdb (>=0.3.2,<0.4.0)", "duckdb-engine (>=0.1.8,<0.2.0)", "sqlalchemy (>=1.4,<2.0)"]
 impala = ["fsspec (>=2022.1.0)", "impyla[kerberos] (>=0.17,<0.19)", "requests (>=2,<3)"]
@@ -878,7 +878,7 @@ python-versions = "*"
 
 [[package]]
 name = "types-pytz"
-version = "2021.3.8"
+version = "2022.1.0"
 description = "Typing stubs for pytz"
 category = "dev"
 optional = false
@@ -915,7 +915,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "62145c659da5600893cf57cccb94596263e196a3cd384fead2acfdcfe98700c1"
+content-hash = "17353a3a2a38a4b97b5e61afbcc83f72e5c48b422d699cbdb63593996026e74a"
 
 [metadata.files]
 appnope = [
@@ -1504,8 +1504,8 @@ types-protobuf = [
     {file = "types_protobuf-3.19.20-py3-none-any.whl", hash = "sha256:a8f3f9c1d11548ab04debbc716a3825c0bbc1d29f245d6c9a2aec2ca2544cec4"},
 ]
 types-pytz = [
-    {file = "types-pytz-2021.3.8.tar.gz", hash = "sha256:41253a3a2bf028b6a3f17b58749a692d955af0f74e975de94f6f4d2d3cd01dbd"},
-    {file = "types_pytz-2021.3.8-py3-none-any.whl", hash = "sha256:aef4a917ab28c585d3f474bfce4f4b44b91e95d9d47d4de29dd845e0db8e3910"},
+    {file = "types-pytz-2022.1.0.tar.gz", hash = "sha256:bbe7eaf93b4fbec4780323af925286d265a6681f50dba57d16dbd8695c3ed63d"},
+    {file = "types_pytz-2022.1.0-py3-none-any.whl", hash = "sha256:20984c0c321d312caac8fd0a0b5456b615cb9cce74473624a794851a606fabae"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
