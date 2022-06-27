@@ -246,3 +246,22 @@ def test_cast(compiler):
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
+
+
+@pytest.mark.xfail(
+    version.parse(ibis.__version__) < version.parse("3.0.0"),
+    reason="equality comparison of upcasted literals on ibis 2.x",
+)
+def test_searchedcase(compiler):
+    t = ibis.table(
+        [
+            ("bork32", dt.float32),
+            ("ork", dt.string),
+        ],
+        name="t",
+    )
+    t = t.filter([t.bork32 > 0.5])
+    expr = t.aggregate(t.ork.like("THING%").ifelse(t.bork32, 0).sum())
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
