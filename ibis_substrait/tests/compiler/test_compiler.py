@@ -1,5 +1,7 @@
+import base64
 from collections import OrderedDict
 
+import cloudpickle
 import ibis
 import ibis.expr.datatypes as dt
 import pytest
@@ -316,24 +318,7 @@ def test_vectorized_udf(t, compiler):
         name="unbound_table",
     )
     expr = tbl.mutate(twice(tbl["value"]).name("twice"))
-    code = (
-        "gAWVHAMAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwOX21ha2VfZnVuY3Rpb26"
-        + "Uk5QoaACMDV9idWlsdGluX3R5cGWUk5SMCENvZGVUeXBllIWUUpQoSwFLAEsASwJLBEtDQx"
-        + "hkAWQCbABtAX0BAQB8AaACfABkA6ECUwCUKIwkQ29tcHV0ZSB0d2ljZSB0aGUgdmFsdWUgb"
-        + "2YgdGhlIGlucHV0lEsATksCdJSMD3B5YXJyb3cuY29tcHV0ZZSMB2NvbXB1dGWUjAhtdWx0"
-        + "aXBseZSHlIwBdpSMAnBjlIaUjGAvbW50L3VzZXIxL3RzY29udHJhY3QvZ2l0aHViL3J0cHN"
-        + "3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rlc3RfY2"
-        + "9tcGlsZXIucHmUjAV0d2ljZZRNLgFDBAADDAKUKSl0lFKUfZQojAtfX3BhY2thZ2VfX5SMH"
-        + "WliaXNfc3Vic3RyYWl0LnRlc3RzLmNvbXBpbGVylIwIX19uYW1lX1+UjCtpYmlzX3N1YnN0"
-        + "cmFpdC50ZXN0cy5jb21waWxlci50ZXN0X2NvbXBpbGVylIwIX19maWxlX1+UjGAvbW50L3V"
-        + "zZXIxL3RzY29udHJhY3QvZ2l0aHViL3J0cHN3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3"
-        + "RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rlc3RfY29tcGlsZXIucHmUdU5OTnSUUpSMHGNsb3Vkc"
-        + "Glja2xlLmNsb3VkcGlja2xlX2Zhc3SUjBJfZnVuY3Rpb25fc2V0c3RhdGWUk5RoH32UfZQo"
-        + "aBpoE4wMX19xdWFsbmFtZV9flGgTjA9fX2Fubm90YXRpb25zX1+UfZSMDl9fa3dkZWZhdWx"
-        + "0c19flE6MDF9fZGVmYXVsdHNfX5ROjApfX21vZHVsZV9flGgbjAdfX2RvY19flGgJjAtfX2"
-        + "Nsb3N1cmVfX5ROjBdfY2xvdWRwaWNrbGVfc3VibW9kdWxlc5RdlIwLX19nbG9iYWxzX1+Uf"
-        + "ZR1hpSGUjAu"
-    )
+    code = base64.b64encode(cloudpickle.dumps(twice.func)).decode("utf-8")
     nullable = "NULLABILITY_NULLABLE"
     expected = json_format.ParseDict(
         {
