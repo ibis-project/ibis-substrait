@@ -302,7 +302,9 @@ def test_nested_struct_field_access(compiler):
 @elementwise(input_type=[dt.double], output_type=dt.double)
 def twice(v):
     """Compute twice the value of the input"""
-    return 2 * v
+    import pyarrow.compute as pc
+
+    return pc.multiply(v, 2)
 
 
 def test_vectorized_udf(t, compiler):
@@ -310,24 +312,27 @@ def test_vectorized_udf(t, compiler):
         [
             ("key", "string"),
             ("value", "int64"),
-        ]
+        ],
+        name="unbound_table",
     )
     expr = tbl.mutate(twice(tbl["value"]).name("twice"))
     code = (
-        "gAWV1wIAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwNX2J1aWx0aW5fdHlwZZST"
-        + "lIwKTGFtYmRhVHlwZZSFlFKUKGgCjAhDb2RlVHlwZZSFlFKUKEsBSwBLAEsBSwJLQ0MIZAF8"
-        + "ABQAUwCUjCRDb21wdXRlIHR3aWNlIHRoZSB2YWx1ZSBvZiB0aGUgaW5wdXSUSwKGlCmMAXaU"
-        + "hZSMYC9tbnQvdXNlcjEvdHNjb250cmFjdC9naXRodWIvcnRwc3cvaWJpcy1zdWJzdHJhaXQv"
-        + "aWJpc19zdWJzdHJhaXQvdGVzdHMvY29tcGlsZXIvdGVzdF9jb21waWxlci5weZSMBXR3aWNl"
-        + "lE0uAUMCAAOUKSl0lFKUfZQojAtfX3BhY2thZ2VfX5SMHWliaXNfc3Vic3RyYWl0LnRlc3Rz"
-        + "LmNvbXBpbGVylIwIX19uYW1lX1+UjCtpYmlzX3N1YnN0cmFpdC50ZXN0cy5jb21waWxlci50"
-        + "ZXN0X2NvbXBpbGVylIwIX19maWxlX1+UjGAvbW50L3VzZXIxL3RzY29udHJhY3QvZ2l0aHVi"
-        + "L3J0cHN3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rl"
-        + "c3RfY29tcGlsZXIucHmUdU5OTnSUUpSMHGNsb3VkcGlja2xlLmNsb3VkcGlja2xlX2Zhc3SU"
-        + "jBJfZnVuY3Rpb25fc2V0c3RhdGWUk5RoG32UfZQoaBZoD4wMX19xdWFsbmFtZV9flGgPjA9f"
-        + "X2Fubm90YXRpb25zX1+UfZSMDl9fa3dkZWZhdWx0c19flE6MDF9fZGVmYXVsdHNfX5ROjApf"
-        + "X21vZHVsZV9flGgXjAdfX2RvY19flGgKjAtfX2Nsb3N1cmVfX5ROjBdfY2xvdWRwaWNrbGVf"
-        + "c3VibW9kdWxlc5RdlIwLX19nbG9iYWxzX1+UfZR1hpSGUjAu"
+        "gAWVHAMAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwOX21ha2VfZnVuY3Rpb26"
+        + "Uk5QoaACMDV9idWlsdGluX3R5cGWUk5SMCENvZGVUeXBllIWUUpQoSwFLAEsASwJLBEtDQx"
+        + "hkAWQCbABtAX0BAQB8AaACfABkA6ECUwCUKIwkQ29tcHV0ZSB0d2ljZSB0aGUgdmFsdWUgb"
+        + "2YgdGhlIGlucHV0lEsATksCdJSMD3B5YXJyb3cuY29tcHV0ZZSMB2NvbXB1dGWUjAhtdWx0"
+        + "aXBseZSHlIwBdpSMAnBjlIaUjGAvbW50L3VzZXIxL3RzY29udHJhY3QvZ2l0aHViL3J0cHN"
+        + "3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rlc3RfY2"
+        + "9tcGlsZXIucHmUjAV0d2ljZZRNLgFDBAADDAKUKSl0lFKUfZQojAtfX3BhY2thZ2VfX5SMH"
+        + "WliaXNfc3Vic3RyYWl0LnRlc3RzLmNvbXBpbGVylIwIX19uYW1lX1+UjCtpYmlzX3N1YnN0"
+        + "cmFpdC50ZXN0cy5jb21waWxlci50ZXN0X2NvbXBpbGVylIwIX19maWxlX1+UjGAvbW50L3V"
+        + "zZXIxL3RzY29udHJhY3QvZ2l0aHViL3J0cHN3L2liaXMtc3Vic3RyYWl0L2liaXNfc3Vic3"
+        + "RyYWl0L3Rlc3RzL2NvbXBpbGVyL3Rlc3RfY29tcGlsZXIucHmUdU5OTnSUUpSMHGNsb3Vkc"
+        + "Glja2xlLmNsb3VkcGlja2xlX2Zhc3SUjBJfZnVuY3Rpb25fc2V0c3RhdGWUk5RoH32UfZQo"
+        + "aBpoE4wMX19xdWFsbmFtZV9flGgTjA9fX2Fubm90YXRpb25zX1+UfZSMDl9fa3dkZWZhdWx"
+        + "0c19flE6MDF9fZGVmYXVsdHNfX5ROjApfX21vZHVsZV9flGgbjAdfX2RvY19flGgJjAtfX2"
+        + "Nsb3N1cmVfX5ROjBdfY2xvdWRwaWNrbGVfc3VibW9kdWxlc5RdlIwLX19nbG9iYWxzX1+Uf"
+        + "ZR1hpSGUjAu"
     )
     nullable = "NULLABILITY_NULLABLE"
     expected = json_format.ParseDict(
@@ -370,7 +375,7 @@ def test_vectorized_udf(t, compiler):
                                                 "nullability": "NULLABILITY_REQUIRED",
                                             },
                                         },
-                                        "namedTable": {"names": ["unbound_table_12"]},
+                                        "namedTable": {"names": ["unbound_table"]},
                                     }
                                 },
                                 "expressions": [
