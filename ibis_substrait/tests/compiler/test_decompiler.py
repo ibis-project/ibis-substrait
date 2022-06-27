@@ -265,3 +265,19 @@ def test_searchedcase(compiler):
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)
+
+
+@pytest.mark.parametrize(
+    "span",
+    [
+        "year",
+        "month",
+        "day",
+    ],
+)
+def test_extract_date(compiler, span):
+    t = ibis.table([("o_orderdate", dt.date)], name="t")
+    expr = t[getattr(t.o_orderdate, span)()]
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)

@@ -570,7 +570,7 @@ def _decompile_expression_aggregate_function(
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[aggregate_function.function_reference]
     function_name = extension.name
-    op_type = getattr(ops, SUBSTRAIT_IBIS_OP_MAPPING[function_name])
+    op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
     args = [
         decompile(arg, children, field_offsets, decompiler)
         for arg in aggregate_function.args
@@ -774,6 +774,15 @@ class ExpressionDecompiler:
     ) -> ir.ValueExpr:
         return decompile(cast, children, offsets, decompiler)
 
+    @staticmethod
+    def decompile_enum(
+        enum: stalg.Expression.Enum,
+        children: Sequence[ir.TableExpr],
+        offsets: Sequence[int],
+        decompiler: SubstraitDecompiler,
+    ) -> ir.ValueExpr:
+        return decompile(enum)
+
 
 @decompile.register
 def _decompile_expression(
@@ -800,7 +809,7 @@ def _decompile_expression_scalar_function(
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[msg.function_reference]
     function_name = extension.name
-    op_type = getattr(ops, SUBSTRAIT_IBIS_OP_MAPPING[function_name])
+    op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
     args = [decompile(arg, children, field_offsets, decompiler) for arg in msg.args]
     expr = op_type(*args).to_expr()
     output_type = _decompile_type(msg.output_type)
@@ -921,6 +930,13 @@ def _decompile_expression_cast(
 ) -> ir.ValueExpr:
     column = decompile(msg.input, children, field_offsets, decompiler)
     return column.cast(_decompile_type(msg.type))
+
+
+@decompile.register
+def _decompile_expression_enum(
+    msg: stalg.Expression.Enum,
+) -> str:
+    return msg.specified
 
 
 class LiteralDecompiler:

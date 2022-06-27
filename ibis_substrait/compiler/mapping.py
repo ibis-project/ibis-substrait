@@ -1,3 +1,5 @@
+import ibis.expr.operations as ops
+
 IBIS_SUBSTRAIT_OP_MAPPING = {
     "Add": "add",
     "And": "and",
@@ -7,6 +9,9 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "CountDistinct": "countdistinct",
     "Divide": "divide",
     "Equals": "equal",
+    "ExtractYear": "extract",
+    "ExtractMonth": "extract",
+    "ExtractDay": "extract",
     "Greater": "gt",
     "GreaterEqual": "gte",
     "Less": "lt",
@@ -25,4 +30,10 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Sum": "sum",
 }
 
-SUBSTRAIT_IBIS_OP_MAPPING = {v: k for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items()}
+SUBSTRAIT_IBIS_OP_MAPPING = {
+    v: getattr(ops, k) for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items()
+}
+# override when reversing many-to-one mappings
+SUBSTRAIT_IBIS_OP_MAPPING["extract"] = lambda table, span: getattr(
+    ops, f"Extract{span.capitalize()}"
+)(table)

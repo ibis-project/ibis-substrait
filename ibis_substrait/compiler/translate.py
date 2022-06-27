@@ -959,3 +959,25 @@ def _cast(
             type=translate(op.to), input=translate(op.arg, compiler, **kwargs)
         )
     )
+
+
+@translate.register(ops.ExtractDateField)
+def _extractdatefield(
+    op: ops.ExtractDateField,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    scalar_func = stalg.Expression.ScalarFunction(
+        function_reference=compiler.function_id(expr),
+        output_type=translate(expr.type()),
+        args=[
+            translate(arg, compiler, **kwargs)
+            for arg in op.args
+            if isinstance(arg, ir.Expr)
+        ],
+    )
+    # e.g. "ExtractYear" -> "YEAR"
+    span = type(op).__name__.lstrip("Extract").upper()
+    scalar_func.args.add(enum=stalg.Expression.Enum(specified=span))
+    return stalg.Expression(scalar_function=scalar_func)
