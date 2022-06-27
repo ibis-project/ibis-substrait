@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.8.0](https://github.com/ibis-project/ibis-substrait/compare/v2.7.0...v2.8.0) (2022-06-27)
+
+
+### Features
+
+* add ops.SearchedCase handling ([be13d4c](https://github.com/ibis-project/ibis-substrait/commit/be13d4cc55e2ae7d2506abde8c400a99439a3e6f))
+
 ## [2.7.0](https://github.com/ibis-project/ibis-substrait/compare/v2.6.0...v2.7.0) (2022-05-14)
 
 
