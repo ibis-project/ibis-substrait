@@ -1,13 +1,12 @@
 IBIS_SUBSTRAIT_OP_MAPPING = {
-    "Add": "+",  # wrong but using for duckdb compatibility right now
+    "Add": "add",
     "And": "and",
     "Any": "any",
     "Between": "between",
     "Count": "count",
     "CountDistinct": "countdistinct",
-    "Divide": "/",  # wrong but using for duckdb compatibility right now
+    "Divide": "divide",
     "Equals": "equal",
-    "ExtractYear": "extractyear",
     "Greater": "gt",
     "GreaterEqual": "gte",
     "Less": "lt",
@@ -15,14 +14,14 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Max": "max",
     "Mean": "mean",
     "Min": "min",
-    "Multiply": "*",  # wrong but using for duckdb compatibility right now
+    "Multiply": "multiply",
     "Not": "not",
     "NotEquals": "not_equal",
     "Or": "or",
     "StringLength": "string_length",  # don't know
     "StringSQLLike": "like",
     "Substring": "substring",
-    "Subtract": "-",  # wrong but using for duckdb compatibility right now
+    "Subtract": "subtract",
     "Sum": "sum",
 }
 
