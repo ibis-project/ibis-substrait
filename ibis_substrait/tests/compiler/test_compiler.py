@@ -1,12 +1,16 @@
+import base64
 from collections import OrderedDict
 
+import cloudpickle
 import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
+from ibis.udf.vectorized import elementwise
 
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait import plan_pb2 as stpln
 from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
@@ -294,4 +298,113 @@ def test_nested_struct_field_access(compiler):
         stalg.Expression(),
     )
     result = translate(expr, compiler)
+    assert result == expected
+
+
+@elementwise(input_type=[dt.double], output_type=dt.double)
+def twice(v):
+    """Compute twice the value of the input"""
+    import pyarrow.compute as pc
+
+    return pc.multiply(v, 2)
+
+
+def test_vectorized_udf(t, compiler):
+    tbl = ibis.table(
+        [
+            ("key", "string"),
+            ("value", "int64"),
+        ],
+        name="unbound_table",
+    )
+    expr = tbl.mutate(twice(tbl["value"]).name("twice"))
+    code = base64.b64encode(cloudpickle.dumps(twice.func)).decode("utf-8")
+    nullable = "NULLABILITY_NULLABLE"
+    expected = json_format.ParseDict(
+        {
+            "extensionUris": [{"extensionUriAnchor": 1}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "twice",
+                        "udf": {
+                            "code": code,
+                            "summary": "twice",
+                            "description": "Compute twice the value of the input",
+                            "inputTypes": [{"fp64": {"nullability": nullable}}],
+                            "outputType": {"fp64": {"nullability": nullable}},
+                        },
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "project": {
+                                "input": {
+                                    "read": {
+                                        "baseSchema": {
+                                            "names": ["key", "value"],
+                                            "struct": {
+                                                "types": [
+                                                    {
+                                                        "string": {
+                                                            "nullability": nullable
+                                                        }
+                                                    },
+                                                    {"i64": {"nullability": nullable}},
+                                                ],
+                                                "nullability": "NULLABILITY_REQUIRED",
+                                            },
+                                        },
+                                        "namedTable": {"names": ["unbound_table"]},
+                                    }
+                                },
+                                "expressions": [
+                                    {
+                                        "selection": {
+                                            "directReference": {"structField": {}},
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "selection": {
+                                            "directReference": {
+                                                "structField": {"field": 1}
+                                            },
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "scalarFunction": {
+                                            "functionReference": 1,
+                                            "args": [
+                                                {
+                                                    "selection": {
+                                                        "directReference": {
+                                                            "structField": {"field": 1}
+                                                        },
+                                                        "rootReference": {},
+                                                    }
+                                                }
+                                            ],
+                                            "outputType": {
+                                                "fp64": {"nullability": nullable}
+                                            },
+                                        }
+                                    },
+                                ],
+                            }
+                        },
+                        "names": ["key", "value", "twice"],
+                    }
+                }
+            ],
+        },
+        stpln.Plan(),
+    )
+    result = compiler.compile(expr)
     assert result == expected

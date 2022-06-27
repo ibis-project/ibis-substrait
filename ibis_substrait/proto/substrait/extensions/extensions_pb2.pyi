@@ -5,7 +5,9 @@ isort:skip_file
 import builtins
 import google.protobuf.any_pb2
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.message
+from ... import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -71,20 +73,61 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
 
     class ExtensionFunction(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class UserDefinedFunction(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+            CODE_FIELD_NUMBER: builtins.int
+            SUMMARY_FIELD_NUMBER: builtins.int
+            DESCRIPTION_FIELD_NUMBER: builtins.int
+            INPUT_TYPES_FIELD_NUMBER: builtins.int
+            OUTPUT_TYPE_FIELD_NUMBER: builtins.int
+            code: typing.Text
+            "A serialization of the user-defined function's code. The default serialization\n            format is using base64 of cloudpickle.dumps().\n            "
+            summary: typing.Text
+            'Summary of the user-defined function.'
+            description: typing.Text
+            'Description of the user-defined function.'
+
+            @property
+            def input_types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.type_pb2.Type]:
+                """Input types of the user-defined function."""
+                pass
+
+            @property
+            def output_type(self) -> substrait.type_pb2.Type:
+                """Output type of the user-defined function."""
+                pass
+
+            def __init__(self, *, code: typing.Text=..., summary: typing.Text=..., description: typing.Text=..., input_types: typing.Optional[typing.Iterable[substrait.type_pb2.Type]]=..., output_type: typing.Optional[substrait.type_pb2.Type]=...) -> None:
+                ...
+
+            def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['code', b'code', 'description', b'description', 'input_types', b'input_types', 'output_type', b'output_type', 'summary', b'summary']) -> None:
+                ...
         EXTENSION_URI_REFERENCE_FIELD_NUMBER: builtins.int
         FUNCTION_ANCHOR_FIELD_NUMBER: builtins.int
         NAME_FIELD_NUMBER: builtins.int
+        UDF_FIELD_NUMBER: builtins.int
         extension_uri_reference: builtins.int
         'references the extension_uri_anchor defined for a specific extension URI.'
         function_anchor: builtins.int
         'A surrogate key used in the context of a single plan to reference a\n        specific function\n        '
         name: typing.Text
-        'A simple name if there is only one impl for the function within the YAML.\n        A compound name, referencing that includes type short names if there is\n        more than one impl per name in the YAML.\n        '
+        'A simple name if there is only one impl for the function within the YAML.\n        A compound name, referencing that includes type short names if there is\n        more than one impl per name in the YAML. A simple name not found in the\n        YAML if "function_code" is given, indicating a user-defined function.\n        '
 
-        def __init__(self, *, extension_uri_reference: builtins.int=..., function_anchor: builtins.int=..., name: typing.Text=...) -> None:
+        @property
+        def udf(self) -> global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction:
             ...
 
-        def ClearField(self, field_name: typing_extensions.Literal['extension_uri_reference', b'extension_uri_reference', 'function_anchor', b'function_anchor', 'name', b'name']) -> None:
+        def __init__(self, *, extension_uri_reference: builtins.int=..., function_anchor: builtins.int=..., name: typing.Text=..., udf: typing.Optional[global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction]=...) -> None:
+            ...
+
+        def HasField(self, field_name: typing_extensions.Literal['udf', b'udf']) -> builtins.bool:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['extension_uri_reference', b'extension_uri_reference', 'function_anchor', b'function_anchor', 'name', b'name', 'udf', b'udf']) -> None:
             ...
     EXTENSION_TYPE_FIELD_NUMBER: builtins.int
     EXTENSION_TYPE_VARIATION_FIELD_NUMBER: builtins.int

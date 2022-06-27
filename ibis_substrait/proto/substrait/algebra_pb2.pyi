@@ -354,6 +354,118 @@ class ReadRel(google.protobuf.message.Message):
         ...
 global___ReadRel = ReadRel
 
+class WriteRel(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class LocalFiles(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class FileOrFiles(google.protobuf.message.Message):
+            """Many files consist of indivisible chunks (e.g. parquet row groups
+            or CSV rows).  If a slice partially selects an indivisible chunk
+            then the consumer should employ some rule to decide which slice to
+            include the chunk in (e.g. include it in the slice that contains
+            the midpoint of the chunk)
+            """
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            class _FileFormat:
+                ValueType = typing.NewType('ValueType', builtins.int)
+                V: typing_extensions.TypeAlias = ValueType
+
+            class _FileFormatEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WriteRel.LocalFiles.FileOrFiles._FileFormat.ValueType], builtins.type):
+                DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+                FILE_FORMAT_UNSPECIFIED: WriteRel.LocalFiles.FileOrFiles._FileFormat.ValueType
+                FILE_FORMAT_PARQUET: WriteRel.LocalFiles.FileOrFiles._FileFormat.ValueType
+
+            class FileFormat(_FileFormat, metaclass=_FileFormatEnumTypeWrapper):
+                pass
+            FILE_FORMAT_UNSPECIFIED: WriteRel.LocalFiles.FileOrFiles.FileFormat.ValueType
+            FILE_FORMAT_PARQUET: WriteRel.LocalFiles.FileOrFiles.FileFormat.ValueType
+            URI_PATH_FIELD_NUMBER: builtins.int
+            URI_PATH_GLOB_FIELD_NUMBER: builtins.int
+            URI_FILE_FIELD_NUMBER: builtins.int
+            URI_FOLDER_FIELD_NUMBER: builtins.int
+            FORMAT_FIELD_NUMBER: builtins.int
+            PARTITION_INDEX_FIELD_NUMBER: builtins.int
+            START_ROW_FIELD_NUMBER: builtins.int
+            NUMBER_OF_ROWS_FIELD_NUMBER: builtins.int
+            uri_path: typing.Text
+            uri_path_glob: typing.Text
+            uri_file: typing.Text
+            uri_folder: typing.Text
+            format: global___WriteRel.LocalFiles.FileOrFiles.FileFormat.ValueType
+            partition_index: builtins.int
+            'the index of the partition this item belongs to'
+            start_row: builtins.int
+            'the start-row to write for this item'
+            number_of_rows: builtins.int
+            'the number of rows to write for this item'
+
+            def __init__(self, *, uri_path: typing.Text=..., uri_path_glob: typing.Text=..., uri_file: typing.Text=..., uri_folder: typing.Text=..., format: global___WriteRel.LocalFiles.FileOrFiles.FileFormat.ValueType=..., partition_index: builtins.int=..., start_row: builtins.int=..., number_of_rows: builtins.int=...) -> None:
+                ...
+
+            def HasField(self, field_name: typing_extensions.Literal['path_type', b'path_type', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> builtins.bool:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['format', b'format', 'number_of_rows', b'number_of_rows', 'partition_index', b'partition_index', 'path_type', b'path_type', 'start_row', b'start_row', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> None:
+                ...
+
+            def WhichOneof(self, oneof_group: typing_extensions.Literal['path_type', b'path_type']) -> typing.Optional[typing_extensions.Literal['uri_path', 'uri_path_glob', 'uri_file', 'uri_folder']]:
+                ...
+        ITEMS_FIELD_NUMBER: builtins.int
+        ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+
+        @property
+        def items(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___WriteRel.LocalFiles.FileOrFiles]:
+            ...
+
+        @property
+        def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+            ...
+
+        def __init__(self, *, items: typing.Optional[typing.Iterable[global___WriteRel.LocalFiles.FileOrFiles]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+            ...
+
+        def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'items', b'items']) -> None:
+            ...
+    COMMON_FIELD_NUMBER: builtins.int
+    INPUT_FIELD_NUMBER: builtins.int
+    ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+    LOCAL_FILES_FIELD_NUMBER: builtins.int
+
+    @property
+    def common(self) -> global___RelCommon:
+        ...
+
+    @property
+    def input(self) -> global___Rel:
+        ...
+
+    @property
+    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+        ...
+
+    @property
+    def local_files(self) -> global___WriteRel.LocalFiles:
+        ...
+
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=..., local_files: typing.Optional[global___WriteRel.LocalFiles]=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input', 'local_files', b'local_files', 'write_type', b'write_type']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input', 'local_files', b'local_files', 'write_type', b'write_type']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['write_type', b'write_type']) -> typing.Optional[typing_extensions.Literal['local_files']]:
+        ...
+global___WriteRel = WriteRel
+
 class ProjectRel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
     COMMON_FIELD_NUMBER: builtins.int
@@ -386,6 +498,63 @@ class ProjectRel(google.protobuf.message.Message):
     def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'expressions', b'expressions', 'input', b'input']) -> None:
         ...
 global___ProjectRel = ProjectRel
+
+class AsOfMergeRel(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class AsOfMergeV1(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        KEY_FIELDS_FIELD_NUMBER: builtins.int
+        TIME_FIELDS_FIELD_NUMBER: builtins.int
+        TOLERANCE_FIELD_NUMBER: builtins.int
+
+        @property
+        def key_fields(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
+            ...
+
+        @property
+        def time_fields(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
+            ...
+        tolerance: builtins.int
+
+        def __init__(self, *, key_fields: typing.Optional[typing.Iterable[global___Expression]]=..., time_fields: typing.Optional[typing.Iterable[global___Expression]]=..., tolerance: builtins.int=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['key_fields', b'key_fields', 'time_fields', b'time_fields', 'tolerance', b'tolerance']) -> None:
+            ...
+    COMMON_FIELD_NUMBER: builtins.int
+    INPUTS_FIELD_NUMBER: builtins.int
+    V1_FIELD_NUMBER: builtins.int
+    ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+
+    @property
+    def common(self) -> global___RelCommon:
+        ...
+
+    @property
+    def inputs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Rel]:
+        ...
+
+    @property
+    def v1(self) -> global___AsOfMergeRel.AsOfMergeV1:
+        ...
+
+    @property
+    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+        ...
+
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., inputs: typing.Optional[typing.Iterable[global___Rel]]=..., v1: typing.Optional[global___AsOfMergeRel.AsOfMergeV1]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'v1', b'v1', 'version', b'version']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'inputs', b'inputs', 'v1', b'v1', 'version', b'version']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['version', b'version']) -> typing.Optional[typing_extensions.Literal['v1']]:
+        ...
+global___AsOfMergeRel = AsOfMergeRel
 
 class JoinRel(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
@@ -846,6 +1015,8 @@ class Rel(google.protobuf.message.Message):
     EXTENSION_MULTI_FIELD_NUMBER: builtins.int
     EXTENSION_LEAF_FIELD_NUMBER: builtins.int
     CROSS_FIELD_NUMBER: builtins.int
+    WRITE_FIELD_NUMBER: builtins.int
+    AS_OF_MERGE_FIELD_NUMBER: builtins.int
 
     @property
     def read(self) -> global___ReadRel:
@@ -895,16 +1066,24 @@ class Rel(google.protobuf.message.Message):
     def cross(self) -> global___CrossRel:
         ...
 
-    def __init__(self, *, read: typing.Optional[global___ReadRel]=..., filter: typing.Optional[global___FilterRel]=..., fetch: typing.Optional[global___FetchRel]=..., aggregate: typing.Optional[global___AggregateRel]=..., sort: typing.Optional[global___SortRel]=..., join: typing.Optional[global___JoinRel]=..., project: typing.Optional[global___ProjectRel]=..., set: typing.Optional[global___SetRel]=..., extension_single: typing.Optional[global___ExtensionSingleRel]=..., extension_multi: typing.Optional[global___ExtensionMultiRel]=..., extension_leaf: typing.Optional[global___ExtensionLeafRel]=..., cross: typing.Optional[global___CrossRel]=...) -> None:
+    @property
+    def write(self) -> global___WriteRel:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> builtins.bool:
+    @property
+    def as_of_merge(self) -> global___AsOfMergeRel:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> None:
+    def __init__(self, *, read: typing.Optional[global___ReadRel]=..., filter: typing.Optional[global___FilterRel]=..., fetch: typing.Optional[global___FetchRel]=..., aggregate: typing.Optional[global___AggregateRel]=..., sort: typing.Optional[global___SortRel]=..., join: typing.Optional[global___JoinRel]=..., project: typing.Optional[global___ProjectRel]=..., set: typing.Optional[global___SetRel]=..., extension_single: typing.Optional[global___ExtensionSingleRel]=..., extension_multi: typing.Optional[global___ExtensionMultiRel]=..., extension_leaf: typing.Optional[global___ExtensionLeafRel]=..., cross: typing.Optional[global___CrossRel]=..., write: typing.Optional[global___WriteRel]=..., as_of_merge: typing.Optional[global___AsOfMergeRel]=...) -> None:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['rel_type', b'rel_type']) -> typing.Optional[typing_extensions.Literal['read', 'filter', 'fetch', 'aggregate', 'sort', 'join', 'project', 'set', 'extension_single', 'extension_multi', 'extension_leaf', 'cross']]:
+    def HasField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'as_of_merge', b'as_of_merge', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort', 'write', b'write']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'as_of_merge', b'as_of_merge', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort', 'write', b'write']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['rel_type', b'rel_type']) -> typing.Optional[typing_extensions.Literal['read', 'filter', 'fetch', 'aggregate', 'sort', 'join', 'project', 'set', 'extension_single', 'extension_multi', 'extension_leaf', 'cross', 'write', 'as_of_merge']]:
         ...
 global___Rel = Rel
 
@@ -1844,7 +2023,7 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class FieldReference(google.protobuf.message.Message):
-        """A reference to an inner part of a complex object. Can reference reference a
+        """A reference to an inner part of a complex object. Can reference a
         single element or a masked version of elements
         """
         DESCRIPTOR: google.protobuf.descriptor.Descriptor

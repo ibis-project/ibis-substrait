@@ -21,6 +21,7 @@ import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 from ibis import util
+from ibis.expr.operations.vectorized import VectorizedUDF
 from packaging import version
 
 from ..proto.substrait import algebra_pb2 as stalg
@@ -484,6 +485,27 @@ def value_op(
             args=[
                 translate(arg, compiler, **kwargs)
                 for arg in op.args
+                if isinstance(arg, ir.Expr)
+            ],
+        )
+    )
+
+
+@translate.register(VectorizedUDF)
+def vectorized_udf_op(
+    op: VectorizedUDF,
+    expr: ir.ValueExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    # given the details of `op` -> function id
+    return stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
+            function_reference=compiler.function_id(expr),
+            output_type=translate(expr.type()),
+            args=[
+                translate(arg, compiler, **kwargs)
+                for arg in op.func_args
                 if isinstance(arg, ir.Expr)
             ],
         )

@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import base64
+import functools
 import itertools
 from typing import Any, Hashable, Iterator
 
+import cloudpickle
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
+import ibis.expr.operations as ops
 import ibis.expr.types as ir
+from ibis.expr.operations.vectorized import VectorizedUDF
 
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
@@ -18,6 +23,62 @@ from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
     variant_name = message.WhichOneof(oneof_name)
     return variant_name, getattr(message, variant_name)
+
+
+def _dict(**kwargs: Any) -> Any:
+    return kwargs
+
+
+@functools.singledispatch
+def _function_name(*args: Any, **kwargs: Any) -> Any:
+    raise NotImplementedError(*args)
+
+
+@_function_name.register
+def _default_fname(op: ops.ValueOp) -> str:
+    return IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+
+
+@_function_name.register
+def _udf_fname(op: VectorizedUDF) -> str:
+    return op.func.__wrapped__.__name__
+
+
+@functools.singledispatch
+def _function_extension_kwds(*args: Any, **kwargs: Any) -> Any:
+    raise NotImplementedError(*args)
+
+
+@_function_extension_kwds.register
+def _default_fext_kwds(op: ops.ValueOp, function_extension_kwds: dict) -> dict:
+    return function_extension_kwds
+
+
+@_function_extension_kwds.register
+def _udf_fext_kwds(op: VectorizedUDF, function_extension_kwds: dict) -> dict:
+    from .translate import translate
+
+    function_extension_kwds.update(
+        _dict(
+            udf=(
+                ste.SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction(
+                    code=base64.b64encode(
+                        cloudpickle.dumps(op.func.__wrapped__)
+                    ).decode("utf-8"),
+                    summary=(
+                        getattr(op, "func_summary", None)
+                        or op.func.__wrapped__.__name__
+                    ),
+                    description=(
+                        getattr(op, "func_desc", None) or op.func.__wrapped__.__doc__
+                    ),
+                    input_types=[translate(typ) for typ in op.input_type],
+                    output_type=translate(op.return_type),
+                )
+            )
+        )
+    )
+    return function_extension_kwds
 
 
 class SubstraitCompiler:
@@ -65,17 +126,22 @@ class SubstraitCompiler:
             types N-tuple.
         """
         op = expr.op()
-        op_type = type(op)
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+        op_name = _function_name(op)
         try:
             function_extension = self.function_extensions[op_name]
         except KeyError:
+            ste_decl = ste.SimpleExtensionDeclaration
             function_extension = self.function_extensions[
                 op_name
-            ] = ste.SimpleExtensionDeclaration.ExtensionFunction(
-                extension_uri_reference=self.extension_uri.extension_uri_anchor,
-                function_anchor=next(self.id_generator),
-                name=op_name,
+            ] = ste_decl.ExtensionFunction(
+                **_function_extension_kwds(
+                    op,
+                    _dict(
+                        extension_uri_reference=self.extension_uri.extension_uri_anchor,
+                        function_anchor=next(self.id_generator),
+                        name=op_name,
+                    ),
+                )
             )
         return function_extension.function_anchor
 

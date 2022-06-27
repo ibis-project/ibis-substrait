@@ -557,7 +557,7 @@ message Expression {
     }
   }
 
-  // A reference to an inner part of a complex object. Can reference reference a
+  // A reference to an inner part of a complex object. Can reference a
   // single element or a masked version of elements
   message FieldReference {
 
@@ -569,7 +569,7 @@ message Expression {
     }
 
     // Whether this reference has an origin of a root struct or is based on the
-    // ouput of an expression. When this is a RootReference and direct_reference
+    // output of an expression. When this is a RootReference and direct_reference
     // above is used, the direct_reference must be of a type StructField.
     oneof root_type {
       Expression expression = 3;
