@@ -65,8 +65,13 @@ def _udf_fext_kwds(op: VectorizedUDF, function_extension_kwds: dict) -> dict:
                     code=base64.b64encode(
                         cloudpickle.dumps(op.func.__wrapped__)
                     ).decode("utf-8"),
-                    summary=op.func_summary or op.func.__wrapped__.__name__,
-                    description=op.func_desc or op.func.__wrapped__.__doc__,
+                    summary=(
+                        getattr(op, "func_summary", None)
+                        or op.func.__wrapped__.__name__
+                    ),
+                    description=(
+                        getattr(op, "func_desc", None) or op.func.__wrapped__.__doc__
+                    ),
                     input_types=[translate(typ) for typ in op.input_type],
                     output_type=translate(op.return_type),
                 )
