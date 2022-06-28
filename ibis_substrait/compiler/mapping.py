@@ -34,6 +34,6 @@ SUBSTRAIT_IBIS_OP_MAPPING = {
     v: getattr(ops, k) for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items()
 }
 # override when reversing many-to-one mappings
-SUBSTRAIT_IBIS_OP_MAPPING["extract"] = lambda table, span: getattr(
+SUBSTRAIT_IBIS_OP_MAPPING["extract"] = lambda span, table: getattr(
     ops, f"Extract{span.capitalize()}"
 )(table)
