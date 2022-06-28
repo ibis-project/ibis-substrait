@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.0](https://github.com/ibis-project/ibis-substrait/compare/v2.8.0...v2.9.0) (2022-06-28)
+
+
+### Features
+
+* add support for ops.Extract<span> ([2fe7f26](https://github.com/ibis-project/ibis-substrait/commit/2fe7f26aa7efce33462cdc9fddc629ccce9183f7))
+
 ## [2.8.0](https://github.com/ibis-project/ibis-substrait/compare/v2.7.0...v2.8.0) (2022-06-27)
 
 
