@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.1](https://github.com/ibis-project/ibis-substrait/compare/v2.9.0...v2.9.1) (2022-06-29)
+
+
+### Bug Fixes
+
+* **extract:** substrait function argument ordering ([beca56c](https://github.com/ibis-project/ibis-substrait/commit/beca56cfd3c336dd1572009b5fda978f5ff4945c))
+
 ## [2.9.0](https://github.com/ibis-project/ibis-substrait/compare/v2.8.0...v2.9.0) (2022-06-28)
 
 
