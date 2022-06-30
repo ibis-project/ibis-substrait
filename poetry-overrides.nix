@@ -40,4 +40,7 @@ self: super:
 
   pandas = parallelizeSetuptoolsBuild super.pandas;
   pydantic = parallelizeSetuptoolsBuild super.pydantic;
+  substrait-validator = super.substrait-validator.override {
+    preferWheel = true;
+  };
 }
