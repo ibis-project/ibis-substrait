@@ -238,55 +238,57 @@ def _null_literal(_: dt.Null, **kwargs: Any) -> stalg.Expression.Literal:
 
 @translate_literal.register
 def _literal_boolean(
-    _: dt.Boolean,
+    dtype: dt.Boolean,
     value: bool,
 ) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(boolean=value)
+    return stalg.Expression.Literal(boolean=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_int8(_: dt.Int8, value: int) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(i8=value)
+    return stalg.Expression.Literal(i8=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_int16(_: dt.Int16, value: int) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(i16=value)
+    return stalg.Expression.Literal(i16=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_int32(_: dt.Int32, value: int) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(i32=value)
+    return stalg.Expression.Literal(i32=value, nullable=True)
 
 
 @translate_literal.register
-def _literal_int64(_: dt.Int64, value: int) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(i64=value)
+def _literal_int64(d_: dt.Int64, value: int) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(i64=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_float32(_: dt.Float32, value: float) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(fp32=value)
+    return stalg.Expression.Literal(fp32=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_float64(_: dt.Float64, value: float) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(fp64=value)
+    return stalg.Expression.Literal(fp64=value, nullable=True)
 
 
 @translate_literal.register
-def _literal_decimal(_: dt.Decimal, value: decimal.Decimal) -> stalg.Expression.Literal:
+def _literal_decimal(
+    dtype: dt.Decimal, value: decimal.Decimal
+) -> stalg.Expression.Literal:
     raise NotImplementedError
 
 
 @translate_literal.register
 def _literal_string(_: dt.String, value: str) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(string=value)
+    return stalg.Expression.Literal(string=value, nullable=True)
 
 
 @translate_literal.register
 def _literal_binary(_: dt.Binary, value: bytes) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(binary=value)
+    return stalg.Expression.Literal(binary=value, nullable=True)
 
 
 @translate_literal.register
@@ -296,8 +298,8 @@ def _literal_timestamp(
 ) -> stalg.Expression.Literal:
     micros_since_epoch = int(value.timestamp() * 1e6)
     if dtype.timezone is not None:
-        return stalg.Expression.Literal(timestamp_tz=micros_since_epoch)
-    return stalg.Expression.Literal(timestamp=micros_since_epoch)
+        return stalg.Expression.Literal(timestamp_tz=micros_since_epoch, nullable=True)
+    return stalg.Expression.Literal(timestamp=micros_since_epoch, nullable=True)
 
 
 @translate_literal.register
@@ -311,7 +313,8 @@ def _literal_struct(
                 translate_literal(field_type, val)
                 for val, field_type in zip(mapping.values(), dtype.types)
             ]
-        )
+        ),
+        nullable=True,
     )
 
 
@@ -321,7 +324,7 @@ def _literal_map(
     mapping: collections.abc.MutableMapping,
 ) -> stalg.Expression.Literal:
     if not mapping:
-        return stalg.Expression.Literal(empty_map=translate(dtype).map)
+        return stalg.Expression.Literal(empty_map=translate(dtype).map, nullable=True)
     return stalg.Expression.Literal(
         map=stalg.Expression.Literal.Map(
             key_values=[
@@ -331,7 +334,8 @@ def _literal_map(
                 )
                 for key, value in mapping.items()
             ],
-        )
+        ),
+        nullable=True,
     )
 
 
@@ -341,17 +345,18 @@ def _literal_array(
     sequence: Sequence[T],
 ) -> stalg.Expression.Literal:
     if not sequence:
-        return stalg.Expression.Literal(empty_list=translate(dtype).list)
+        return stalg.Expression.Literal(empty_list=translate(dtype).list, nullable=True)
     return stalg.Expression.Literal(
         list=stalg.Expression.Literal.List(
             values=[translate_literal(dtype.value_type, value) for value in sequence],
-        )
+        ),
+        nullable=True,
     )
 
 
 @translate_literal.register(dt.UUID)
-def _literal_uuid(_: dt.UUID, value: str | uuid.UUID) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(uuid=uuid.UUID(hex=str(value)).bytes)
+def _literal_uuid(dtype: dt.UUID, value: str | uuid.UUID) -> stalg.Expression.Literal:
+    return stalg.Expression.Literal(uuid=uuid.UUID(hex=str(value)).bytes, nullable=True)
 
 
 _MINUTES_PER_HOUR = _SECONDS_PER_MINUTE = 60
@@ -370,7 +375,7 @@ def _time_to_micros(value: datetime.time) -> int:
 
 @translate_literal.register
 def _literal_time(time: dt.Time, value: datetime.time) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(time=_time_to_micros(value))
+    return stalg.Expression.Literal(time=_time_to_micros(value), nullable=True)
 
 
 def _date_to_days(value: datetime.date) -> int:
@@ -380,7 +385,7 @@ def _date_to_days(value: datetime.date) -> int:
 
 @translate_literal.register
 def _literal_date(date: dt.Date, value: datetime.date) -> stalg.Expression.Literal:
-    return stalg.Expression.Literal(date=_date_to_days(value))
+    return stalg.Expression.Literal(date=_date_to_days(value), nullable=True)
 
 
 @functools.singledispatch

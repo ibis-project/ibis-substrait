@@ -38,12 +38,20 @@ literal_cases = pytest.mark.parametrize(
         # booleans
         pytest.param(
             ibis.literal(True),
-            stalg.Expression(literal=stalg.Expression.Literal(boolean=True)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    boolean=True, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="boolean_true",
         ),
         pytest.param(
             ibis.literal(False),
-            stalg.Expression(literal=stalg.Expression.Literal(boolean=False)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    boolean=False, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="boolean_false",
         ),
     ]
@@ -52,7 +60,9 @@ literal_cases = pytest.mark.parametrize(
         pytest.param(
             ibis.literal(value),
             stalg.Expression(
-                literal=stalg.Expression.Literal(**{substrait_type: value})
+                literal=stalg.Expression.Literal(
+                    **{substrait_type: value}, nullable=NULLABILITY_NULLABLE
+                )
             ),
             id=f"{substrait_type}_{value_name}",
         )
@@ -68,29 +78,49 @@ literal_cases = pytest.mark.parametrize(
         # floating point
         pytest.param(
             ibis.literal(1.0, type="float64"),
-            stalg.Expression(literal=stalg.Expression.Literal(fp64=1.0)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    fp64=1.0, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="fp64",
         ),
         pytest.param(
             ibis.literal(2.0, type="float32"),
-            stalg.Expression(literal=stalg.Expression.Literal(fp32=2.0)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    fp32=2.0, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="fp32",
         ),
         # strings
         pytest.param(
             ibis.literal("foo"),
-            stalg.Expression(literal=stalg.Expression.Literal(string="foo")),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    string="foo", nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="string",
         ),
         pytest.param(
             ibis.literal("⋃"),
-            stalg.Expression(literal=stalg.Expression.Literal(string="⋃")),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    string="⋃", nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="unicode_string",
         ),
         # binary
         pytest.param(
             ibis.literal(b"42", type="binary"),
-            stalg.Expression(literal=stalg.Expression.Literal(binary=b"42")),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    binary=b"42", nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="binary",
         ),
         # timestamp
@@ -98,7 +128,8 @@ literal_cases = pytest.mark.parametrize(
             ibis.timestamp(TIMESTAMP),
             stalg.Expression(
                 literal=stalg.Expression.Literal(
-                    timestamp=int(MICROSECONDS_SINCE_EPOCH)
+                    timestamp=int(MICROSECONDS_SINCE_EPOCH),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id="timestamp",
@@ -110,7 +141,8 @@ literal_cases = pytest.mark.parametrize(
             ),
             stalg.Expression(
                 literal=stalg.Expression.Literal(
-                    timestamp_tz=int(MICROSECONDS_SINCE_EPOCH)
+                    timestamp_tz=int(MICROSECONDS_SINCE_EPOCH),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id="timestamp_tz",
@@ -118,13 +150,21 @@ literal_cases = pytest.mark.parametrize(
         # date
         pytest.param(
             ibis.date(DATE.isoformat()),
-            stalg.Expression(literal=stalg.Expression.Literal(date=DATE_DAYS)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    date=DATE_DAYS, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="date",
         ),
         # time
         pytest.param(
             ibis.time(TIME),
-            stalg.Expression(literal=stalg.Expression.Literal(time=TIME_MICROS)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    time=TIME_MICROS, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="time",
         ),
     ]
@@ -136,7 +176,8 @@ literal_cases = pytest.mark.parametrize(
                 literal=stalg.Expression.Literal(
                     interval_year_to_month=(
                         stalg.Expression.Literal.IntervalYearToMonth(**{key: value})
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id=f"interval_year_to_month_{key}",
@@ -152,7 +193,8 @@ literal_cases = pytest.mark.parametrize(
                 literal=stalg.Expression.Literal(
                     interval_day_to_second=(
                         stalg.Expression.Literal.IntervalDayToSecond(**{key: value})
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id=f"interval_day_to_second_{key}",
@@ -171,14 +213,22 @@ literal_cases = pytest.mark.parametrize(
                 literal=stalg.Expression.Literal(
                     struct=stalg.Expression.Literal.Struct(
                         fields=[
-                            stalg.Expression.Literal(fp64=1.0),
+                            stalg.Expression.Literal(
+                                fp64=1.0, nullable=NULLABILITY_NULLABLE
+                            ),
                             stalg.Expression.Literal(
                                 list=stalg.Expression.Literal.List(
-                                    values=[stalg.Expression.Literal(fp64=2.0)],
-                                )
+                                    values=[
+                                        stalg.Expression.Literal(
+                                            fp64=2.0, nullable=NULLABILITY_NULLABLE
+                                        )
+                                    ],
+                                ),
+                                nullable=NULLABILITY_NULLABLE,
                             ),
                         ]
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id="struct",
@@ -192,7 +242,9 @@ literal_cases = pytest.mark.parametrize(
                     map=stalg.Expression.Literal.Map(
                         key_values=[
                             stalg.Expression.Literal.Map.KeyValue(
-                                key=stalg.Expression.Literal(string="a"),
+                                key=stalg.Expression.Literal(
+                                    string="a", nullable=NULLABILITY_NULLABLE
+                                ),
                                 value=stalg.Expression.Literal(
                                     empty_list=stt.Type.List(
                                         type=stt.Type(
@@ -202,18 +254,27 @@ literal_cases = pytest.mark.parametrize(
                                         ),
                                         nullability=NULLABILITY_NULLABLE,
                                     ),
+                                    nullable=NULLABILITY_NULLABLE,
                                 ),
                             ),
                             stalg.Expression.Literal.Map.KeyValue(
-                                key=stalg.Expression.Literal(string="b"),
+                                key=stalg.Expression.Literal(
+                                    string="b", nullable=NULLABILITY_NULLABLE
+                                ),
                                 value=stalg.Expression.Literal(
                                     list=stalg.Expression.Literal.List(
-                                        values=[stalg.Expression.Literal(i8=2)],
-                                    )
+                                        values=[
+                                            stalg.Expression.Literal(
+                                                i8=2, nullable=NULLABILITY_NULLABLE
+                                            )
+                                        ],
+                                    ),
+                                    nullable=NULLABILITY_NULLABLE,
                                 ),
                             ),
                         ],
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id="map",
@@ -231,7 +292,8 @@ literal_cases = pytest.mark.parametrize(
                             i64=stt.Type.I64(nullability=NULLABILITY_NULLABLE)
                         ),
                         nullability=NULLABILITY_NULLABLE,
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 )
             ),
             id="empty_map",
@@ -241,12 +303,20 @@ literal_cases = pytest.mark.parametrize(
         # uuid
         pytest.param(
             ibis.literal(UUID, type=dt.uuid),
-            stalg.Expression(literal=stalg.Expression.Literal(uuid=UUID.bytes)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    uuid=UUID.bytes, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="uuid_typed",
         ),
         pytest.param(
             ibis.literal(str(UUID), type=dt.uuid),
-            stalg.Expression(literal=stalg.Expression.Literal(uuid=UUID.bytes)),
+            stalg.Expression(
+                literal=stalg.Expression.Literal(
+                    uuid=UUID.bytes, nullable=NULLABILITY_NULLABLE
+                )
+            ),
             id="uuid_string",
         ),
     ]
@@ -256,7 +326,7 @@ literal_cases = pytest.mark.parametrize(
             ibis.literal(None, type="float64"),
             stalg.Expression(
                 literal=stalg.Expression.Literal(
-                    null=stt.Type(fp64=stt.Type.FP64(nullability=NULLABILITY_NULLABLE))
+                    null=stt.Type(fp64=stt.Type.FP64(nullability=NULLABILITY_NULLABLE)),
                 )
             ),
             id="null_fp64",
@@ -272,7 +342,7 @@ literal_cases = pytest.mark.parametrize(
                             ),
                             nullability=NULLABILITY_NULLABLE,
                         )
-                    )
+                    ),
                 ),
             ),
             id="null_array",
@@ -284,10 +354,15 @@ literal_cases = pytest.mark.parametrize(
                 literal=stalg.Expression.Literal(
                     list=stalg.Expression.Literal.List(
                         values=[
-                            stalg.Expression.Literal(string="a"),
-                            stalg.Expression.Literal(string="b"),
+                            stalg.Expression.Literal(
+                                string="a", nullable=NULLABILITY_NULLABLE
+                            ),
+                            stalg.Expression.Literal(
+                                string="b", nullable=NULLABILITY_NULLABLE
+                            ),
                         ],
-                    )
+                    ),
+                    nullable=NULLABILITY_NULLABLE,
                 ),
             ),
             id="array",
