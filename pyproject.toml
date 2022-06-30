@@ -43,6 +43,7 @@ pytz = "^2022.1"
 pyupgrade = "^2.26.0"
 types-protobuf = "^3.18.1"
 types-pytz = "^2022.0.0"
+substrait-validator = "^0.0.4"
 
 [tool.pytest.ini_options]
 xfail_strict = true
