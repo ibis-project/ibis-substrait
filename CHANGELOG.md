@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.2](https://github.com/ibis-project/ibis-substrait/compare/v2.9.1...v2.9.2) (2022-06-30)
+
+
+### Bug Fixes
+
+* translate all literals as nullable ([3453469](https://github.com/ibis-project/ibis-substrait/commit/34534696d507bbd0b2b232e208730c2566d8225c))
+
 ## [2.9.1](https://github.com/ibis-project/ibis-substrait/compare/v2.9.0...v2.9.1) (2022-06-29)
 
 
