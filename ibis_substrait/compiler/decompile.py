@@ -452,7 +452,7 @@ def _remove_names_below(names: Deque[str], dtype: dt.DataType) -> None:
     >>> import ibis.expr.datatypes as dt
     >>> typestr = "struct<b: struct<c: int64, d: struct<e: float64>>>"
     >>> schema = ibis.schema([("a", typestr), ("f", "string")])
-    >>> dtype = dt.parse_type(typestr)
+    >>> dtype = dt.parse(typestr)
     >>> flat_names = deque(["a", "b", "c", "d", "e", "f"])
     >>> field_name = flat_names.popleft()
     >>> _remove_names_below(flat_names, dtype)
