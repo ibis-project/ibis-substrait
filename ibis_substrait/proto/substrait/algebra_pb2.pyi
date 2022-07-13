@@ -295,6 +295,17 @@ class ReadRel(google.protobuf.message.Message):
 
         def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'items', b'items']) -> None:
             ...
+
+    class UserDefinedTable(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
+        function_reference: builtins.int
+
+        def __init__(self, *, function_reference: builtins.int=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['function_reference', b'function_reference']) -> None:
+            ...
     COMMON_FIELD_NUMBER: builtins.int
     BASE_SCHEMA_FIELD_NUMBER: builtins.int
     FILTER_FIELD_NUMBER: builtins.int
@@ -304,6 +315,7 @@ class ReadRel(google.protobuf.message.Message):
     LOCAL_FILES_FIELD_NUMBER: builtins.int
     NAMED_TABLE_FIELD_NUMBER: builtins.int
     EXTENSION_TABLE_FIELD_NUMBER: builtins.int
+    UDT_FIELD_NUMBER: builtins.int
 
     @property
     def common(self) -> global___RelCommon:
@@ -341,16 +353,20 @@ class ReadRel(google.protobuf.message.Message):
     def extension_table(self) -> global___ReadRel.ExtensionTable:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., base_schema: typing.Optional[substrait.type_pb2.NamedStruct]=..., filter: typing.Optional[global___Expression]=..., projection: typing.Optional[global___Expression.MaskExpression]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=..., virtual_table: typing.Optional[global___ReadRel.VirtualTable]=..., local_files: typing.Optional[global___ReadRel.LocalFiles]=..., named_table: typing.Optional[global___ReadRel.NamedTable]=..., extension_table: typing.Optional[global___ReadRel.ExtensionTable]=...) -> None:
+    @property
+    def udt(self) -> global___ReadRel.UserDefinedTable:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> builtins.bool:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., base_schema: typing.Optional[substrait.type_pb2.NamedStruct]=..., filter: typing.Optional[global___Expression]=..., projection: typing.Optional[global___Expression.MaskExpression]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=..., virtual_table: typing.Optional[global___ReadRel.VirtualTable]=..., local_files: typing.Optional[global___ReadRel.LocalFiles]=..., named_table: typing.Optional[global___ReadRel.NamedTable]=..., extension_table: typing.Optional[global___ReadRel.ExtensionTable]=..., udt: typing.Optional[global___ReadRel.UserDefinedTable]=...) -> None:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> None:
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'udt', b'udt', 'virtual_table', b'virtual_table']) -> builtins.bool:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['read_type', b'read_type']) -> typing.Optional[typing_extensions.Literal['virtual_table', 'local_files', 'named_table', 'extension_table']]:
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'udt', b'udt', 'virtual_table', b'virtual_table']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['read_type', b'read_type']) -> typing.Optional[typing_extensions.Literal['virtual_table', 'local_files', 'named_table', 'extension_table', 'udt']]:
         ...
 global___ReadRel = ReadRel
 

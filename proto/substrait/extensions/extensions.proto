@@ -72,21 +72,32 @@ message SimpleExtensionDeclaration {
     UserDefinedFunction udf = 4;
 
     message UserDefinedFunction {
-        // A serialization of the user-defined function's code. The default serialization
-        // format is using base64 of cloudpickle.dumps().
-        string code = 1;
+      // A serialization of the user-defined function's code. The default serialization
+      // format is using cloudpickle.dumps().
+      bytes code = 1;
 
-        // Summary of the user-defined function.
-        string summary = 2;
+      // Summary of the user-defined function.
+      string summary = 2;
 
-        // Description of the user-defined function.
-        string description = 3;
+      // Description of the user-defined function.
+      string description = 3;
 
-        // Input types of the user-defined function.
-        repeated Type input_types = 4;
+      // Input types of the user-defined function.
+      repeated Type input_types = 4;
 
-        // Output type of the user-defined function.
-        Type output_type = 5;
+      // Output type of the user-defined function.
+      Type output_type = 5;
+
+      oneof func_type {
+        ScalarUDF scalar = 6;
+        TabularUDF tabular = 7;
+      }
+
+      message ScalarUDF {
+      }
+
+      message TabularUDF {
+      }
     }
   }
 }

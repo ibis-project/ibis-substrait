@@ -76,13 +76,27 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
 
         class UserDefinedFunction(google.protobuf.message.Message):
             DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            class ScalarUDF(google.protobuf.message.Message):
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+                def __init__(self) -> None:
+                    ...
+
+            class TabularUDF(google.protobuf.message.Message):
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+                def __init__(self) -> None:
+                    ...
             CODE_FIELD_NUMBER: builtins.int
             SUMMARY_FIELD_NUMBER: builtins.int
             DESCRIPTION_FIELD_NUMBER: builtins.int
             INPUT_TYPES_FIELD_NUMBER: builtins.int
             OUTPUT_TYPE_FIELD_NUMBER: builtins.int
-            code: typing.Text
-            "A serialization of the user-defined function's code. The default serialization\n            format is using base64 of cloudpickle.dumps().\n            "
+            SCALAR_FIELD_NUMBER: builtins.int
+            TABULAR_FIELD_NUMBER: builtins.int
+            code: builtins.bytes
+            "A serialization of the user-defined function's code. The default serialization\n            format is using cloudpickle.dumps().\n            "
             summary: typing.Text
             'Summary of the user-defined function.'
             description: typing.Text
@@ -98,13 +112,24 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
                 """Output type of the user-defined function."""
                 pass
 
-            def __init__(self, *, code: typing.Text=..., summary: typing.Text=..., description: typing.Text=..., input_types: typing.Optional[typing.Iterable[substrait.type_pb2.Type]]=..., output_type: typing.Optional[substrait.type_pb2.Type]=...) -> None:
+            @property
+            def scalar(self) -> global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction.ScalarUDF:
                 ...
 
-            def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
+            @property
+            def tabular(self) -> global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction.TabularUDF:
                 ...
 
-            def ClearField(self, field_name: typing_extensions.Literal['code', b'code', 'description', b'description', 'input_types', b'input_types', 'output_type', b'output_type', 'summary', b'summary']) -> None:
+            def __init__(self, *, code: builtins.bytes=..., summary: typing.Text=..., description: typing.Text=..., input_types: typing.Optional[typing.Iterable[substrait.type_pb2.Type]]=..., output_type: typing.Optional[substrait.type_pb2.Type]=..., scalar: typing.Optional[global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction.ScalarUDF]=..., tabular: typing.Optional[global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction.TabularUDF]=...) -> None:
+                ...
+
+            def HasField(self, field_name: typing_extensions.Literal['func_type', b'func_type', 'output_type', b'output_type', 'scalar', b'scalar', 'tabular', b'tabular']) -> builtins.bool:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['code', b'code', 'description', b'description', 'func_type', b'func_type', 'input_types', b'input_types', 'output_type', b'output_type', 'scalar', b'scalar', 'summary', b'summary', 'tabular', b'tabular']) -> None:
+                ...
+
+            def WhichOneof(self, oneof_group: typing_extensions.Literal['func_type', b'func_type']) -> typing.Optional[typing_extensions.Literal['scalar', 'tabular']]:
                 ...
         EXTENSION_URI_REFERENCE_FIELD_NUMBER: builtins.int
         FUNCTION_ANCHOR_FIELD_NUMBER: builtins.int
@@ -115,7 +140,7 @@ class SimpleExtensionDeclaration(google.protobuf.message.Message):
         function_anchor: builtins.int
         'A surrogate key used in the context of a single plan to reference a\n        specific function\n        '
         name: typing.Text
-        'A simple name if there is only one impl for the function within the YAML.\n        A compound name, referencing that includes type short names if there is\n        more than one impl per name in the YAML. A simple name not found in the\n        YAML if "function_code" is given, indicating a user-defined function.\n        '
+        'A simple name if there is only one impl for the function within the YAML.\n        A compound name, referencing that includes type short names if there is\n        more than one impl per name in the YAML. A simple name not found in the\n        YAML if "udf" is given.\n        '
 
         @property
         def udf(self) -> global___SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction:

@@ -1,9 +1,12 @@
+import base64
 from collections import OrderedDict
 
+import cloudpickle
 import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
+from ibis.udf.table import tabular
 from ibis.udf.vectorized import analytic, elementwise
 
 from ibis_substrait.compiler.translate import translate
@@ -13,6 +16,10 @@ from ibis_substrait.proto.substrait import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
 NULLABILITY_REQUIRED = stt.Type.Nullability.NULLABILITY_REQUIRED
+
+_URI = (
+    "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
+)
 
 
 @pytest.fixture
@@ -322,6 +329,7 @@ def demean_and_zscore(v):
 def twice_and_add_2(v):
     """Compute twice and add_2 values of the input"""
     import pyarrow.compute as pc
+
     return pc.multiply(v, 2), pc.add(v, 2)
 
 
@@ -329,6 +337,7 @@ def twice_and_add_2(v):
 def twice(v):
     """Compute twice the value of the input"""
     import pyarrow.compute as pc
+
     return pc.multiply(v, 2)
 
 
@@ -337,7 +346,8 @@ def test_vectorized_udf(t, compiler):
         [
             ("key", "string"),
             ("value", "int64"),
-        ]
+        ],
+        name="unbound_table",
     )
     # win = ibis.window(preceding=None, following=None, group_by='key')
     expr = tbl.mutate(
@@ -345,240 +355,332 @@ def test_vectorized_udf(t, compiler):
         # twice_and_add_2(tbl['value']).destructure()
         twice(tbl["value"]).name("twice")
     )
+
+    code = base64.b64encode(cloudpickle.dumps(twice.func)).decode("utf-8")
+    nullable = {"nullability": "NULLABILITY_NULLABLE"}
+    expected = json_format.ParseDict(
+        {
+            "extensionUris": [{"extensionUriAnchor": 1}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "twice",
+                        "udf": {
+                            "code": code,
+                            "summary": "twice",
+                            "description": "Compute twice the value of the input",
+                            "inputTypes": [{"fp64": nullable}],
+                            "outputType": {"fp64": nullable},
+                            "scalar": {},
+                        },
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "project": {
+                                "input": {
+                                    "read": {
+                                        "baseSchema": {
+                                            "names": ["key", "value"],
+                                            "struct": {
+                                                "types": [
+                                                    {"string": nullable},
+                                                    {"i64": nullable},
+                                                ],
+                                                "nullability": "NULLABILITY_REQUIRED",
+                                            },
+                                        },
+                                        "namedTable": {"names": ["unbound_table"]},
+                                    }
+                                },
+                                "expressions": [
+                                    {
+                                        "selection": {
+                                            "directReference": {"structField": {}},
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "selection": {
+                                            "directReference": {
+                                                "structField": {"field": 1}
+                                            },
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "scalarFunction": {
+                                            "functionReference": 1,
+                                            "args": [
+                                                {
+                                                    "selection": {
+                                                        "directReference": {
+                                                            "structField": {"field": 1}
+                                                        },
+                                                        "rootReference": {},
+                                                    }
+                                                }
+                                            ],
+                                            "outputType": {"fp64": nullable},
+                                        }
+                                    },
+                                ],
+                            }
+                        },
+                        "names": ["key", "value", "twice"],
+                    }
+                }
+            ],
+        },
+        stpln.Plan(),
+    )
     result = compiler.compile(expr)
-    js = to_dict(result)
-    with open("blah", "w") as f:
-        f.write(str(js))
+    assert result == expected
 
 
 def _test_add(add_func, expected):
     from ibis_substrait.compiler.core import SubstraitCompiler
-    compiler = SubstraitCompiler(uri="https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml")
-    tbl = ibis.table({"volume": "double"})
+
+    compiler = SubstraitCompiler(uri=_URI)
+    tbl = ibis.table({"volume": "double"}, name="an_unbound_table")
     expr = add_func(tbl)
     result = compiler.compile(expr)
     assert result == expected
 
 
 def test_udf_add():
-    code = (
-        "gAWVGgMAAAAAAACMF2Nsb3VkcGlja2xlLmNsb3VkcGlja2xllIwNX2J1aWx0aW5fdHlwZZSTlIwKTGFt" +
-        "YmRhVHlwZZSFlFKUKGgCjAhDb2RlVHlwZZSFlFKUKEsBSwBLAEsCSwRLQ0MYZAFkAmwAbQF9AQEAfAGg" +
-        "AnwAZAOhAlMAlCiMJENvbXB1dGUgdHdpY2UgdGhlIHZhbHVlIG9mIHRoZSBpbnB1dJRLAE5LAnSUjA9w" +
-        "eWFycm93LmNvbXB1dGWUjAdjb21wdXRllIwIbXVsdGlwbHmUh5SMAXaUjAJwY5SGlIxgL21udC91c2Vy" +
-        "MS90c2NvbnRyYWN0L2dpdGh1Yi9ydHBzdy9pYmlzLXN1YnN0cmFpdC9pYmlzX3N1YnN0cmFpdC90ZXN0" +
-        "cy9jb21waWxlci90ZXN0X2NvbXBpbGVyLnB5lIwFdHdpY2WUTUgBQwQAAwwBlCkpdJRSlH2UKIwLX19w" +
-        "YWNrYWdlX1+UjB1pYmlzX3N1YnN0cmFpdC50ZXN0cy5jb21waWxlcpSMCF9fbmFtZV9flIwraWJpc19z" +
-        "dWJzdHJhaXQudGVzdHMuY29tcGlsZXIudGVzdF9jb21waWxlcpSMCF9fZmlsZV9flIxgL21udC91c2Vy" +
-        "MS90c2NvbnRyYWN0L2dpdGh1Yi9ydHBzdy9pYmlzLXN1YnN0cmFpdC9pYmlzX3N1YnN0cmFpdC90ZXN0" +
-        "cy9jb21waWxlci90ZXN0X2NvbXBpbGVyLnB5lHVOTk50lFKUjBxjbG91ZHBpY2tsZS5jbG91ZHBpY2ts" +
-        "ZV9mYXN0lIwSX2Z1bmN0aW9uX3NldHN0YXRllJOUaCB9lH2UKGgbaBSMDF9fcXVhbG5hbWVfX5RoFIwP" +
-        "X19hbm5vdGF0aW9uc19flH2UjA5fX2t3ZGVmYXVsdHNfX5ROjAxfX2RlZmF1bHRzX1+UTowKX19tb2R1" +
-        "bGVfX5RoHIwHX19kb2NfX5RoCowLX19jbG9zdXJlX1+UTowXX2Nsb3VkcGlja2xlX3N1Ym1vZHVsZXOU" +
-        "XZSMC19fZ2xvYmFsc19flH2UdYaUhlIwLg=="
-    )
+    code = base64.b64encode(cloudpickle.dumps(twice.func)).decode("utf-8")
+    nullable = {"nullability": "NULLABILITY_NULLABLE"}
     expected = json_format.ParseDict(
         {
-          "extensionUris": [
-            {
-              "extensionUriAnchor": 1,
-              "uri": "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
-            }
-          ],
-          "extensions": [
-            {
-              "extensionFunction": {
-                "extensionUriReference": 1,
-                "functionAnchor": 1,
-                "name": "twice",
-                "udf": {
-                  "code": code,
-                  "summary": "twice",
-                  "description": "Compute twice the value of the input",
-                  "inputTypes": [
-                    {
-                      "fp64": {
-                        "nullability": "NULLABILITY_NULLABLE"
-                      }
-                    }
-                  ],
-                  "outputType": {
-                    "fp64": {
-                      "nullability": "NULLABILITY_NULLABLE"
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "relations": [
-            {
-              "root": {
-                "input": {
-                  "project": {
-                    "input": {
-                      "read": {
-                        "baseSchema": {
-                          "names": [
-                            "volume"
-                          ],
-                          "struct": {
-                            "types": [
-                              {
-                                "fp64": {
-                                  "nullability": "NULLABILITY_NULLABLE"
-                                }
-                              }
+            "extensionUris": [{"extensionUriAnchor": 1, "uri": _URI}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "twice",
+                        "udf": {
+                            "code": code,
+                            "summary": "twice",
+                            "description": "Compute twice the value of the input",
+                            "inputTypes": [
+                                {"fp64": {"nullability": "NULLABILITY_NULLABLE"}}
                             ],
-                            "nullability": "NULLABILITY_REQUIRED"
-                          }
+                            "outputType": {
+                                "fp64": {"nullability": "NULLABILITY_NULLABLE"}
+                            },
+                            "scalar": {},
                         },
-                        "namedTable": {
-                          "names": [
-                            "unbound_table_0"
-                          ]
-                        }
-                      }
-                    },
-                    "expressions": [
-                      {
-                        "selection": {
-                          "directReference": {
-                            "structField": {}
-                          },
-                          "rootReference": {}
-                        }
-                      },
-                      {
-                        "scalarFunction": {
-                          "functionReference": 1,
-                          "args": [
-                            {
-                              "selection": {
-                                "directReference": {
-                                  "structField": {}
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "project": {
+                                "input": {
+                                    "read": {
+                                        "baseSchema": {
+                                            "names": ["volume"],
+                                            "struct": {
+                                                "types": [{"fp64": nullable}],
+                                                "nullability": "NULLABILITY_REQUIRED",
+                                            },
+                                        },
+                                        "namedTable": {"names": ["an_unbound_table"]},
+                                    }
                                 },
-                                "rootReference": {}
-                              }
+                                "expressions": [
+                                    {
+                                        "selection": {
+                                            "directReference": {"structField": {}},
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "scalarFunction": {
+                                            "functionReference": 1,
+                                            "args": [
+                                                {
+                                                    "selection": {
+                                                        "directReference": {
+                                                            "structField": {}
+                                                        },
+                                                        "rootReference": {},
+                                                    }
+                                                }
+                                            ],
+                                            "outputType": {"fp64": nullable},
+                                        }
+                                    },
+                                ],
                             }
-                          ],
-                          "outputType": {
-                            "fp64": {
-                              "nullability": "NULLABILITY_NULLABLE"
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                },
-                "names": [
-                  "volume",
-                  "twice_volume"
-                ]
-              }
-            }
-          ]
+                        },
+                        "names": ["volume", "twice_volume"],
+                    }
+                }
+            ],
         },
         stpln.Plan(),
     )
-    add_func = lambda tbl: tbl.mutate(twice(tbl["volume"]).name("twice_volume"))
+
+    def add_func(tbl):
+        return tbl.mutate(twice(tbl["volume"]).name("twice_volume"))
+
     _test_add(add_func, expected)
 
 
 def test_reg_add():
+    nullable = {"nullability": "NULLABILITY_NULLABLE"}
     expected = json_format.ParseDict(
         {
-          "extensionUris": [
-            {
-              "extensionUriAnchor": 1,
-              "uri": "https://github.com/apache/arrow/blob/master/format/substrait/extension_types.yaml"
-            }
-          ],
-          "extensions": [
-            {
-              "extensionFunction": {
-                "extensionUriReference": 1,
-                "functionAnchor": 1,
-                "name": "*"
-              }
-            }
-          ],
-          "relations": [
-            {
-              "root": {
-                "input": {
-                  "project": {
-                    "input": {
-                      "read": {
-                        "baseSchema": {
-                          "names": [
-                            "volume"
-                          ],
-                          "struct": {
-                            "types": [
-                              {
-                                "fp64": {
-                                  "nullability": "NULLABILITY_NULLABLE"
-                                }
-                              }
-                            ],
-                            "nullability": "NULLABILITY_REQUIRED"
-                          }
-                        },
-                        "namedTable": {
-                          "names": [
-                            "unbound_table_0"
-                          ]
-                        }
-                      }
-                    },
-                    "expressions": [
-                      {
-                        "selection": {
-                          "directReference": {
-                            "structField": {}
-                          },
-                          "rootReference": {}
-                        }
-                      },
-                      {
-                        "scalarFunction": {
-                          "functionReference": 1,
-                          "args": [
-                            {
-                              "selection": {
-                                "directReference": {
-                                  "structField": {}
+            "extensionUris": [{"extensionUriAnchor": 1, "uri": _URI}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "*",
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "project": {
+                                "input": {
+                                    "read": {
+                                        "baseSchema": {
+                                            "names": ["volume"],
+                                            "struct": {
+                                                "types": [{"fp64": nullable}],
+                                                "nullability": "NULLABILITY_REQUIRED",
+                                            },
+                                        },
+                                        "namedTable": {"names": ["an_unbound_table"]},
+                                    }
                                 },
-                                "rootReference": {}
-                              }
-                            },
-                            {
-                              "literal": {
-                                "i8": 2
-                              }
+                                "expressions": [
+                                    {
+                                        "selection": {
+                                            "directReference": {"structField": {}},
+                                            "rootReference": {},
+                                        }
+                                    },
+                                    {
+                                        "scalarFunction": {
+                                            "functionReference": 1,
+                                            "args": [
+                                                {
+                                                    "selection": {
+                                                        "directReference": {
+                                                            "structField": {}
+                                                        },
+                                                        "rootReference": {},
+                                                    }
+                                                },
+                                                {"literal": {"i8": 2}},
+                                            ],
+                                            "outputType": {"fp64": nullable},
+                                        }
+                                    },
+                                ],
                             }
-                          ],
-                          "outputType": {
-                            "fp64": {
-                              "nullability": "NULLABILITY_NULLABLE"
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                },
-                "names": [
-                  "volume",
-                  "twice_volume"
-                ]
-              }
-            }
-          ]
+                        },
+                        "names": ["volume", "twice_volume"],
+                    }
+                }
+            ],
         },
         stpln.Plan(),
     )
-    add_func = lambda tbl: tbl.mutate(twice_volume=tbl["volume"] * 2)
+
+    def add_func(tbl):
+        return tbl.mutate(twice_volume=tbl["volume"] * 2)
+
     _test_add(add_func, expected)
+
+
+@tabular(
+    output_type=dt.Struct(["x", "y"], [dt.double, dt.double]),
+)
+def x_y_table():
+    """Source a table with x and y columns"""
+    import numpy as np
+    import pandas as pd
+
+    return pd.DataFrame(
+        np.array([[1, 2], [3, 4], [5, 6]], dtype=np.float64), columns=["x", "y"]
+    )
+
+
+def test_udt():
+    from ibis_substrait.compiler.core import SubstraitCompiler
+
+    compiler = SubstraitCompiler(uri=_URI)
+    expr = x_y_table()
+    code = base64.b64encode(cloudpickle.dumps(x_y_table.func)).decode("utf-8")
+    nullable = {"nullability": "NULLABILITY_NULLABLE"}
+    expected = json_format.ParseDict(
+        {
+            "extensionUris": [{"extensionUriAnchor": 1, "uri": _URI}],
+            "extensions": [
+                {
+                    "extensionFunction": {
+                        "extensionUriReference": 1,
+                        "functionAnchor": 1,
+                        "name": "x_y_table",
+                        "udf": {
+                            "code": code,
+                            "summary": "x_y_table",
+                            "description": "Source a table with x and y columns",
+                            "inputTypes": [],
+                            "outputType": {
+                                "struct": {
+                                    "types": [
+                                        {"fp64": nullable},
+                                        {"fp64": nullable},
+                                    ],
+                                    "nullability": "NULLABILITY_NULLABLE",
+                                }
+                            },
+                            "tabular": {},
+                        },
+                    }
+                }
+            ],
+            "relations": [
+                {
+                    "root": {
+                        "input": {
+                            "read": {
+                                "baseSchema": {
+                                    "names": ["x", "y"],
+                                    "struct": {
+                                        "types": [
+                                            {"fp64": nullable},
+                                            {"fp64": nullable},
+                                        ],
+                                        "nullability": "NULLABILITY_REQUIRED",
+                                    },
+                                },
+                                "udt": {"function_reference": 1},
+                            }
+                        },
+                        "names": ["x", "y"],
+                    }
+                }
+            ],
+        },
+        stpln.Plan(),
+    )
+    result = compiler.compile(expr)
+    assert result == expected

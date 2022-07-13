@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import functools
 import itertools
 from typing import Any, Hashable, Iterator
 
+import cloudpickle
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
+from ibis.expr.operations.tabular import TabularUserDefinedFunction
+from ibis.expr.operations.vectorized import VectorizedUDF
 
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import plan_pb2 as stp
@@ -19,6 +23,72 @@ from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
     variant_name = message.WhichOneof(oneof_name)
     return variant_name, getattr(message, variant_name)
+
+
+def _dict(**kwargs: Any) -> Any:
+    return kwargs
+
+
+@functools.singledispatch
+def _function_name(*args: Any, **kwargs: Any) -> Any:
+    raise NotImplementedError(*args)
+
+
+@_function_name.register(ops.ValueOp)
+def _default_fname(op: ops.ValueOp) -> str:
+    return IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+
+
+@_function_name.register(VectorizedUDF)
+@_function_name.register(TabularUserDefinedFunction)
+def _udf_fname(op: VectorizedUDF | TabularUserDefinedFunction) -> str:
+    return op.func.__wrapped__.__name__
+
+
+@functools.singledispatch
+def _function_extension_type(*args: Any, **kwargs: Any) -> Any:
+    raise NotImplementedError(*args)
+
+
+@_function_extension_type.register(VectorizedUDF)
+def _udf_type_vectorized(op: VectorizedUDF) -> dict:
+    return {"scalar": {}}
+
+
+@_function_extension_type.register(TabularUserDefinedFunction)
+def _udf_type_tabular(op: TabularUserDefinedFunction) -> dict:
+    return {"tabular": {}}
+
+
+@functools.singledispatch
+def _function_extension_kwds(*args: Any, **kwargs: Any) -> Any:
+    raise NotImplementedError(*args)
+
+
+@_function_extension_kwds.register(ops.ValueOp)
+def _default_fext_kwds(op: ops.ValueOp, function_extension_kwds: dict) -> dict:
+    return function_extension_kwds
+
+
+@_function_extension_kwds.register(VectorizedUDF)
+@_function_extension_kwds.register(TabularUserDefinedFunction)
+def _udf_fext_kwds(
+    op: VectorizedUDF | TabularUserDefinedFunction, function_extension_kwds: dict
+) -> dict:
+    from .translate import translate
+
+    udf_dict = _dict(
+        code=cloudpickle.dumps(op.func.__wrapped__),
+        summary=(getattr(op, "func_summary", None) or op.func.__wrapped__.__name__),
+        description=(getattr(op, "func_desc", None) or op.func.__wrapped__.__doc__),
+        input_types=[translate(typ) for typ in op.input_type],
+        output_type=translate(op.return_type),
+    )
+    udf_dict.update(_function_extension_type(op))
+    function_extension_kwds[
+        "udf"
+    ] = ste.SimpleExtensionDeclaration.ExtensionFunction.UserDefinedFunction(**udf_dict)
+    return function_extension_kwds
 
 
 class SubstraitCompiler:
@@ -65,16 +135,8 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
-        from .translate import translate
-
         op = expr.op()
-        if isinstance(op, ops.VectorizedUDF):
-            op_name = op.func.__wrapped__.__name__
-            import base64
-
-            import cloudpickle
-        else:
-            op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+        op_name = _function_name(op)
         try:
             function_extension = self.function_extensions[op_name]
         except KeyError:
@@ -82,22 +144,14 @@ class SubstraitCompiler:
             function_extension = self.function_extensions[
                 op_name
             ] = ste_decl.ExtensionFunction(
-                extension_uri_reference=self.extension_uri.extension_uri_anchor,
-                function_anchor=next(self.id_generator),
-                name=op_name,
-                udf=None
-                if not isinstance(op, ops.VectorizedUDF)
-                else (
-                    ste_decl.ExtensionFunction.UserDefinedFunction(
-                        code=base64.b64encode(
-                            cloudpickle.dumps(op.func.__wrapped__)
-                        ).decode("utf-8"),
-                        summary=op.func_summary or op.func.__wrapped__.__name__,
-                        description=op.func_desc or op.func.__wrapped__.__doc__,
-                        input_types=[translate(typ) for typ in op.input_type],
-                        output_type=translate(op.return_type),
-                    )
-                ),
+                **_function_extension_kwds(
+                    op,
+                    _dict(
+                        extension_uri_reference=self.extension_uri.extension_uri_anchor,
+                        function_anchor=next(self.id_generator),
+                        name=op_name,
+                    ),
+                )
             )
         return function_extension.function_anchor
 

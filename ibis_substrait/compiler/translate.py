@@ -14,7 +14,7 @@ import glob
 import itertools
 import operator
 import uuid
-from typing import Any, Dict, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -22,6 +22,8 @@ import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 from ibis import util
+from ibis.expr.operations.tabular import TabularUserDefinedFunction
+from ibis.expr.operations.vectorized import VectorizedUDF
 from packaging import version
 
 from ..proto.substrait import algebra_pb2 as stalg
@@ -497,9 +499,9 @@ def value_op(
     )
 
 
-@translate.register(ops.VectorizedUDF)
+@translate.register(VectorizedUDF)
 def vectorized_udf_op(
-    op: ops.VectorizedUDF,
+    op: VectorizedUDF,
     expr: ir.ValueExpr,
     compiler: SubstraitCompiler,
     **kwargs: Any,
@@ -666,6 +668,25 @@ def unbound_table(
             # TODO: projection,
             base_schema=translate(op.schema),
             named_table=stalg.ReadRel.NamedTable(names=[op.name]),
+        )
+    )
+
+
+@translate.register(TabularUserDefinedFunction)
+def udf_table(
+    op: TabularUserDefinedFunction,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Rel:
+    return stalg.Rel(
+        read=stalg.ReadRel(
+            # TODO: filter,
+            # TODO: projection,
+            base_schema=translate(op.schema),
+            udt=stalg.ReadRel.UserDefinedTable(
+                function_reference=compiler.function_id(expr),
+            ),
         )
     )
 
