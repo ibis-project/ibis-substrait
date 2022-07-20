@@ -4,6 +4,7 @@ isort:skip_file
 """
 import builtins
 import google.protobuf.descriptor
+import google.protobuf.empty_pb2
 import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
@@ -365,6 +366,64 @@ class Type(google.protobuf.message.Message):
 
         def ClearField(self, field_name: typing_extensions.Literal['key', b'key', 'nullability', b'nullability', 'type_variation_reference', b'type_variation_reference', 'value', b'value']) -> None:
             ...
+
+    class UserDefined(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        TYPE_REFERENCE_FIELD_NUMBER: builtins.int
+        TYPE_VARIATION_REFERENCE_FIELD_NUMBER: builtins.int
+        NULLABILITY_FIELD_NUMBER: builtins.int
+        TYPE_PARAMETERS_FIELD_NUMBER: builtins.int
+        type_reference: builtins.int
+        type_variation_reference: builtins.int
+        nullability: global___Type.Nullability.ValueType
+
+        @property
+        def type_parameters(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Type.Parameter]:
+            ...
+
+        def __init__(self, *, type_reference: builtins.int=..., type_variation_reference: builtins.int=..., nullability: global___Type.Nullability.ValueType=..., type_parameters: typing.Optional[typing.Iterable[global___Type.Parameter]]=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_parameters', b'type_parameters', 'type_reference', b'type_reference', 'type_variation_reference', b'type_variation_reference']) -> None:
+            ...
+
+    class Parameter(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        NULL_FIELD_NUMBER: builtins.int
+        DATA_TYPE_FIELD_NUMBER: builtins.int
+        BOOLEAN_FIELD_NUMBER: builtins.int
+        INTEGER_FIELD_NUMBER: builtins.int
+        ENUM_FIELD_NUMBER: builtins.int
+        STRING_FIELD_NUMBER: builtins.int
+
+        @property
+        def null(self) -> google.protobuf.empty_pb2.Empty:
+            """Explicitly null/unspecified parameter, to select the default value (if
+            any).
+            """
+            pass
+
+        @property
+        def data_type(self) -> global___Type:
+            """Data type parameters, like the i32 in LIST<i32>."""
+            pass
+        boolean: builtins.bool
+        'Value parameters, like the 10 in VARCHAR<10>.'
+        integer: builtins.int
+        enum: typing.Text
+        string: typing.Text
+
+        def __init__(self, *, null: typing.Optional[google.protobuf.empty_pb2.Empty]=..., data_type: typing.Optional[global___Type]=..., boolean: builtins.bool=..., integer: builtins.int=..., enum: typing.Text=..., string: typing.Text=...) -> None:
+            ...
+
+        def HasField(self, field_name: typing_extensions.Literal['boolean', b'boolean', 'data_type', b'data_type', 'enum', b'enum', 'integer', b'integer', 'null', b'null', 'parameter', b'parameter', 'string', b'string']) -> builtins.bool:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['boolean', b'boolean', 'data_type', b'data_type', 'enum', b'enum', 'integer', b'integer', 'null', b'null', 'parameter', b'parameter', 'string', b'string']) -> None:
+            ...
+
+        def WhichOneof(self, oneof_group: typing_extensions.Literal['parameter', b'parameter']) -> typing.Optional[typing_extensions.Literal['null', 'data_type', 'boolean', 'integer', 'enum', 'string']]:
+            ...
     BOOL_FIELD_NUMBER: builtins.int
     I8_FIELD_NUMBER: builtins.int
     I16_FIELD_NUMBER: builtins.int
@@ -388,6 +447,7 @@ class Type(google.protobuf.message.Message):
     STRUCT_FIELD_NUMBER: builtins.int
     LIST_FIELD_NUMBER: builtins.int
     MAP_FIELD_NUMBER: builtins.int
+    USER_DEFINED_FIELD_NUMBER: builtins.int
     USER_DEFINED_TYPE_REFERENCE_FIELD_NUMBER: builtins.int
 
     @property
@@ -481,18 +541,23 @@ class Type(google.protobuf.message.Message):
     @property
     def map(self) -> global___Type.Map:
         ...
+
+    @property
+    def user_defined(self) -> global___Type.UserDefined:
+        ...
     user_defined_type_reference: builtins.int
+    'Deprecated in favor of user_defined, which allows nullability and\n    variations to be specified. If user_defined_type_reference is\n    encountered, treat it as being non-nullable and having the default\n    variation.\n    '
 
-    def __init__(self, *, bool: typing.Optional[global___Type.Boolean]=..., i8: typing.Optional[global___Type.I8]=..., i16: typing.Optional[global___Type.I16]=..., i32: typing.Optional[global___Type.I32]=..., i64: typing.Optional[global___Type.I64]=..., fp32: typing.Optional[global___Type.FP32]=..., fp64: typing.Optional[global___Type.FP64]=..., string: typing.Optional[global___Type.String]=..., binary: typing.Optional[global___Type.Binary]=..., timestamp: typing.Optional[global___Type.Timestamp]=..., date: typing.Optional[global___Type.Date]=..., time: typing.Optional[global___Type.Time]=..., interval_year: typing.Optional[global___Type.IntervalYear]=..., interval_day: typing.Optional[global___Type.IntervalDay]=..., timestamp_tz: typing.Optional[global___Type.TimestampTZ]=..., uuid: typing.Optional[global___Type.UUID]=..., fixed_char: typing.Optional[global___Type.FixedChar]=..., varchar: typing.Optional[global___Type.VarChar]=..., fixed_binary: typing.Optional[global___Type.FixedBinary]=..., decimal: typing.Optional[global___Type.Decimal]=..., struct: typing.Optional[global___Type.Struct]=..., list: typing.Optional[global___Type.List]=..., map: typing.Optional[global___Type.Map]=..., user_defined_type_reference: builtins.int=...) -> None:
+    def __init__(self, *, bool: typing.Optional[global___Type.Boolean]=..., i8: typing.Optional[global___Type.I8]=..., i16: typing.Optional[global___Type.I16]=..., i32: typing.Optional[global___Type.I32]=..., i64: typing.Optional[global___Type.I64]=..., fp32: typing.Optional[global___Type.FP32]=..., fp64: typing.Optional[global___Type.FP64]=..., string: typing.Optional[global___Type.String]=..., binary: typing.Optional[global___Type.Binary]=..., timestamp: typing.Optional[global___Type.Timestamp]=..., date: typing.Optional[global___Type.Date]=..., time: typing.Optional[global___Type.Time]=..., interval_year: typing.Optional[global___Type.IntervalYear]=..., interval_day: typing.Optional[global___Type.IntervalDay]=..., timestamp_tz: typing.Optional[global___Type.TimestampTZ]=..., uuid: typing.Optional[global___Type.UUID]=..., fixed_char: typing.Optional[global___Type.FixedChar]=..., varchar: typing.Optional[global___Type.VarChar]=..., fixed_binary: typing.Optional[global___Type.FixedBinary]=..., decimal: typing.Optional[global___Type.Decimal]=..., struct: typing.Optional[global___Type.Struct]=..., list: typing.Optional[global___Type.List]=..., map: typing.Optional[global___Type.Map]=..., user_defined: typing.Optional[global___Type.UserDefined]=..., user_defined_type_reference: builtins.int=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'user_defined_type_reference', b'user_defined_type_reference', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'user_defined', b'user_defined', 'user_defined_type_reference', b'user_defined_type_reference', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'user_defined_type_reference', b'user_defined_type_reference', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'user_defined', b'user_defined', 'user_defined_type_reference', b'user_defined_type_reference', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined_type_reference']]:
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined', 'user_defined_type_reference']]:
         ...
 global___Type = Type
 

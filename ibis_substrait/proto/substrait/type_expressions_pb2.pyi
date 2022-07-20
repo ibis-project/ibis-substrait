@@ -191,6 +191,21 @@ class DerivationExpression(google.protobuf.message.Message):
         def ClearField(self, field_name: typing_extensions.Literal['key', b'key', 'nullability', b'nullability', 'value', b'value', 'variation_pointer', b'variation_pointer']) -> None:
             ...
 
+    class ExpressionUserDefined(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        TYPE_POINTER_FIELD_NUMBER: builtins.int
+        VARIATION_POINTER_FIELD_NUMBER: builtins.int
+        NULLABILITY_FIELD_NUMBER: builtins.int
+        type_pointer: builtins.int
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
+
+        def __init__(self, *, type_pointer: builtins.int=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_pointer', b'type_pointer', 'variation_pointer', b'variation_pointer']) -> None:
+            ...
+
     class IfElse(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
         IF_CONDITION_FIELD_NUMBER: builtins.int
@@ -374,6 +389,7 @@ class DerivationExpression(google.protobuf.message.Message):
     STRUCT_FIELD_NUMBER: builtins.int
     LIST_FIELD_NUMBER: builtins.int
     MAP_FIELD_NUMBER: builtins.int
+    USER_DEFINED_FIELD_NUMBER: builtins.int
     USER_DEFINED_POINTER_FIELD_NUMBER: builtins.int
     TYPE_PARAMETER_NAME_FIELD_NUMBER: builtins.int
     INTEGER_PARAMETER_NAME_FIELD_NUMBER: builtins.int
@@ -474,7 +490,12 @@ class DerivationExpression(google.protobuf.message.Message):
     @property
     def map(self) -> global___DerivationExpression.ExpressionMap:
         ...
+
+    @property
+    def user_defined(self) -> global___DerivationExpression.ExpressionUserDefined:
+        ...
     user_defined_pointer: builtins.int
+    'Deprecated in favor of user_defined, which allows nullability and\n    variations to be specified. If user_defined_pointer is encountered,\n    treat it as being non-nullable and having the default variation.\n    '
     type_parameter_name: typing.Text
     integer_parameter_name: typing.Text
     integer_literal: builtins.int
@@ -495,15 +516,15 @@ class DerivationExpression(google.protobuf.message.Message):
     def return_program(self) -> global___DerivationExpression.ReturnProgram:
         ...
 
-    def __init__(self, *, bool: typing.Optional[substrait.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.type_pb2.Type.String]=..., binary: typing.Optional[substrait.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.type_pb2.Type.Date]=..., time: typing.Optional[substrait.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___DerivationExpression.ExpressionFixedChar]=..., varchar: typing.Optional[global___DerivationExpression.ExpressionVarChar]=..., fixed_binary: typing.Optional[global___DerivationExpression.ExpressionFixedBinary]=..., decimal: typing.Optional[global___DerivationExpression.ExpressionDecimal]=..., struct: typing.Optional[global___DerivationExpression.ExpressionStruct]=..., list: typing.Optional[global___DerivationExpression.ExpressionList]=..., map: typing.Optional[global___DerivationExpression.ExpressionMap]=..., user_defined_pointer: builtins.int=..., type_parameter_name: typing.Text=..., integer_parameter_name: typing.Text=..., integer_literal: builtins.int=..., unary_op: typing.Optional[global___DerivationExpression.UnaryOp]=..., binary_op: typing.Optional[global___DerivationExpression.BinaryOp]=..., if_else: typing.Optional[global___DerivationExpression.IfElse]=..., return_program: typing.Optional[global___DerivationExpression.ReturnProgram]=...) -> None:
+    def __init__(self, *, bool: typing.Optional[substrait.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.type_pb2.Type.String]=..., binary: typing.Optional[substrait.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.type_pb2.Type.Date]=..., time: typing.Optional[substrait.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___DerivationExpression.ExpressionFixedChar]=..., varchar: typing.Optional[global___DerivationExpression.ExpressionVarChar]=..., fixed_binary: typing.Optional[global___DerivationExpression.ExpressionFixedBinary]=..., decimal: typing.Optional[global___DerivationExpression.ExpressionDecimal]=..., struct: typing.Optional[global___DerivationExpression.ExpressionStruct]=..., list: typing.Optional[global___DerivationExpression.ExpressionList]=..., map: typing.Optional[global___DerivationExpression.ExpressionMap]=..., user_defined: typing.Optional[global___DerivationExpression.ExpressionUserDefined]=..., user_defined_pointer: builtins.int=..., type_parameter_name: typing.Text=..., integer_parameter_name: typing.Text=..., integer_literal: builtins.int=..., unary_op: typing.Optional[global___DerivationExpression.UnaryOp]=..., binary_op: typing.Optional[global___DerivationExpression.BinaryOp]=..., if_else: typing.Optional[global___DerivationExpression.IfElse]=..., return_program: typing.Optional[global___DerivationExpression.ReturnProgram]=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'binary_op', b'binary_op', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'if_else', b'if_else', 'integer_literal', b'integer_literal', 'integer_parameter_name', b'integer_parameter_name', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'return_program', b'return_program', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter_name', b'type_parameter_name', 'unary_op', b'unary_op', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'binary_op', b'binary_op', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'if_else', b'if_else', 'integer_literal', b'integer_literal', 'integer_parameter_name', b'integer_parameter_name', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'return_program', b'return_program', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter_name', b'type_parameter_name', 'unary_op', b'unary_op', 'user_defined', b'user_defined', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'binary_op', b'binary_op', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'if_else', b'if_else', 'integer_literal', b'integer_literal', 'integer_parameter_name', b'integer_parameter_name', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'return_program', b'return_program', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter_name', b'type_parameter_name', 'unary_op', b'unary_op', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'binary_op', b'binary_op', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'if_else', b'if_else', 'integer_literal', b'integer_literal', 'integer_parameter_name', b'integer_parameter_name', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'return_program', b'return_program', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter_name', b'type_parameter_name', 'unary_op', b'unary_op', 'user_defined', b'user_defined', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined_pointer', 'type_parameter_name', 'integer_parameter_name', 'integer_literal', 'unary_op', 'binary_op', 'if_else', 'return_program']]:
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined', 'user_defined_pointer', 'type_parameter_name', 'integer_parameter_name', 'integer_literal', 'unary_op', 'binary_op', 'if_else', 'return_program']]:
         ...
 global___DerivationExpression = DerivationExpression

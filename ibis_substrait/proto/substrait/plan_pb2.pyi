@@ -7,7 +7,6 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
 from .. import substrait
-from .. import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -20,7 +19,7 @@ class PlanRel(google.protobuf.message.Message):
 
     @property
     def rel(self) -> substrait.algebra_pb2.Rel:
-        """Any relation"""
+        """Any relation (used for references and CTEs)"""
         pass
 
     @property
