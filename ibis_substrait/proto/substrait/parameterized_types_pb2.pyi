@@ -242,6 +242,21 @@ class ParameterizedType(google.protobuf.message.Message):
         def ClearField(self, field_name: typing_extensions.Literal['key', b'key', 'nullability', b'nullability', 'value', b'value', 'variation_pointer', b'variation_pointer']) -> None:
             ...
 
+    class ParameterizedUserDefined(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        TYPE_POINTER_FIELD_NUMBER: builtins.int
+        VARIATION_POINTER_FIELD_NUMBER: builtins.int
+        NULLABILITY_FIELD_NUMBER: builtins.int
+        type_pointer: builtins.int
+        variation_pointer: builtins.int
+        nullability: substrait.type_pb2.Type.Nullability.ValueType
+
+        def __init__(self, *, type_pointer: builtins.int=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_pointer', b'type_pointer', 'variation_pointer', b'variation_pointer']) -> None:
+            ...
+
     class IntegerOption(google.protobuf.message.Message):
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
         LITERAL_FIELD_NUMBER: builtins.int
@@ -286,6 +301,7 @@ class ParameterizedType(google.protobuf.message.Message):
     STRUCT_FIELD_NUMBER: builtins.int
     LIST_FIELD_NUMBER: builtins.int
     MAP_FIELD_NUMBER: builtins.int
+    USER_DEFINED_FIELD_NUMBER: builtins.int
     USER_DEFINED_POINTER_FIELD_NUMBER: builtins.int
     TYPE_PARAMETER_FIELD_NUMBER: builtins.int
 
@@ -380,21 +396,26 @@ class ParameterizedType(google.protobuf.message.Message):
     @property
     def map(self) -> global___ParameterizedType.ParameterizedMap:
         ...
+
+    @property
+    def user_defined(self) -> global___ParameterizedType.ParameterizedUserDefined:
+        ...
     user_defined_pointer: builtins.int
+    'Deprecated in favor of user_defined, which allows nullability and\n    variations to be specified. If user_defined_pointer is encountered,\n    treat it as being non-nullable and having the default variation.\n    '
 
     @property
     def type_parameter(self) -> global___ParameterizedType.TypeParameter:
         ...
 
-    def __init__(self, *, bool: typing.Optional[substrait.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.type_pb2.Type.String]=..., binary: typing.Optional[substrait.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.type_pb2.Type.Date]=..., time: typing.Optional[substrait.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___ParameterizedType.ParameterizedFixedChar]=..., varchar: typing.Optional[global___ParameterizedType.ParameterizedVarChar]=..., fixed_binary: typing.Optional[global___ParameterizedType.ParameterizedFixedBinary]=..., decimal: typing.Optional[global___ParameterizedType.ParameterizedDecimal]=..., struct: typing.Optional[global___ParameterizedType.ParameterizedStruct]=..., list: typing.Optional[global___ParameterizedType.ParameterizedList]=..., map: typing.Optional[global___ParameterizedType.ParameterizedMap]=..., user_defined_pointer: builtins.int=..., type_parameter: typing.Optional[global___ParameterizedType.TypeParameter]=...) -> None:
+    def __init__(self, *, bool: typing.Optional[substrait.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.type_pb2.Type.String]=..., binary: typing.Optional[substrait.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.type_pb2.Type.Date]=..., time: typing.Optional[substrait.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___ParameterizedType.ParameterizedFixedChar]=..., varchar: typing.Optional[global___ParameterizedType.ParameterizedVarChar]=..., fixed_binary: typing.Optional[global___ParameterizedType.ParameterizedFixedBinary]=..., decimal: typing.Optional[global___ParameterizedType.ParameterizedDecimal]=..., struct: typing.Optional[global___ParameterizedType.ParameterizedStruct]=..., list: typing.Optional[global___ParameterizedType.ParameterizedList]=..., map: typing.Optional[global___ParameterizedType.ParameterizedMap]=..., user_defined: typing.Optional[global___ParameterizedType.ParameterizedUserDefined]=..., user_defined_pointer: builtins.int=..., type_parameter: typing.Optional[global___ParameterizedType.TypeParameter]=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter', b'type_parameter', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter', b'type_parameter', 'user_defined', b'user_defined', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter', b'type_parameter', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter', b'type_parameter', 'user_defined', b'user_defined', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> None:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined_pointer', 'type_parameter']]:
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['bool', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year', 'interval_day', 'timestamp_tz', 'uuid', 'fixed_char', 'varchar', 'fixed_binary', 'decimal', 'struct', 'list', 'map', 'user_defined', 'user_defined_pointer', 'type_parameter']]:
         ...
 global___ParameterizedType = ParameterizedType
