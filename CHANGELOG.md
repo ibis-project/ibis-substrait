@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.3](https://github.com/ibis-project/ibis-substrait/compare/v2.9.2...v2.9.3) (2022-07-21)
+
+
+### Bug Fixes
+
+* **substrait:** update substrait to version 0.8 ([c06a9b5](https://github.com/ibis-project/ibis-substrait/commit/c06a9b5dfd1c09f0b5e05b456da9569038cb420a))
+
 ## [2.9.2](https://github.com/ibis-project/ibis-substrait/compare/v2.9.1...v2.9.2) (2022-06-30)
 
 
