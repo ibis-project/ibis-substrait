@@ -143,13 +143,13 @@ def _get_fields(dtype: dt.DataType) -> Iterator[tuple[str | None, dt.DataType]]:
     Examples
     --------
     >>> import ibis.expr.datatypes as dt
-    >>> array_type = dt.parse_type("array<int64>")
+    >>> array_type = dt.parse("array<int64>")
     >>> list(_get_fields(array_type))  # doctest: +SKIP
     [(None, int64)]
-    >>> map_type = dt.parse_type("map<string, string>")
+    >>> map_type = dt.parse("map<string, string>")
     >>> list(_get_fields(map_type))
     [(None, String(nullable=True)), (None, String(nullable=True))]
-    >>> struct_type = dt.parse_type("struct<a: int64, b: map<int64, float64>>")
+    >>> struct_type = dt.parse("struct<a: int64, b: map<int64, float64>>")
     >>> list(_get_fields(struct_type))  # doctest: +SKIP
     [('b', Map(key_type=int64, value_type=float64, nullable=True)), ('a', int64)]
     """
