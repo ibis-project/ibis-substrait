@@ -786,7 +786,7 @@ tests = ["cython", "littleutils", "pygments", "typeguard", "pytest"]
 
 [[package]]
 name = "substrait-validator"
-version = "0.0.4"
+version = "0.0.7"
 description = "Validator for Substrait query plans"
 category = "dev"
 optional = false
@@ -894,7 +894,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "0c209c95899bd704cbc55be2138e596009aa5e1ecfc9ca8ffa6dd81b9b1ab862"
+content-hash = "625e49480a660bb792498d4cac60d9f34c7ae8197e3fe55847819c762e421e0a"
 
 [metadata.files]
 appnope = [
@@ -1441,21 +1441,21 @@ stack-data = [
     {file = "stack_data-0.3.0.tar.gz", hash = "sha256:77bec1402dcd0987e9022326473fdbcc767304892a533ed8c29888dacb7dddbc"},
 ]
 substrait-validator = [
-    {file = "substrait_validator-0.0.4-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:5187978e610d8207c531eeb713658a22938ed93024757f6fc0e1e243f86dd00c"},
-    {file = "substrait_validator-0.0.4-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:b3731a82c6c11af0baf06f0012d87cfecfe2961d59c27d77a277673f7a600c69"},
-    {file = "substrait_validator-0.0.4-cp310-none-win_amd64.whl", hash = "sha256:bde82d7a3ed04f471ff242d7f74078e2e4a4ca1b7ea5c4c8a21fda99821f8839"},
-    {file = "substrait_validator-0.0.4-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:8608290d940a1e0cc006241fe9d250b8644d9b57d9de0cb8fe514592315620bb"},
-    {file = "substrait_validator-0.0.4-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:8fcfb58b3601c74d4ab7402a2ceab6057eac570b132b39e1f59d54995e3101dd"},
-    {file = "substrait_validator-0.0.4-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:f25ed8dc81f865f4c5f8255fecb24a0796272b831f59d86ce567e3f3254cf45c"},
-    {file = "substrait_validator-0.0.4-cp37-none-win_amd64.whl", hash = "sha256:275212d75ce5d1c646d20956d51404c3aec1ebba33a8e1557dac6e923b72b6a0"},
-    {file = "substrait_validator-0.0.4-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:21ae1a620cb8cd58d68e968212ce881b35a00f6e915218e3867952c3c992b76f"},
-    {file = "substrait_validator-0.0.4-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:573aba8ed713917c719c28b09a374c188fa06aa47fba0750a62af4d8df8ca812"},
-    {file = "substrait_validator-0.0.4-cp38-none-win_amd64.whl", hash = "sha256:ab7b4e9cc0de7ee05aeb1a47b7f6a932c5429af40951acdc953e9f5dfadb8aeb"},
-    {file = "substrait_validator-0.0.4-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:ace31524ac5735a2cb61bd871147096ec894ee47082f2b1f3a9f768ccd1c1509"},
-    {file = "substrait_validator-0.0.4-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:78374041238f28e39c125e824ae0e5b8298f52f57b13787d8d026035cd79d851"},
-    {file = "substrait_validator-0.0.4-cp39-none-win_amd64.whl", hash = "sha256:be8cc12a1736389094623f213813f3e384628c676200bca0bd3c46734ac7ee6f"},
-    {file = "substrait_validator-0.0.4-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:f063388629dfc779bc49fa6c9bd6326f404e478468bfe937acd43caea5c914d5"},
-    {file = "substrait_validator-0.0.4.tar.gz", hash = "sha256:105088d3970fb37b17361529fda4b15bfc000d954865842efc9b86bd981459da"},
+    {file = "substrait_validator-0.0.7-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:b89c99e3885c7e1cbcf5994aff5d9d3973cffd553f9947f77b0133747dae8a08"},
+    {file = "substrait_validator-0.0.7-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:fe9354baa1a391458f34efbe20ad8a13f83ecfe443775f634c0d442cf0809f78"},
+    {file = "substrait_validator-0.0.7-cp310-none-win_amd64.whl", hash = "sha256:439a73cb92bd5b539b722480b8f92fbbd1d1c77833db02732752172dfa7435f7"},
+    {file = "substrait_validator-0.0.7-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:027f5fe54f62ca2804ea7077faef04e45c30482ce0b6502fa20a1a01d8b07013"},
+    {file = "substrait_validator-0.0.7-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:92b7ed46fb670430e9e1f1774981f392cc68249009f2cde0c5be97f9eac9d715"},
+    {file = "substrait_validator-0.0.7-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4cf4ec4b805ab408aef6da2bbc62ae8da5e3623b29fb987a0d9cc7684b0f4b86"},
+    {file = "substrait_validator-0.0.7-cp37-none-win_amd64.whl", hash = "sha256:359fecb98f32dfac673e0c68d76f680e25e30c5a1461dd9465ad95cf2c0e30a9"},
+    {file = "substrait_validator-0.0.7-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:cd3dffb0e1b2c7eabf33117e20ae4a827a7d74712252f4794e5d09f0ddf7839e"},
+    {file = "substrait_validator-0.0.7-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:21eef0e6dbb49493772d5bb21d0856111c6ca83e699f68f9dad27821c1b26b7e"},
+    {file = "substrait_validator-0.0.7-cp38-none-win_amd64.whl", hash = "sha256:bcd543f6d893614bab1e915ce75d77f36800fd06b88b1be699a7592ce8f3ea90"},
+    {file = "substrait_validator-0.0.7-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:eb5268424029a796b7d27ed68cb37c495fa42a8adfd5f25bb19597a86c4be8ea"},
+    {file = "substrait_validator-0.0.7-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:5ea66e29e8236dfad2484044d8ef97e6ad0339247a75079268119585d7c04e33"},
+    {file = "substrait_validator-0.0.7-cp39-none-win_amd64.whl", hash = "sha256:f64126e3a14be831dd340535b96d25c54f92d6a6ff5820d0c63089f5adf8d366"},
+    {file = "substrait_validator-0.0.7-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:5ebd4e8829516b3f1df43b7c8b950548fe61f3b2ca5c918bcaf5619a44b80caf"},
+    {file = "substrait_validator-0.0.7.tar.gz", hash = "sha256:1d6aa3992151d9a3a3ddc6fe0460ae0411d996522c2a7dba60b47c7f138048ab"},
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
