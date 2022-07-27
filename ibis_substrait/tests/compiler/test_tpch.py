@@ -4,6 +4,7 @@ import ibis
 import pytest
 from packaging import version
 from pytest_lazyfixture import lazy_fixture
+from substrait_validator import Config, check_plan
 
 from ibis_substrait.compiler.decompile import decompile
 
@@ -740,26 +741,23 @@ def test_compile(query, compiler):
     _ = compiler.compile(query)
 
 
-# @pytest.mark.parametrize(
-#    "query",
-#    TPC_H,
-# )
-# def test_compile_validate(query, compiler):
-#     plan = compiler.compile(query)
+@pytest.mark.parametrize(
+    "query",
+    TPC_H,
+)
+def test_compile_validate(query, compiler):
+    plan = compiler.compile(query)
 
-#     #TODO use this once validator is updated
-#     from substrait_validator import Config, check_plan
+    c = Config()
+    # too few field names
+    c.override_diagnostic_level(4003, "error", "info")
+    # function def unavailable, cannot check validity of call
+    c.override_diagnostic_level(6003, "warning", "info")
+    # args field deprecated in 0.3.0
+    c.override_diagnostic_level(6, "warning", "info")  # too few field names
+    # failed to resolve YAML: unknown url type
+    c.override_diagnostic_level(2002, "warning", "info")  # too few field names
+    # typecast validation rules are net yet implemented
+    c.override_diagnostic_level(1, "warning", "info")  # too few field names
 
-#     c = Config()
-#     # too few field names
-#     c.override_diagnostic_level(4003, "error", "info")
-#     # function def unavailable, cannot check validity of call
-#     c.override_diagnostic_level(6003, "warning", "info")
-#     # args field deprecated in 0.3.0
-#     c.override_diagnostic_level(6, "warning", "info")  # too few field names
-#     # failed to resolve YAML: unknown url type
-#     c.override_diagnostic_level(2002, "warning", "info")  # too few field names
-#     # typecast validation rules are net yet implemented
-#     c.override_diagnostic_level(1, "warning", "info")  # too few field names
-
-#     assert check_plan(plan, config=c)
+    assert check_plan(plan, config=c)
