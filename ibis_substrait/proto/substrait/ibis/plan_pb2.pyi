@@ -6,7 +6,7 @@ import builtins
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
-from .. import substrait
+from ... import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -18,16 +18,16 @@ class PlanRel(google.protobuf.message.Message):
     ROOT_FIELD_NUMBER: builtins.int
 
     @property
-    def rel(self) -> substrait.algebra_pb2.Rel:
+    def rel(self) -> substrait.ibis.algebra_pb2.Rel:
         """Any relation (used for references and CTEs)"""
         pass
 
     @property
-    def root(self) -> substrait.algebra_pb2.RelRoot:
+    def root(self) -> substrait.ibis.algebra_pb2.RelRoot:
         """The root of a relation tree"""
         pass
 
-    def __init__(self, *, rel: typing.Optional[substrait.algebra_pb2.Rel]=..., root: typing.Optional[substrait.algebra_pb2.RelRoot]=...) -> None:
+    def __init__(self, *, rel: typing.Optional[substrait.ibis.algebra_pb2.Rel]=..., root: typing.Optional[substrait.ibis.algebra_pb2.RelRoot]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['rel', b'rel', 'rel_type', b'rel_type', 'root', b'root']) -> builtins.bool:
@@ -52,12 +52,12 @@ class Plan(google.protobuf.message.Message):
     EXPECTED_TYPE_URLS_FIELD_NUMBER: builtins.int
 
     @property
-    def extension_uris(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.extensions.extensions_pb2.SimpleExtensionURI]:
+    def extension_uris(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.ibis.extensions.extensions_pb2.SimpleExtensionURI]:
         """a list of yaml specifications this plan may depend on"""
         pass
 
     @property
-    def extensions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.extensions.extensions_pb2.SimpleExtensionDeclaration]:
+    def extensions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.ibis.extensions.extensions_pb2.SimpleExtensionDeclaration]:
         """a list of extensions this plan may depend on"""
         pass
 
@@ -67,7 +67,7 @@ class Plan(google.protobuf.message.Message):
         pass
 
     @property
-    def advanced_extensions(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extensions(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         """additional extensions associated with this plan."""
         pass
 
@@ -81,7 +81,7 @@ class Plan(google.protobuf.message.Message):
         """
         pass
 
-    def __init__(self, *, extension_uris: typing.Optional[typing.Iterable[substrait.extensions.extensions_pb2.SimpleExtensionURI]]=..., extensions: typing.Optional[typing.Iterable[substrait.extensions.extensions_pb2.SimpleExtensionDeclaration]]=..., relations: typing.Optional[typing.Iterable[global___PlanRel]]=..., advanced_extensions: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=..., expected_type_urls: typing.Optional[typing.Iterable[typing.Text]]=...) -> None:
+    def __init__(self, *, extension_uris: typing.Optional[typing.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionURI]]=..., extensions: typing.Optional[typing.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionDeclaration]]=..., relations: typing.Optional[typing.Iterable[global___PlanRel]]=..., advanced_extensions: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=..., expected_type_urls: typing.Optional[typing.Iterable[typing.Text]]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extensions', b'advanced_extensions']) -> builtins.bool:

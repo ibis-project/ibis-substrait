@@ -9,7 +9,7 @@ import google.protobuf.empty_pb2
 import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
-from .. import substrait
+from ... import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -77,10 +77,10 @@ class RelCommon(google.protobuf.message.Message):
             record_size: builtins.float
 
             @property
-            def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+            def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
                 ...
 
-            def __init__(self, *, row_count: builtins.float=..., record_size: builtins.float=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+            def __init__(self, *, row_count: builtins.float=..., record_size: builtins.float=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
                 ...
 
             def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
@@ -95,10 +95,10 @@ class RelCommon(google.protobuf.message.Message):
             ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
 
             @property
-            def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+            def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
                 ...
 
-            def __init__(self, *, advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+            def __init__(self, *, advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
                 ...
 
             def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
@@ -119,10 +119,10 @@ class RelCommon(google.protobuf.message.Message):
             ...
 
         @property
-        def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+        def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
             ...
 
-        def __init__(self, *, stats: typing.Optional[global___RelCommon.Hint.Stats]=..., constraint: typing.Optional[global___RelCommon.Hint.RuntimeConstraint]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+        def __init__(self, *, stats: typing.Optional[global___RelCommon.Hint.Stats]=..., constraint: typing.Optional[global___RelCommon.Hint.RuntimeConstraint]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'constraint', b'constraint', 'stats', b'stats']) -> builtins.bool:
@@ -150,10 +150,10 @@ class RelCommon(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, direct: typing.Optional[global___RelCommon.Direct]=..., emit: typing.Optional[global___RelCommon.Emit]=..., hint: typing.Optional[global___RelCommon.Hint]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, direct: typing.Optional[global___RelCommon.Direct]=..., emit: typing.Optional[global___RelCommon.Emit]=..., hint: typing.Optional[global___RelCommon.Hint]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'direct', b'direct', 'emit', b'emit', 'emit_kind', b'emit_kind', 'hint', b'hint']) -> builtins.bool:
@@ -183,10 +183,10 @@ class ReadRel(google.protobuf.message.Message):
             ...
 
         @property
-        def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+        def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
             ...
 
-        def __init__(self, *, names: typing.Optional[typing.Iterable[typing.Text]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+        def __init__(self, *, names: typing.Optional[typing.Iterable[typing.Text]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
@@ -326,10 +326,10 @@ class ReadRel(google.protobuf.message.Message):
             ...
 
         @property
-        def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+        def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
             ...
 
-        def __init__(self, *, items: typing.Optional[typing.Iterable[global___ReadRel.LocalFiles.FileOrFiles]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+        def __init__(self, *, items: typing.Optional[typing.Iterable[global___ReadRel.LocalFiles.FileOrFiles]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
@@ -352,7 +352,7 @@ class ReadRel(google.protobuf.message.Message):
         ...
 
     @property
-    def base_schema(self) -> substrait.type_pb2.NamedStruct:
+    def base_schema(self) -> substrait.ibis.type_pb2.NamedStruct:
         ...
 
     @property
@@ -364,7 +364,7 @@ class ReadRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
     @property
@@ -383,7 +383,7 @@ class ReadRel(google.protobuf.message.Message):
     def extension_table(self) -> global___ReadRel.ExtensionTable:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., base_schema: typing.Optional[substrait.type_pb2.NamedStruct]=..., filter: typing.Optional[global___Expression]=..., projection: typing.Optional[global___Expression.MaskExpression]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=..., virtual_table: typing.Optional[global___ReadRel.VirtualTable]=..., local_files: typing.Optional[global___ReadRel.LocalFiles]=..., named_table: typing.Optional[global___ReadRel.NamedTable]=..., extension_table: typing.Optional[global___ReadRel.ExtensionTable]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., base_schema: typing.Optional[substrait.ibis.type_pb2.NamedStruct]=..., filter: typing.Optional[global___Expression]=..., projection: typing.Optional[global___Expression.MaskExpression]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=..., virtual_table: typing.Optional[global___ReadRel.VirtualTable]=..., local_files: typing.Optional[global___ReadRel.LocalFiles]=..., named_table: typing.Optional[global___ReadRel.NamedTable]=..., extension_table: typing.Optional[global___ReadRel.ExtensionTable]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> builtins.bool:
@@ -417,10 +417,10 @@ class ProjectRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., expressions: typing.Optional[typing.Iterable[global___Expression]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., expressions: typing.Optional[typing.Iterable[global___Expression]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input']) -> builtins.bool:
@@ -491,10 +491,10 @@ class JoinRel(google.protobuf.message.Message):
     type: global___JoinRel.JoinType.ValueType
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., left: typing.Optional[global___Rel]=..., right: typing.Optional[global___Rel]=..., expression: typing.Optional[global___Expression]=..., post_join_filter: typing.Optional[global___Expression]=..., type: global___JoinRel.JoinType.ValueType=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., left: typing.Optional[global___Rel]=..., right: typing.Optional[global___Rel]=..., expression: typing.Optional[global___Expression]=..., post_join_filter: typing.Optional[global___Expression]=..., type: global___JoinRel.JoinType.ValueType=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'expression', b'expression', 'left', b'left', 'post_join_filter', b'post_join_filter', 'right', b'right']) -> builtins.bool:
@@ -525,10 +525,10 @@ class CrossRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., left: typing.Optional[global___Rel]=..., right: typing.Optional[global___Rel]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., left: typing.Optional[global___Rel]=..., right: typing.Optional[global___Rel]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'left', b'left', 'right', b'right']) -> builtins.bool:
@@ -560,10 +560,10 @@ class FetchRel(google.protobuf.message.Message):
     'the amount of records to return'
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., offset: builtins.int=..., count: builtins.int=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., offset: builtins.int=..., count: builtins.int=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input']) -> builtins.bool:
@@ -643,10 +643,10 @@ class AggregateRel(google.protobuf.message.Message):
         pass
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., groupings: typing.Optional[typing.Iterable[global___AggregateRel.Grouping]]=..., measures: typing.Optional[typing.Iterable[global___AggregateRel.Measure]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., groupings: typing.Optional[typing.Iterable[global___AggregateRel.Grouping]]=..., measures: typing.Optional[typing.Iterable[global___AggregateRel.Measure]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input']) -> builtins.bool:
@@ -677,10 +677,10 @@ class SortRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'input', b'input']) -> builtins.bool:
@@ -711,10 +711,10 @@ class FilterRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., condition: typing.Optional[global___Expression]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., condition: typing.Optional[global___Expression]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'condition', b'condition', 'input', b'input']) -> builtins.bool:
@@ -766,10 +766,10 @@ class SetRel(google.protobuf.message.Message):
     op: global___SetRel.SetOp.ValueType
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., inputs: typing.Optional[typing.Iterable[global___Rel]]=..., op: global___SetRel.SetOp.ValueType=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., inputs: typing.Optional[typing.Iterable[global___Rel]]=..., op: global___SetRel.SetOp.ValueType=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common']) -> builtins.bool:
@@ -1012,10 +1012,10 @@ class ExchangeRel(google.protobuf.message.Message):
         ...
 
     @property
-    def advanced_extension(self) -> substrait.extensions.extensions_pb2.AdvancedExtension:
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
         ...
 
-    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., partition_count: builtins.int=..., targets: typing.Optional[typing.Iterable[global___ExchangeRel.ExchangeTarget]]=..., scatter_by_fields: typing.Optional[global___ExchangeRel.ScatterFields]=..., single_target: typing.Optional[global___ExchangeRel.SingleBucketExpression]=..., multi_target: typing.Optional[global___ExchangeRel.MultiBucketExpression]=..., round_robin: typing.Optional[global___ExchangeRel.RoundRobin]=..., broadcast: typing.Optional[global___ExchangeRel.Broadcast]=..., advanced_extension: typing.Optional[substrait.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+    def __init__(self, *, common: typing.Optional[global___RelCommon]=..., input: typing.Optional[global___Rel]=..., partition_count: builtins.int=..., targets: typing.Optional[typing.Iterable[global___ExchangeRel.ExchangeTarget]]=..., scatter_by_fields: typing.Optional[global___ExchangeRel.ScatterFields]=..., single_target: typing.Optional[global___ExchangeRel.SingleBucketExpression]=..., multi_target: typing.Optional[global___ExchangeRel.MultiBucketExpression]=..., round_robin: typing.Optional[global___ExchangeRel.RoundRobin]=..., broadcast: typing.Optional[global___ExchangeRel.Broadcast]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'broadcast', b'broadcast', 'common', b'common', 'exchange_kind', b'exchange_kind', 'input', b'input', 'multi_target', b'multi_target', 'round_robin', b'round_robin', 'scatter_by_fields', b'scatter_by_fields', 'single_target', b'single_target']) -> builtins.bool:
@@ -1168,14 +1168,14 @@ class FunctionArgument(google.protobuf.message.Message):
         ...
 
     @property
-    def type(self) -> substrait.type_pb2.Type:
+    def type(self) -> substrait.ibis.type_pb2.Type:
         ...
 
     @property
     def value(self) -> global___Expression:
         ...
 
-    def __init__(self, *, enum: typing.Optional[global___FunctionArgument.Enum]=..., type: typing.Optional[substrait.type_pb2.Type]=..., value: typing.Optional[global___Expression]=...) -> None:
+    def __init__(self, *, enum: typing.Optional[global___FunctionArgument.Enum]=..., type: typing.Optional[substrait.ibis.type_pb2.Type]=..., value: typing.Optional[global___Expression]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['arg_type', b'arg_type', 'enum', b'enum', 'type', b'type', 'value', b'value']) -> builtins.bool:
@@ -1356,7 +1356,7 @@ class Expression(google.protobuf.message.Message):
             'points to a type_anchor defined in this plan'
 
             @property
-            def type_parameters(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.type_pb2.Type.Parameter]:
+            def type_parameters(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.ibis.type_pb2.Type.Parameter]:
                 """The parameters to be bound to the type class, if the type class is
                 parameterizable.
                 """
@@ -1369,7 +1369,7 @@ class Expression(google.protobuf.message.Message):
                 """
                 pass
 
-            def __init__(self, *, type_reference: builtins.int=..., type_parameters: typing.Optional[typing.Iterable[substrait.type_pb2.Type.Parameter]]=..., value: typing.Optional[google.protobuf.any_pb2.Any]=...) -> None:
+            def __init__(self, *, type_reference: builtins.int=..., type_parameters: typing.Optional[typing.Iterable[substrait.ibis.type_pb2.Type.Parameter]]=..., value: typing.Optional[google.protobuf.any_pb2.Any]=...) -> None:
                 ...
 
             def HasField(self, field_name: typing_extensions.Literal['value', b'value']) -> builtins.bool:
@@ -1452,7 +1452,7 @@ class Expression(google.protobuf.message.Message):
         uuid: builtins.bytes
 
         @property
-        def null(self) -> substrait.type_pb2.Type:
+        def null(self) -> substrait.ibis.type_pb2.Type:
             """a typed null literal"""
             pass
 
@@ -1461,11 +1461,11 @@ class Expression(google.protobuf.message.Message):
             ...
 
         @property
-        def empty_list(self) -> substrait.type_pb2.Type.List:
+        def empty_list(self) -> substrait.ibis.type_pb2.Type.List:
             ...
 
         @property
-        def empty_map(self) -> substrait.type_pb2.Type.Map:
+        def empty_map(self) -> substrait.ibis.type_pb2.Type.Map:
             ...
 
         @property
@@ -1476,7 +1476,7 @@ class Expression(google.protobuf.message.Message):
         type_variation_reference: builtins.int
         'optionally points to a type_variation_anchor defined in this plan.\n        Applies to all members of union other than the Typed null (which should\n        directly declare the type variation).\n        '
 
-        def __init__(self, *, boolean: builtins.bool=..., i8: builtins.int=..., i16: builtins.int=..., i32: builtins.int=..., i64: builtins.int=..., fp32: builtins.float=..., fp64: builtins.float=..., string: typing.Text=..., binary: builtins.bytes=..., timestamp: builtins.int=..., date: builtins.int=..., time: builtins.int=..., interval_year_to_month: typing.Optional[global___Expression.Literal.IntervalYearToMonth]=..., interval_day_to_second: typing.Optional[global___Expression.Literal.IntervalDayToSecond]=..., fixed_char: typing.Text=..., var_char: typing.Optional[global___Expression.Literal.VarChar]=..., fixed_binary: builtins.bytes=..., decimal: typing.Optional[global___Expression.Literal.Decimal]=..., struct: typing.Optional[global___Expression.Literal.Struct]=..., map: typing.Optional[global___Expression.Literal.Map]=..., timestamp_tz: builtins.int=..., uuid: builtins.bytes=..., null: typing.Optional[substrait.type_pb2.Type]=..., list: typing.Optional[global___Expression.Literal.List]=..., empty_list: typing.Optional[substrait.type_pb2.Type.List]=..., empty_map: typing.Optional[substrait.type_pb2.Type.Map]=..., user_defined: typing.Optional[global___Expression.Literal.UserDefined]=..., nullable: builtins.bool=..., type_variation_reference: builtins.int=...) -> None:
+        def __init__(self, *, boolean: builtins.bool=..., i8: builtins.int=..., i16: builtins.int=..., i32: builtins.int=..., i64: builtins.int=..., fp32: builtins.float=..., fp64: builtins.float=..., string: typing.Text=..., binary: builtins.bytes=..., timestamp: builtins.int=..., date: builtins.int=..., time: builtins.int=..., interval_year_to_month: typing.Optional[global___Expression.Literal.IntervalYearToMonth]=..., interval_day_to_second: typing.Optional[global___Expression.Literal.IntervalDayToSecond]=..., fixed_char: typing.Text=..., var_char: typing.Optional[global___Expression.Literal.VarChar]=..., fixed_binary: builtins.bytes=..., decimal: typing.Optional[global___Expression.Literal.Decimal]=..., struct: typing.Optional[global___Expression.Literal.Struct]=..., map: typing.Optional[global___Expression.Literal.Map]=..., timestamp_tz: builtins.int=..., uuid: builtins.bytes=..., null: typing.Optional[substrait.ibis.type_pb2.Type]=..., list: typing.Optional[global___Expression.Literal.List]=..., empty_list: typing.Optional[substrait.ibis.type_pb2.Type.List]=..., empty_map: typing.Optional[substrait.ibis.type_pb2.Type.Map]=..., user_defined: typing.Optional[global___Expression.Literal.UserDefined]=..., nullable: builtins.bool=..., type_variation_reference: builtins.int=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'boolean', b'boolean', 'date', b'date', 'decimal', b'decimal', 'empty_list', b'empty_list', 'empty_map', b'empty_map', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day_to_second', b'interval_day_to_second', 'interval_year_to_month', b'interval_year_to_month', 'list', b'list', 'literal_type', b'literal_type', 'map', b'map', 'null', b'null', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'user_defined', b'user_defined', 'uuid', b'uuid', 'var_char', b'var_char']) -> builtins.bool:
@@ -1502,7 +1502,7 @@ class Expression(google.protobuf.message.Message):
             ...
 
         @property
-        def output_type(self) -> substrait.type_pb2.Type:
+        def output_type(self) -> substrait.ibis.type_pb2.Type:
             ...
 
         @property
@@ -1510,7 +1510,7 @@ class Expression(google.protobuf.message.Message):
             """deprecated; use args instead"""
             pass
 
-        def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., output_type: typing.Optional[substrait.type_pb2.Type]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
+        def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
@@ -1620,7 +1620,7 @@ class Expression(google.protobuf.message.Message):
         phase: global___AggregationPhase.ValueType
 
         @property
-        def output_type(self) -> substrait.type_pb2.Type:
+        def output_type(self) -> substrait.ibis.type_pb2.Type:
             ...
 
         @property
@@ -1632,7 +1632,7 @@ class Expression(google.protobuf.message.Message):
             """deprecated; use args instead"""
             pass
 
-        def __init__(self, *, function_reference: builtins.int=..., partitions: typing.Optional[typing.Iterable[global___Expression]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., upper_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., lower_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.type_pb2.Type]=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
+        def __init__(self, *, function_reference: builtins.int=..., partitions: typing.Optional[typing.Iterable[global___Expression]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., upper_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., lower_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['lower_bound', b'lower_bound', 'output_type', b'output_type', 'upper_bound', b'upper_bound']) -> builtins.bool:
@@ -1700,7 +1700,7 @@ class Expression(google.protobuf.message.Message):
         FAILURE_BEHAVIOR_FIELD_NUMBER: builtins.int
 
         @property
-        def type(self) -> substrait.type_pb2.Type:
+        def type(self) -> substrait.ibis.type_pb2.Type:
             ...
 
         @property
@@ -1708,7 +1708,7 @@ class Expression(google.protobuf.message.Message):
             ...
         failure_behavior: global___Expression.Cast.FailureBehavior.ValueType
 
-        def __init__(self, *, type: typing.Optional[substrait.type_pb2.Type]=..., input: typing.Optional[global___Expression]=..., failure_behavior: global___Expression.Cast.FailureBehavior.ValueType=...) -> None:
+        def __init__(self, *, type: typing.Optional[substrait.ibis.type_pb2.Type]=..., input: typing.Optional[global___Expression]=..., failure_behavior: global___Expression.Cast.FailureBehavior.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['input', b'input', 'type', b'type']) -> builtins.bool:
@@ -1857,7 +1857,7 @@ class Expression(google.protobuf.message.Message):
             ...
 
         @property
-        def output_type(self) -> substrait.type_pb2.Type:
+        def output_type(self) -> substrait.ibis.type_pb2.Type:
             ...
 
         @property
@@ -1868,7 +1868,7 @@ class Expression(google.protobuf.message.Message):
         def web_assembly_function(self) -> global___Expression.EmbeddedFunction.WebAssemblyFunction:
             ...
 
-        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___Expression]]=..., output_type: typing.Optional[substrait.type_pb2.Type]=..., python_pickle_function: typing.Optional[global___Expression.EmbeddedFunction.PythonPickleFunction]=..., web_assembly_function: typing.Optional[global___Expression.EmbeddedFunction.WebAssemblyFunction]=...) -> None:
+        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___Expression]]=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., python_pickle_function: typing.Optional[global___Expression.EmbeddedFunction.PythonPickleFunction]=..., web_assembly_function: typing.Optional[global___Expression.EmbeddedFunction.WebAssemblyFunction]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['kind', b'kind', 'output_type', b'output_type', 'python_pickle_function', b'python_pickle_function', 'web_assembly_function', b'web_assembly_function']) -> builtins.bool:
@@ -2637,7 +2637,7 @@ class AggregateFunction(google.protobuf.message.Message):
     phase: global___AggregationPhase.ValueType
 
     @property
-    def output_type(self) -> substrait.type_pb2.Type:
+    def output_type(self) -> substrait.ibis.type_pb2.Type:
         ...
     invocation: global___AggregateFunction.AggregationInvocation.ValueType
 
@@ -2646,7 +2646,7 @@ class AggregateFunction(google.protobuf.message.Message):
         """deprecated; use args instead"""
         pass
 
-    def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.type_pb2.Type]=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
+    def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
