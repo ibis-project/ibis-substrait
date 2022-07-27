@@ -3,6 +3,8 @@ let
   pkgs = import ./nix;
   inherit (pkgs) lib;
 
+  ibisSubstraitDevEnv = pkgs."ibisSubstraitDevEnv${pythonShortVersion}";
+
   devDeps = with pkgs; [
     buf
     cacert
@@ -12,17 +14,16 @@ let
     niv
     nix-linter
     nixpkgs-fmt
-    poetry
     prettierTOML
     protobuf
     sd
     shellcheck
     shfmt
     yj
+    ibisSubstraitDevEnv.pkgs.poetry
   ];
 
   pythonShortVersion = builtins.replaceStrings [ "." ] [ "" ] python;
-  ibisSubstraitDevEnv = pkgs."ibisSubstraitDevEnv${pythonShortVersion}";
   genProtos = pkgs.writeShellApplication {
     name = "gen-protos";
     runtimeInputs = with pkgs; [ buf ];
