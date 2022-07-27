@@ -4,7 +4,7 @@ import pytest
 from packaging import version
 
 from ibis_substrait.compiler.decompile import decompile, decompile_schema
-from ibis_substrait.proto.substrait import type_pb2 as stt
+from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 
 @pytest.fixture

@@ -21,9 +21,9 @@ import ibis.expr.types as ir
 import pytz
 import toolz
 
-from ..proto.substrait import algebra_pb2 as stalg
-from ..proto.substrait import plan_pb2 as stp
-from ..proto.substrait import type_pb2 as stt
+from ..proto.substrait.ibis import algebra_pb2 as stalg
+from ..proto.substrait.ibis import plan_pb2 as stp
+from ..proto.substrait.ibis import type_pb2 as stt
 from .core import SubstraitDecompiler, _get_fields, which_one_of
 from .mapping import SUBSTRAIT_IBIS_OP_MAPPING
 from .translate import _MICROSECONDS_PER_SECOND, _MINUTES_PER_HOUR, _SECONDS_PER_MINUTE

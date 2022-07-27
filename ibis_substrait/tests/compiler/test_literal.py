@@ -10,8 +10,8 @@ import pytz
 
 from ibis_substrait.compiler.decompile import decompile
 from ibis_substrait.compiler.translate import _date_to_days, _time_to_micros, translate
-from ibis_substrait.proto.substrait import algebra_pb2 as stalg
-from ibis_substrait.proto.substrait import type_pb2 as stt
+from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
 

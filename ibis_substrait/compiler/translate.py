@@ -23,8 +23,8 @@ import ibis.expr.types as ir
 from ibis import util
 from packaging import version
 
-from ..proto.substrait import algebra_pb2 as stalg
-from ..proto.substrait import type_pb2 as stt
+from ..proto.substrait.ibis import algebra_pb2 as stalg
+from ..proto.substrait.ibis import type_pb2 as stt
 from .core import SubstraitCompiler, _get_fields
 
 T = TypeVar("T")
