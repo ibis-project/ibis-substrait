@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.4](https://github.com/ibis-project/ibis-substrait/compare/v2.9.3...v2.9.4) (2022-07-27)
+
+
+### Bug Fixes
+
+* add backcompat for older ibises ([1298c1f](https://github.com/ibis-project/ibis-substrait/commit/1298c1f6f8de5481ac61410d24d4e85665856a22))
+
 ## [2.9.3](https://github.com/ibis-project/ibis-substrait/compare/v2.9.2...v2.9.3) (2022-07-21)
 
 
