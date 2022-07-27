@@ -9,9 +9,9 @@ import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.types as ir
 
-from ..proto.substrait import algebra_pb2 as stalg
-from ..proto.substrait import plan_pb2 as stp
-from ..proto.substrait.extensions import extensions_pb2 as ste
+from ..proto.substrait.ibis import algebra_pb2 as stalg
+from ..proto.substrait.ibis import plan_pb2 as stp
+from ..proto.substrait.ibis.extensions import extensions_pb2 as ste
 from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 
 
