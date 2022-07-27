@@ -103,6 +103,8 @@ jobs:
       - run: poetry add ibis-framework=${{ matrix.ibis-version }}
       - run: poetry install
       - run: poetry run pytest
+        env:
+          PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION="python"
   dry-run-release:
     runs-on: ubuntu-latest
     steps:
