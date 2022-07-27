@@ -57,6 +57,7 @@ filterwarnings = [
   "error",
   # older importlib metadata that there's no real point in breaking with
   "ignore:SelectableGroups:DeprecationWarning",
+  "ignore:`parse_type` is deprecated:FutureWarning",
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]
