@@ -5,6 +5,7 @@ import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
 
+import ibis_substrait.expr.operations.relations as strel
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait import type_pb2 as stt
@@ -143,6 +144,69 @@ def test_translate_table_expansion(compiler):
                 },
             ],
         }
+    }
+    assert to_dict(result) == expected
+
+
+@pytest.mark.parametrize(
+    ("file_or_files", "json_file"),
+    [
+        (
+            strel.UriPath(
+                uri_path="file:///foo/bar.parquet",
+                file_format=strel.ParquetReadOptions(),
+            ),
+            {"parquet": {}, "uriPath": "file:///foo/bar.parquet"},
+        ),
+        (
+            strel.UriPathGlob(
+                uri_path_glob="file:///foo/*.parquet",
+                file_format=strel.ArrowReadOptions(),
+            ),
+            {"arrow": {}, "uriPathGlob": "file:///foo/*.parquet"},
+        ),
+        (
+            strel.UriFile(
+                uri_file="file:///foo/bar.parquet", file_format=strel.ArrowReadOptions()
+            ),
+            {"arrow": {}, "uriFile": "file:///foo/bar.parquet"},
+        ),
+        (
+            strel.UriFolder(
+                uri_folder="file:///foo/", file_format=strel.OrcReadOptions()
+            ),
+            {"orc": {}, "uriFolder": "file:///foo/"},
+        ),
+    ],
+)
+def test_translate_local_files_table(compiler, file_or_files, json_file):
+    table = strel.LocalFilesTable(
+        name="table0",
+        schema=ibis.schema([("a", "int32")]),
+        items=[
+            file_or_files,
+            file_or_files,
+        ],
+    ).to_expr()
+    result = translate(table, compiler)
+    expected = {
+        "read": {
+            "baseSchema": {
+                "names": ["a"],
+                "struct": {
+                    "nullability": "NULLABILITY_REQUIRED",
+                    "types": [
+                        {"i32": {"nullability": "NULLABILITY_NULLABLE"}},
+                    ],
+                },
+            },
+            "localFiles": {
+                "items": [
+                    json_file,
+                    json_file,
+                ],
+            },
+        },
     }
     assert to_dict(result) == expected
 

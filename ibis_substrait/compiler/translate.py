@@ -23,6 +23,7 @@ import ibis.expr.types as ir
 from ibis import util
 from packaging import version
 
+from ..expr.operations import relations as strel
 from ..proto.substrait import algebra_pb2 as stalg
 from ..proto.substrait import type_pb2 as stt
 from .core import SubstraitCompiler, _get_fields
@@ -645,6 +646,78 @@ def unbound_table(
             named_table=stalg.ReadRel.NamedTable(names=[op.name]),
         )
     )
+
+
+@translate.register(strel.LocalFilesTable)
+def local_files_table(
+    op: strel.LocalFilesTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any
+) -> stalg.Rel:
+    return stalg.Rel(
+        read=stalg.ReadRel(
+            # TODO: filter,
+            # TODO: projection,
+            base_schema=translate(op.schema),
+            local_files=stalg.ReadRel.LocalFiles(
+                items=[translate(item) for item in op.items]
+            ),
+        )
+    )
+
+
+@translate.register(strel.UriPath)
+def _uri_path(item: strel.UriPath) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    result = stalg.ReadRel.LocalFiles.FileOrFiles(
+        uri_path=item.uri_path,
+    )
+    return translate(item.file_format, result)
+
+
+@translate.register(strel.UriPathGlob)
+def _uri_path_glob(item: strel.UriPath) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    result = stalg.ReadRel.LocalFiles.FileOrFiles(
+        uri_path_glob=item.uri_path_glob,
+    )
+    return translate(item.file_format, result)
+
+
+@translate.register(strel.UriFile)
+def _uri_file(item: strel.UriFile) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    result = stalg.ReadRel.LocalFiles.FileOrFiles(
+        uri_file=item.uri_file,
+    )
+    return translate(item.file_format, result)
+
+
+@translate.register(strel.UriFolder)
+def _uri_folder(item: strel.UriFolder) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    result = stalg.ReadRel.LocalFiles.FileOrFiles(
+        uri_folder=item.uri_folder,
+    )
+    return translate(item.file_format, result)
+
+
+@translate.register(strel.ArrowReadOptions)
+def _arrow_read_options(
+    item: strel.ArrowReadOptions, parent: stalg.ReadRel.LocalFiles.FileOrFiles
+) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    parent.arrow.SetInParent()
+    return parent
+
+
+@translate.register(strel.OrcReadOptions)
+def _orc_read_options(
+    item: strel.OrcReadOptions, parent: stalg.ReadRel.LocalFiles.FileOrFiles
+) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    parent.orc.SetInParent()
+    return parent
+
+
+@translate.register(strel.ParquetReadOptions)
+def _parquet_read_options(
+    item: strel.ParquetReadOptions, parent: stalg.ReadRel.LocalFiles.FileOrFiles
+) -> stalg.ReadRel.LocalFiles.FileOrFiles:
+    parent.parquet.SetInParent()
+    return parent
 
 
 def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode, int]:
