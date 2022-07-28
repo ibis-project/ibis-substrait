@@ -486,8 +486,8 @@ def value_op(
         scalar_function=stalg.Expression.ScalarFunction(
             function_reference=compiler.function_id(expr),
             output_type=translate(expr.type()),
-            args=[
-                translate(arg, compiler, **kwargs)
+            arguments=[
+                stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
                 for arg in op.args
                 if isinstance(arg, ir.Expr)
             ],
@@ -514,8 +514,8 @@ def window_op(
             sorts=[translate(ob, compiler, **kwargs) for ob in op.window._order_by],
             output_type=translate(expr.type()),
             phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
-            args=[
-                translate(arg, compiler, **kwargs)
+            arguments=[
+                stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
                 for arg in op.expr.op().args
                 if isinstance(arg, ir.Expr)
             ],
@@ -534,7 +534,7 @@ def _reduction(
 ) -> stalg.AggregateFunction:
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
-        args=[translate(op.arg, compiler, **kwargs)],
+        arguments=[stalg.FunctionArgument(value=translate(op.arg, compiler, **kwargs))],
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
         output_type=translate(expr.type()),
@@ -554,7 +554,7 @@ def _count(
         translated_args.append(translate(arg, compiler, **kwargs))
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
-        args=translated_args,
+        arguments=translated_args,
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
         output_type=translate(expr.type()),
@@ -975,8 +975,8 @@ def _extractdatefield(
 ) -> stalg.Expression:
     # e.g. "ExtractYear" -> "YEAR"
     span = type(op).__name__[len("Extract") :].upper()
-    args = (
-        translate(arg, compiler, **kwargs)
+    arguments = (
+        stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
         for arg in op.args
         if isinstance(arg, ir.Expr)
     )
@@ -985,6 +985,6 @@ def _extractdatefield(
         function_reference=compiler.function_id(expr),
         output_type=translate(expr.type()),
     )
-    scalar_func.args.add(enum=stalg.Expression.Enum(specified=span))
-    scalar_func.args.extend(args)
+    scalar_func.arguments.add(enum=stalg.FunctionArgument.Enum(specified=span))
+    scalar_func.arguments.extend(arguments)
     return stalg.Expression(scalar_function=scalar_func)
