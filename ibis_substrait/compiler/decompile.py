@@ -573,7 +573,7 @@ def _decompile_expression_aggregate_function(
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
     args = [
         decompile(arg, children, field_offsets, decompiler)
-        for arg in aggregate_function.args
+        for arg in aggregate_function.arguments
     ]
 
     # XXX: handle table.count(); what an annoying hack
@@ -785,6 +785,43 @@ class ExpressionDecompiler:
 
 
 @decompile.register
+def _decompile_function_argument(
+    msg: stalg.FunctionArgument,
+    children: Sequence[ir.TableExpr],
+    field_offsets: Sequence[int],
+    decompiler: SubstraitDecompiler,
+) -> ir.ValueExpr:
+    arg_type_name, arg = which_one_of(msg, "arg_type")
+    method = getattr(FunctionArgumentDecompiler, f"decompile_{arg_type_name}", None)
+    if method is None:
+        raise NotImplementedError(
+            f"decompilation of {arg_type_name!r} function argument not implemented"
+        )
+    return method(arg, children, field_offsets, decompiler)
+
+
+class FunctionArgumentDecompiler:
+    @staticmethod
+    def decompile_value(
+        msg: stalg.Expression,
+        children: Sequence[ir.TableExpr],
+        field_offsets: Sequence[int],
+        decompiler: SubstraitDecompiler,
+    ) -> ir.ValueExpr:
+        return decompile(msg, children, field_offsets, decompiler)
+
+    @staticmethod
+    def decompile_enum(
+        msg: stalg.FunctionArgument.Enum,
+        _children: Sequence[ir.TableExpr],
+        _field_offsets: Sequence[int],
+        _decompiler: SubstraitDecompiler,
+    ) -> ir.ValueExpr:
+        # TODO: add support for `unspecified` (empty) content
+        return msg.specified
+
+
+@decompile.register
 def _decompile_expression(
     msg: stalg.Expression,
     children: Sequence[ir.TableExpr],
@@ -810,7 +847,9 @@ def _decompile_expression_scalar_function(
     extension = decompiler.function_extensions[msg.function_reference]
     function_name = extension.name
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
-    args = [decompile(arg, children, field_offsets, decompiler) for arg in msg.args]
+    args = [
+        decompile(arg, children, field_offsets, decompiler) for arg in msg.arguments
+    ]
     expr = op_type(*args).to_expr()
     output_type = _decompile_type(msg.output_type)
     if expr.type() != output_type:

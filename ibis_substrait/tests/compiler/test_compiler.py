@@ -124,18 +124,24 @@ def test_translate_table_expansion(compiler):
                 {
                     "scalarFunction": {
                         "functionReference": 1,
-                        "args": [
+                        "arguments": [
                             {
-                                "selection": {
-                                    "directReference": {"structField": {}},
-                                    "rootReference": {},
-                                }
+                                "value": {
+                                    "selection": {
+                                        "directReference": {"structField": {}},
+                                        "rootReference": {},
+                                    },
+                                },
                             },
                             {
-                                "selection": {
-                                    "directReference": {"structField": {"field": 1}},
-                                    "rootReference": {},
-                                }
+                                "value": {
+                                    "selection": {
+                                        "directReference": {
+                                            "structField": {"field": 1},
+                                        },
+                                        "rootReference": {},
+                                    },
+                                },
                             },
                         ],
                         "outputType": {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
