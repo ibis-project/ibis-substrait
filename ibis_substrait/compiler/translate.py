@@ -551,7 +551,9 @@ def _count(
     translated_args = []
     arg = op.arg
     if not isinstance(arg, ir.TableExpr):
-        translated_args.append(translate(arg, compiler, **kwargs))
+        translated_args.append(
+            stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
+        )
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
         arguments=translated_args,
