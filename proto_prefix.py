@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # SPDX-License-Identifier: Apache-2.0
+# type: ignore
 
 """
 Copies the .proto files to a new directory while changing their package prefix
@@ -20,8 +21,8 @@ Note that the only things Substrait-specific to this script are some default
 values for optional arguments.
 """
 
-import re
 import pathlib
+import re
 import sys
 
 
@@ -308,7 +309,7 @@ def convert_files(
     n_not_in_prefix = 0
 
     for src_path in pathlib.Path(src_dir).rglob("*.proto"):
-        with open(src_path, "r", encoding="utf-8") as fil:
+        with open(src_path, encoding="utf-8") as fil:
             data = fil.read()
         try:
             groups = list(group_converter(group_tokens(tokenize(data))))
@@ -318,7 +319,7 @@ def convert_files(
         data = "".join(map(str, groups))
         dest_path = pathlib.Path(dest_dir, *get_package(groups), src_path.name)
         if dest_path.exists():
-            with open(dest_path, "r", encoding="utf-8") as fil:
+            with open(dest_path, encoding="utf-8") as fil:
                 if fil.read() == data:
                     n_up_to_date += 1
                     continue
