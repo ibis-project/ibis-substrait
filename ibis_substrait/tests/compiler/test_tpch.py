@@ -733,6 +733,10 @@ TPC_H = [
 ]
 
 
+@pytest.mark.skipif(
+    version.parse(ibis.__version__) <= version.parse("3.0.0"),
+    reason="TPC queries aren't formatted in an ibis 2.x compatible way",
+)
 @pytest.mark.parametrize(
     "query",
     TPC_H,
@@ -741,6 +745,10 @@ def test_compile(query, compiler):
     _ = compiler.compile(query)
 
 
+@pytest.mark.skipif(
+    version.parse(ibis.__version__) <= version.parse("3.0.0"),
+    reason="TPC queries aren't formatted in an ibis 2.x compatible way",
+)
 @pytest.mark.parametrize(
     "query",
     TPC_H,
