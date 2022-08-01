@@ -761,8 +761,6 @@ def test_compile_validate(query, compiler):
     c.override_diagnostic_level(4003, "error", "info")
     # function def unavailable, cannot check validity of call
     c.override_diagnostic_level(6003, "warning", "info")
-    # args field deprecated in 0.3.0
-    c.override_diagnostic_level(6, "warning", "info")  # too few field names
     # failed to resolve YAML: unknown url type
     c.override_diagnostic_level(2002, "warning", "info")  # too few field names
     # typecast validation rules are net yet implemented
