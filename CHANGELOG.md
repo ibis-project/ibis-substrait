@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.5](https://github.com/ibis-project/ibis-substrait/compare/v2.9.4...v2.9.5) (2022-08-01)
+
+
+### Bug Fixes
+
+* **translate:** use FunctionArgument in ops.Count translation ([77ea1fa](https://github.com/ibis-project/ibis-substrait/commit/77ea1fafeb08d79a4ac54c6744247c497e33a193))
+
 ## [2.9.4](https://github.com/ibis-project/ibis-substrait/compare/v2.9.3...v2.9.4) (2022-07-27)
 
 
