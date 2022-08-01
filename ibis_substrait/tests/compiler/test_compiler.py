@@ -301,3 +301,25 @@ def test_nested_struct_field_access(compiler):
     )
     result = translate(expr, compiler)
     assert result == expected
+
+
+def test_function_argument_usage(compiler):
+    t = ibis.table([("a", "int64")], name="t")
+    expr = t.a.count()
+
+    result = translate(expr, compiler)
+    # Check that there is an `arguments` field
+    # and that it has the expected `value`
+    expected = json_format.ParseDict(
+        {
+            "value": {
+                "selection": {
+                    "direct_reference": {"struct_field": {}},
+                    "root_reference": {},
+                },
+            },
+        },
+        stalg.FunctionArgument(),
+    )
+
+    assert result.arguments[0] == expected
