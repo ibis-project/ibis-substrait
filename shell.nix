@@ -15,7 +15,7 @@ let
     nix-linter
     nixpkgs-fmt
     prettierTOML
-    protobuf
+    protobuf3_20
     sd
     shellcheck
     shfmt

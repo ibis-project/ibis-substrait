@@ -15,9 +15,9 @@ self: super:
 
       nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.pyext ];
       propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs or [ ] ++ [
-        pkgs.buildPackages.protobuf
+        pkgs.buildPackages.protobuf3_20
       ];
-      buildInputs = attrs.buildInputs or [ ] ++ [ pkgs.buildPackages.protobuf ];
+      buildInputs = attrs.buildInputs or [ ] ++ [ pkgs.buildPackages.protobuf3_20 ];
       preConfigure = ''
         export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
         export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
