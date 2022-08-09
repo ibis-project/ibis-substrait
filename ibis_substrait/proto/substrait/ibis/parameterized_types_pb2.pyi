@@ -6,7 +6,7 @@ import builtins
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
-from .. import substrait
+from ... import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -75,9 +75,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['length', b'length']) -> builtins.bool:
@@ -96,9 +96,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['length', b'length']) -> builtins.bool:
@@ -117,9 +117,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def length(self) -> global___ParameterizedType.IntegerOption:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, length: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['length', b'length']) -> builtins.bool:
@@ -143,9 +143,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def precision(self) -> global___ParameterizedType.IntegerOption:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, scale: typing.Optional[global___ParameterizedType.IntegerOption]=..., precision: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, scale: typing.Optional[global___ParameterizedType.IntegerOption]=..., precision: typing.Optional[global___ParameterizedType.IntegerOption]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['precision', b'precision', 'scale', b'scale']) -> builtins.bool:
@@ -164,9 +164,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def types(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___ParameterizedType]:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, types: typing.Optional[typing.Iterable[global___ParameterizedType]]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, types: typing.Optional[typing.Iterable[global___ParameterizedType]]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'types', b'types', 'variation_pointer', b'variation_pointer']) -> None:
@@ -205,9 +205,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def type(self) -> global___ParameterizedType:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, type: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, type: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['type', b'type']) -> builtins.bool:
@@ -231,9 +231,9 @@ class ParameterizedType(google.protobuf.message.Message):
         def value(self) -> global___ParameterizedType:
             ...
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, key: typing.Optional[global___ParameterizedType]=..., value: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, key: typing.Optional[global___ParameterizedType]=..., value: typing.Optional[global___ParameterizedType]=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['key', b'key', 'value', b'value']) -> builtins.bool:
@@ -249,9 +249,9 @@ class ParameterizedType(google.protobuf.message.Message):
         NULLABILITY_FIELD_NUMBER: builtins.int
         type_pointer: builtins.int
         variation_pointer: builtins.int
-        nullability: substrait.type_pb2.Type.Nullability.ValueType
+        nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType
 
-        def __init__(self, *, type_pointer: builtins.int=..., variation_pointer: builtins.int=..., nullability: substrait.type_pb2.Type.Nullability.ValueType=...) -> None:
+        def __init__(self, *, type_pointer: builtins.int=..., variation_pointer: builtins.int=..., nullability: substrait.ibis.type_pb2.Type.Nullability.ValueType=...) -> None:
             ...
 
         def ClearField(self, field_name: typing_extensions.Literal['nullability', b'nullability', 'type_pointer', b'type_pointer', 'variation_pointer', b'variation_pointer']) -> None:
@@ -306,67 +306,67 @@ class ParameterizedType(google.protobuf.message.Message):
     TYPE_PARAMETER_FIELD_NUMBER: builtins.int
 
     @property
-    def bool(self) -> substrait.type_pb2.Type.Boolean:
+    def bool(self) -> substrait.ibis.type_pb2.Type.Boolean:
         ...
 
     @property
-    def i8(self) -> substrait.type_pb2.Type.I8:
+    def i8(self) -> substrait.ibis.type_pb2.Type.I8:
         ...
 
     @property
-    def i16(self) -> substrait.type_pb2.Type.I16:
+    def i16(self) -> substrait.ibis.type_pb2.Type.I16:
         ...
 
     @property
-    def i32(self) -> substrait.type_pb2.Type.I32:
+    def i32(self) -> substrait.ibis.type_pb2.Type.I32:
         ...
 
     @property
-    def i64(self) -> substrait.type_pb2.Type.I64:
+    def i64(self) -> substrait.ibis.type_pb2.Type.I64:
         ...
 
     @property
-    def fp32(self) -> substrait.type_pb2.Type.FP32:
+    def fp32(self) -> substrait.ibis.type_pb2.Type.FP32:
         ...
 
     @property
-    def fp64(self) -> substrait.type_pb2.Type.FP64:
+    def fp64(self) -> substrait.ibis.type_pb2.Type.FP64:
         ...
 
     @property
-    def string(self) -> substrait.type_pb2.Type.String:
+    def string(self) -> substrait.ibis.type_pb2.Type.String:
         ...
 
     @property
-    def binary(self) -> substrait.type_pb2.Type.Binary:
+    def binary(self) -> substrait.ibis.type_pb2.Type.Binary:
         ...
 
     @property
-    def timestamp(self) -> substrait.type_pb2.Type.Timestamp:
+    def timestamp(self) -> substrait.ibis.type_pb2.Type.Timestamp:
         ...
 
     @property
-    def date(self) -> substrait.type_pb2.Type.Date:
+    def date(self) -> substrait.ibis.type_pb2.Type.Date:
         ...
 
     @property
-    def time(self) -> substrait.type_pb2.Type.Time:
+    def time(self) -> substrait.ibis.type_pb2.Type.Time:
         ...
 
     @property
-    def interval_year(self) -> substrait.type_pb2.Type.IntervalYear:
+    def interval_year(self) -> substrait.ibis.type_pb2.Type.IntervalYear:
         ...
 
     @property
-    def interval_day(self) -> substrait.type_pb2.Type.IntervalDay:
+    def interval_day(self) -> substrait.ibis.type_pb2.Type.IntervalDay:
         ...
 
     @property
-    def timestamp_tz(self) -> substrait.type_pb2.Type.TimestampTZ:
+    def timestamp_tz(self) -> substrait.ibis.type_pb2.Type.TimestampTZ:
         ...
 
     @property
-    def uuid(self) -> substrait.type_pb2.Type.UUID:
+    def uuid(self) -> substrait.ibis.type_pb2.Type.UUID:
         ...
 
     @property
@@ -407,7 +407,7 @@ class ParameterizedType(google.protobuf.message.Message):
     def type_parameter(self) -> global___ParameterizedType.TypeParameter:
         ...
 
-    def __init__(self, *, bool: typing.Optional[substrait.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.type_pb2.Type.String]=..., binary: typing.Optional[substrait.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.type_pb2.Type.Date]=..., time: typing.Optional[substrait.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___ParameterizedType.ParameterizedFixedChar]=..., varchar: typing.Optional[global___ParameterizedType.ParameterizedVarChar]=..., fixed_binary: typing.Optional[global___ParameterizedType.ParameterizedFixedBinary]=..., decimal: typing.Optional[global___ParameterizedType.ParameterizedDecimal]=..., struct: typing.Optional[global___ParameterizedType.ParameterizedStruct]=..., list: typing.Optional[global___ParameterizedType.ParameterizedList]=..., map: typing.Optional[global___ParameterizedType.ParameterizedMap]=..., user_defined: typing.Optional[global___ParameterizedType.ParameterizedUserDefined]=..., user_defined_pointer: builtins.int=..., type_parameter: typing.Optional[global___ParameterizedType.TypeParameter]=...) -> None:
+    def __init__(self, *, bool: typing.Optional[substrait.ibis.type_pb2.Type.Boolean]=..., i8: typing.Optional[substrait.ibis.type_pb2.Type.I8]=..., i16: typing.Optional[substrait.ibis.type_pb2.Type.I16]=..., i32: typing.Optional[substrait.ibis.type_pb2.Type.I32]=..., i64: typing.Optional[substrait.ibis.type_pb2.Type.I64]=..., fp32: typing.Optional[substrait.ibis.type_pb2.Type.FP32]=..., fp64: typing.Optional[substrait.ibis.type_pb2.Type.FP64]=..., string: typing.Optional[substrait.ibis.type_pb2.Type.String]=..., binary: typing.Optional[substrait.ibis.type_pb2.Type.Binary]=..., timestamp: typing.Optional[substrait.ibis.type_pb2.Type.Timestamp]=..., date: typing.Optional[substrait.ibis.type_pb2.Type.Date]=..., time: typing.Optional[substrait.ibis.type_pb2.Type.Time]=..., interval_year: typing.Optional[substrait.ibis.type_pb2.Type.IntervalYear]=..., interval_day: typing.Optional[substrait.ibis.type_pb2.Type.IntervalDay]=..., timestamp_tz: typing.Optional[substrait.ibis.type_pb2.Type.TimestampTZ]=..., uuid: typing.Optional[substrait.ibis.type_pb2.Type.UUID]=..., fixed_char: typing.Optional[global___ParameterizedType.ParameterizedFixedChar]=..., varchar: typing.Optional[global___ParameterizedType.ParameterizedVarChar]=..., fixed_binary: typing.Optional[global___ParameterizedType.ParameterizedFixedBinary]=..., decimal: typing.Optional[global___ParameterizedType.ParameterizedDecimal]=..., struct: typing.Optional[global___ParameterizedType.ParameterizedStruct]=..., list: typing.Optional[global___ParameterizedType.ParameterizedList]=..., map: typing.Optional[global___ParameterizedType.ParameterizedMap]=..., user_defined: typing.Optional[global___ParameterizedType.ParameterizedUserDefined]=..., user_defined_pointer: builtins.int=..., type_parameter: typing.Optional[global___ParameterizedType.TypeParameter]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['binary', b'binary', 'bool', b'bool', 'date', b'date', 'decimal', b'decimal', 'fixed_binary', b'fixed_binary', 'fixed_char', b'fixed_char', 'fp32', b'fp32', 'fp64', b'fp64', 'i16', b'i16', 'i32', b'i32', 'i64', b'i64', 'i8', b'i8', 'interval_day', b'interval_day', 'interval_year', b'interval_year', 'kind', b'kind', 'list', b'list', 'map', b'map', 'string', b'string', 'struct', b'struct', 'time', b'time', 'timestamp', b'timestamp', 'timestamp_tz', b'timestamp_tz', 'type_parameter', b'type_parameter', 'user_defined', b'user_defined', 'user_defined_pointer', b'user_defined_pointer', 'uuid', b'uuid', 'varchar', b'varchar']) -> builtins.bool:

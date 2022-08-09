@@ -7,7 +7,7 @@ import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
-from .. import substrait
+from ... import substrait
 import typing
 import typing_extensions
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -87,7 +87,7 @@ class FunctionSignature(google.protobuf.message.Message):
         session_dependent: builtins.bool
 
         @property
-        def output_type(self) -> substrait.type_expressions_pb2.DerivationExpression:
+        def output_type(self) -> substrait.ibis.type_expressions_pb2.DerivationExpression:
             ...
 
         @property
@@ -102,7 +102,7 @@ class FunctionSignature(google.protobuf.message.Message):
         def implementations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionSignature.Implementation]:
             ...
 
-        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Optional[typing.Iterable[typing.Text]]=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., output_type: typing.Optional[substrait.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
+        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Optional[typing.Iterable[typing.Text]]=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., output_type: typing.Optional[substrait.ibis.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['description', b'description', 'final_variable_behavior', b'final_variable_behavior', 'normal', b'normal', 'output_type', b'output_type', 'variadic', b'variadic']) -> builtins.bool:
@@ -141,7 +141,7 @@ class FunctionSignature(google.protobuf.message.Message):
         session_dependent: builtins.bool
 
         @property
-        def output_type(self) -> substrait.type_expressions_pb2.DerivationExpression:
+        def output_type(self) -> substrait.ibis.type_expressions_pb2.DerivationExpression:
             ...
 
         @property
@@ -155,14 +155,14 @@ class FunctionSignature(google.protobuf.message.Message):
         max_set: builtins.int
 
         @property
-        def intermediate_type(self) -> substrait.type_pb2.Type:
+        def intermediate_type(self) -> substrait.ibis.type_pb2.Type:
             ...
 
         @property
         def implementations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionSignature.Implementation]:
             ...
 
-        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Text=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., output_type: typing.Optional[substrait.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., ordered: builtins.bool=..., max_set: builtins.int=..., intermediate_type: typing.Optional[substrait.type_pb2.Type]=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
+        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Text=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., output_type: typing.Optional[substrait.ibis.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., ordered: builtins.bool=..., max_set: builtins.int=..., intermediate_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['description', b'description', 'final_variable_behavior', b'final_variable_behavior', 'intermediate_type', b'intermediate_type', 'normal', b'normal', 'output_type', b'output_type', 'variadic', b'variadic']) -> builtins.bool:
@@ -221,11 +221,11 @@ class FunctionSignature(google.protobuf.message.Message):
         session_dependent: builtins.bool
 
         @property
-        def intermediate_type(self) -> substrait.type_expressions_pb2.DerivationExpression:
+        def intermediate_type(self) -> substrait.ibis.type_expressions_pb2.DerivationExpression:
             ...
 
         @property
-        def output_type(self) -> substrait.type_expressions_pb2.DerivationExpression:
+        def output_type(self) -> substrait.ibis.type_expressions_pb2.DerivationExpression:
             ...
 
         @property
@@ -243,7 +243,7 @@ class FunctionSignature(google.protobuf.message.Message):
         def implementations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionSignature.Implementation]:
             ...
 
-        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Optional[typing.Iterable[typing.Text]]=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., intermediate_type: typing.Optional[substrait.type_expressions_pb2.DerivationExpression]=..., output_type: typing.Optional[substrait.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., ordered: builtins.bool=..., max_set: builtins.int=..., window_type: global___FunctionSignature.Window.WindowType.ValueType=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
+        def __init__(self, *, arguments: typing.Optional[typing.Iterable[global___FunctionSignature.Argument]]=..., name: typing.Optional[typing.Iterable[typing.Text]]=..., description: typing.Optional[global___FunctionSignature.Description]=..., deterministic: builtins.bool=..., session_dependent: builtins.bool=..., intermediate_type: typing.Optional[substrait.ibis.type_expressions_pb2.DerivationExpression]=..., output_type: typing.Optional[substrait.ibis.type_expressions_pb2.DerivationExpression]=..., variadic: typing.Optional[global___FunctionSignature.FinalArgVariadic]=..., normal: typing.Optional[global___FunctionSignature.FinalArgNormal]=..., ordered: builtins.bool=..., max_set: builtins.int=..., window_type: global___FunctionSignature.Window.WindowType.ValueType=..., implementations: typing.Optional[typing.Iterable[global___FunctionSignature.Implementation]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['description', b'description', 'final_variable_behavior', b'final_variable_behavior', 'intermediate_type', b'intermediate_type', 'normal', b'normal', 'output_type', b'output_type', 'variadic', b'variadic']) -> builtins.bool:
@@ -306,11 +306,11 @@ class FunctionSignature(google.protobuf.message.Message):
             CONSTANT_FIELD_NUMBER: builtins.int
 
             @property
-            def type(self) -> substrait.parameterized_types_pb2.ParameterizedType:
+            def type(self) -> substrait.ibis.parameterized_types_pb2.ParameterizedType:
                 ...
             constant: builtins.bool
 
-            def __init__(self, *, type: typing.Optional[substrait.parameterized_types_pb2.ParameterizedType]=..., constant: builtins.bool=...) -> None:
+            def __init__(self, *, type: typing.Optional[substrait.ibis.parameterized_types_pb2.ParameterizedType]=..., constant: builtins.bool=...) -> None:
                 ...
 
             def HasField(self, field_name: typing_extensions.Literal['type', b'type']) -> builtins.bool:
@@ -324,10 +324,10 @@ class FunctionSignature(google.protobuf.message.Message):
             TYPE_FIELD_NUMBER: builtins.int
 
             @property
-            def type(self) -> substrait.parameterized_types_pb2.ParameterizedType:
+            def type(self) -> substrait.ibis.parameterized_types_pb2.ParameterizedType:
                 ...
 
-            def __init__(self, *, type: typing.Optional[substrait.parameterized_types_pb2.ParameterizedType]=...) -> None:
+            def __init__(self, *, type: typing.Optional[substrait.ibis.parameterized_types_pb2.ParameterizedType]=...) -> None:
                 ...
 
             def HasField(self, field_name: typing_extensions.Literal['type', b'type']) -> builtins.bool:
