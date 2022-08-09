@@ -10,7 +10,6 @@ import collections.abc
 import datetime
 import decimal
 import functools
-import itertools
 import operator
 import uuid
 from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
@@ -673,7 +672,7 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
     table_op = table.op()
     if isinstance(table_op, ops.Join):
         root_tables = [table_op.left.op(), table_op.right.op()]
-        accum = itertools.accumulate((len(t.schema) for t in root_tables), initial=0)
+        accum = [0, len(root_tables[0].schema)]
         return dict(zip(root_tables, accum))
     return {}
 
