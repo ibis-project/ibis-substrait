@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.7](https://github.com/ibis-project/ibis-substrait/compare/v2.9.6...v2.9.7) (2022-08-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency protobuf to v3.20.1 ([24487e0](https://github.com/ibis-project/ibis-substrait/commit/24487e042c5f4330e1e4862c6818d043846988ad))
+
 ## [2.9.6](https://github.com/ibis-project/ibis-substrait/compare/v2.9.5...v2.9.6) (2022-08-09)
 
 
