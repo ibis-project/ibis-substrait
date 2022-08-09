@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.6](https://github.com/ibis-project/ibis-substrait/compare/v2.9.5...v2.9.6) (2022-08-09)
+
+
+### Bug Fixes
+
+* add `VarChar` to the `_decompile_field` dispatcher ([30e1daa](https://github.com/ibis-project/ibis-substrait/commit/30e1daab51744606ae481a171d7c82f79bf52dde))
+
 ## [2.9.5](https://github.com/ibis-project/ibis-substrait/compare/v2.9.4...v2.9.5) (2022-08-01)
 
 
