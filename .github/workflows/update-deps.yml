@@ -1,7 +1,7 @@
 name: Update Niv Deps
 on:
   schedule:
-    - cron: "* */24 * * *"
+    - cron: "0 0 * * 0"
   workflow_dispatch:
 
 jobs:
