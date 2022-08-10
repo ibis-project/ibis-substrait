@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.10.0](https://github.com/ibis-project/ibis-substrait/compare/v2.9.8...v2.10.0) (2022-08-10)
+
+
+### Features
+
+* add dispatch rule for `FixedChar` ([24508f6](https://github.com/ibis-project/ibis-substrait/commit/24508f6ca9d365cd29feb641c02d34629a49ef82))
+
 ## [2.9.8](https://github.com/ibis-project/ibis-substrait/compare/v2.9.7...v2.9.8) (2022-08-10)
 
 
