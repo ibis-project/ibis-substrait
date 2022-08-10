@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.9.8](https://github.com/ibis-project/ibis-substrait/compare/v2.9.7...v2.9.8) (2022-08-10)
+
+
+### Bug Fixes
+
+* always calculate child rel field offsets for join predicates ([f8f7f96](https://github.com/ibis-project/ibis-substrait/commit/f8f7f96946e79bf701f17ab103a087e1ed8e85c2))
+
 ## [2.9.7](https://github.com/ibis-project/ibis-substrait/compare/v2.9.6...v2.9.7) (2022-08-09)
 
 
