@@ -31,6 +31,16 @@ def s():
     return ibis.table([("c", "string"), ("d", "int64")], name="s")
 
 
+@pytest.fixture
+def r():
+    return ibis.table([("a", "string"), ("b", "int64")], name="r")
+
+
+@pytest.fixture
+def q():
+    return ibis.table([("e", "string"), ("f", "int64")], name="q")
+
+
 @pytest.mark.parametrize(
     "expr_fn",
     [
@@ -278,6 +288,23 @@ def test_searchedcase(compiler):
 def test_extract_date(compiler, span):
     t = ibis.table([("o_orderdate", dt.date)], name="t")
     expr = t[getattr(t.o_orderdate, span)()]
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
+
+
+def test_roundtrip_join(compiler, s, r):
+    expr = s.join(r, s.c == r.a)
+
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
+
+
+def test_roundtrip_nested_join(compiler, s, r, q):
+    expr = s.join(r, s.c == r.a)
+    expr = expr.join(q, expr.a == q.e)
+
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
     assert result.equals(expr)

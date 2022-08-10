@@ -689,7 +689,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h15"),
         marks=pytest.mark.xfail(
-            raises=AssertionError, reason="non-empty child offsets"
+            raises=KeyError, reason="TableArrayView not implemented"
         ),
     ),
     pytest.param(
