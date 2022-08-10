@@ -798,6 +798,7 @@ def join(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Rel:
+    child_rel_field_offsets = kwargs.pop("child_rel_field_offsets", None)
     return stalg.Rel(
         join=stalg.JoinRel(
             left=translate(op.left, compiler, **kwargs),
@@ -805,6 +806,8 @@ def join(
             expression=translate(
                 functools.reduce(operator.and_, op.predicates),
                 compiler,
+                child_rel_field_offsets=child_rel_field_offsets
+                or _get_child_relation_field_offsets(expr),
                 **kwargs,
             ),
             type=_translate_join_type(op),
