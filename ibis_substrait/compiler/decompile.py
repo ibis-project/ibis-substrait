@@ -192,6 +192,7 @@ def _decompile_field_generic(
 @_decompile_field.register(stt.Type.FP32)
 @_decompile_field.register(stt.Type.String)
 @_decompile_field.register(stt.Type.VarChar)
+@_decompile_field.register(stt.Type.FixedChar)
 @_decompile_field.register(stt.Type.Binary)
 @_decompile_field.register(stt.Type.Timestamp)
 @_decompile_field.register(stt.Type.Date)
@@ -1045,6 +1046,10 @@ class LiteralDecompiler:
 
     @staticmethod
     def decompile_string(value: str) -> tuple[str, dt.String]:
+        return value, dt.string
+
+    @staticmethod
+    def decompile_fixed_char(value: str) -> tuple[str, dt.String]:
         return value, dt.string
 
     @staticmethod
