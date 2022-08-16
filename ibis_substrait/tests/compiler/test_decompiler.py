@@ -301,9 +301,17 @@ def test_roundtrip_join(compiler, s, r):
     assert result.equals(expr)
 
 
+def test_roundtrip_join_column_name_overlap(compiler, s, t):
+    expr = s.join(t, s.c == t.c)
+
+    plan = compiler.compile(expr)
+    (result,) = decompile(plan)
+    assert result.equals(expr)
+
+
 def test_roundtrip_nested_join(compiler, s, r, q):
     expr = s.join(r, s.c == r.a)
-    expr = expr.join(q, expr.a == q.e)
+    expr = expr.join(q, r.a == q.e)
 
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
