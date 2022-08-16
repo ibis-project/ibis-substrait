@@ -671,9 +671,12 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
     """
     table_op = table.op()
     if isinstance(table_op, ops.Join):
+        # Descend into the left and right tables to grab offsets from nested joins
+        left_keys = _get_child_relation_field_offsets(table_op.left)
+        right_keys = _get_child_relation_field_offsets(table_op.right)
         root_tables = [table_op.left.op(), table_op.right.op()]
         accum = [0, len(root_tables[0].schema)]
-        return dict(zip(root_tables, accum))
+        return {**left_keys, **right_keys, **dict(zip(root_tables, accum))}
     return {}
 
 
@@ -798,6 +801,9 @@ def join(
     **kwargs: Any,
 ) -> stalg.Rel:
     child_rel_field_offsets = kwargs.pop("child_rel_field_offsets", None)
+    child_rel_field_offsets = (
+        child_rel_field_offsets or _get_child_relation_field_offsets(expr)
+    )
     return stalg.Rel(
         join=stalg.JoinRel(
             left=translate(op.left, compiler, **kwargs),
@@ -805,8 +811,7 @@ def join(
             expression=translate(
                 functools.reduce(operator.and_, op.predicates),
                 compiler,
-                child_rel_field_offsets=child_rel_field_offsets
-                or _get_child_relation_field_offsets(expr),
+                child_rel_field_offsets=child_rel_field_offsets,
                 **kwargs,
             ),
             type=_translate_join_type(op),
