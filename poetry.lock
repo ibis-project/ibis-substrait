@@ -18,7 +18,7 @@ python-versions = "*"
 six = "*"
 
 [package.extras]
-test = ["pytest", "astroid (<=2.5.3)"]
+test = ["astroid (<=2.5.3)", "pytest"]
 
 [[package]]
 name = "astunparse"
@@ -185,18 +185,18 @@ tabulate = ">=0.8.9,<1"
 toolz = ">=0.11,<0.13"
 
 [package.extras]
-all = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "dask[array,dataframe] (>=2021.10.0)", "datafusion (>=0.4,<0.7)", "duckdb (>=0.3.2,<0.5.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "fsspec (>=2022.1.0)", "GeoAlchemy2 (>=0.6.3,<0.13)", "geopandas (>=0.6,<0.12)", "graphviz (>=0.16,<0.21)", "impyla[kerberos] (>=0.17,<0.19)", "lz4 (>=3.1.10,<5)", "psycopg2 (>=2.8.4,<3)", "pyarrow (>=1,<9)", "pymysql (>=1,<2)", "pyspark (>=3,<4)", "requests (>=2,<3)", "Shapely (>=1.6,<1.8.3)", "sqlalchemy (>=1.4,<2.0)"]
-clickhouse = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "lz4 (>=3.1.10,<5)"]
-dask = ["dask[array,dataframe] (>=2021.10.0)", "pyarrow (>=1,<9)"]
-datafusion = ["datafusion (>=0.4,<0.7)"]
-duckdb = ["duckdb (>=0.3.2,<0.5.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "sqlalchemy (>=1.4,<2.0)"]
-impala = ["fsspec (>=2022.1.0)", "impyla[kerberos] (>=0.17,<0.19)", "requests (>=2,<3)"]
-geospatial = ["GeoAlchemy2 (>=0.6.3,<0.13)", "geopandas (>=0.6,<0.12)", "Shapely (>=1.6,<1.8.3)"]
-visualization = ["graphviz (>=0.16,<0.21)"]
-postgres = ["psycopg2 (>=2.8.4,<3)", "sqlalchemy (>=1.4,<2.0)"]
-pyspark = ["pyarrow (>=1,<9)", "pyspark (>=3,<4)"]
-mysql = ["pymysql (>=1,<2)", "sqlalchemy (>=1.4,<2.0)"]
+all = ["sqlalchemy (>=1.4,<2.0)", "Shapely (>=1.6,<1.8.3)", "requests (>=2,<3)", "pyspark (>=3,<4)", "pymysql (>=1,<2)", "pyarrow (>=1,<9)", "psycopg2 (>=2.8.4,<3)", "lz4 (>=3.1.10,<5)", "impyla[kerberos] (>=0.17,<0.19)", "graphviz (>=0.16,<0.21)", "geopandas (>=0.6,<0.12)", "GeoAlchemy2 (>=0.6.3,<0.13)", "fsspec (>=2022.1.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "duckdb (>=0.3.2,<0.5.0)", "datafusion (>=0.4,<0.7)", "dask[array,dataframe] (>=2021.10.0)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "clickhouse-cityhash (>=1.0.2,<2)"]
+duckdb = ["sqlalchemy (>=1.4,<2.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "duckdb (>=0.3.2,<0.5.0)"]
+mysql = ["sqlalchemy (>=1.4,<2.0)", "pymysql (>=1,<2)"]
+postgres = ["sqlalchemy (>=1.4,<2.0)", "psycopg2 (>=2.8.4,<3)"]
 sqlite = ["sqlalchemy (>=1.4,<2.0)"]
+geospatial = ["Shapely (>=1.6,<1.8.3)", "geopandas (>=0.6,<0.12)", "GeoAlchemy2 (>=0.6.3,<0.13)"]
+impala = ["requests (>=2,<3)", "impyla[kerberos] (>=0.17,<0.19)", "fsspec (>=2022.1.0)"]
+pyspark = ["pyspark (>=3,<4)", "pyarrow (>=1,<9)"]
+dask = ["pyarrow (>=1,<9)", "dask[array,dataframe] (>=2021.10.0)"]
+clickhouse = ["lz4 (>=3.1.10,<5)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "clickhouse-cityhash (>=1.0.2,<2)"]
+visualization = ["graphviz (>=0.16,<0.21)"]
+datafusion = ["datafusion (>=0.4,<0.7)"]
 
 [[package]]
 name = "importlib-metadata"
@@ -786,7 +786,7 @@ tests = ["cython", "littleutils", "pygments", "typeguard", "pytest"]
 
 [[package]]
 name = "substrait-validator"
-version = "0.0.7"
+version = "0.0.8"
 description = "Validator for Substrait query plans"
 category = "dev"
 optional = false
@@ -799,7 +799,7 @@ protobuf = ">3.19.3"
 pyyaml = ">=6"
 
 [package.extras]
-test = ["pytest (<5.0.0)"]
+test = ["toml (>=0.10.2)", "pytest (<5.0.0)"]
 
 [[package]]
 name = "tabulate"
@@ -894,7 +894,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "cc869502dfa32fc99ad24964f8f82ea3a515e1d1ad6fa0af68f3b6ddface7100"
+content-hash = "d91e58cccbc7a518db521f2f06e7b48b5e133961598b2f764b7ac19564edfb08"
 
 [metadata.files]
 appnope = [
@@ -1454,21 +1454,21 @@ stack-data = [
     {file = "stack_data-0.4.0.tar.gz", hash = "sha256:a90ae7e260f7d15aefeceb46f0a028d4ccb9eb8856475c53e341945342d41ea7"},
 ]
 substrait-validator = [
-    {file = "substrait_validator-0.0.7-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:b89c99e3885c7e1cbcf5994aff5d9d3973cffd553f9947f77b0133747dae8a08"},
-    {file = "substrait_validator-0.0.7-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:fe9354baa1a391458f34efbe20ad8a13f83ecfe443775f634c0d442cf0809f78"},
-    {file = "substrait_validator-0.0.7-cp310-none-win_amd64.whl", hash = "sha256:439a73cb92bd5b539b722480b8f92fbbd1d1c77833db02732752172dfa7435f7"},
-    {file = "substrait_validator-0.0.7-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:027f5fe54f62ca2804ea7077faef04e45c30482ce0b6502fa20a1a01d8b07013"},
-    {file = "substrait_validator-0.0.7-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:92b7ed46fb670430e9e1f1774981f392cc68249009f2cde0c5be97f9eac9d715"},
-    {file = "substrait_validator-0.0.7-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4cf4ec4b805ab408aef6da2bbc62ae8da5e3623b29fb987a0d9cc7684b0f4b86"},
-    {file = "substrait_validator-0.0.7-cp37-none-win_amd64.whl", hash = "sha256:359fecb98f32dfac673e0c68d76f680e25e30c5a1461dd9465ad95cf2c0e30a9"},
-    {file = "substrait_validator-0.0.7-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:cd3dffb0e1b2c7eabf33117e20ae4a827a7d74712252f4794e5d09f0ddf7839e"},
-    {file = "substrait_validator-0.0.7-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:21eef0e6dbb49493772d5bb21d0856111c6ca83e699f68f9dad27821c1b26b7e"},
-    {file = "substrait_validator-0.0.7-cp38-none-win_amd64.whl", hash = "sha256:bcd543f6d893614bab1e915ce75d77f36800fd06b88b1be699a7592ce8f3ea90"},
-    {file = "substrait_validator-0.0.7-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:eb5268424029a796b7d27ed68cb37c495fa42a8adfd5f25bb19597a86c4be8ea"},
-    {file = "substrait_validator-0.0.7-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:5ea66e29e8236dfad2484044d8ef97e6ad0339247a75079268119585d7c04e33"},
-    {file = "substrait_validator-0.0.7-cp39-none-win_amd64.whl", hash = "sha256:f64126e3a14be831dd340535b96d25c54f92d6a6ff5820d0c63089f5adf8d366"},
-    {file = "substrait_validator-0.0.7-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:5ebd4e8829516b3f1df43b7c8b950548fe61f3b2ca5c918bcaf5619a44b80caf"},
-    {file = "substrait_validator-0.0.7.tar.gz", hash = "sha256:1d6aa3992151d9a3a3ddc6fe0460ae0411d996522c2a7dba60b47c7f138048ab"},
+    {file = "substrait_validator-0.0.8-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:e033833b33bea4129fa9fdfa66f2394b78dc16f5a2dc97146696636575bce24d"},
+    {file = "substrait_validator-0.0.8-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:abd78c83d6f862873b505cb11dda5dfe59876dd887f5e2a541eb3cded4244f4b"},
+    {file = "substrait_validator-0.0.8-cp310-none-win_amd64.whl", hash = "sha256:d4ee41dd7416338d98eea5ac50f60d8fd10665eb17dd9d38a90d8c30233ef31b"},
+    {file = "substrait_validator-0.0.8-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:bbbc6de138f890de83314a949a8a31afdb237d6a85be617679c018e61ccf360d"},
+    {file = "substrait_validator-0.0.8-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:127726d850cfe70122ad1693a5223ec4a29ef61a4117e895e1cd9df3e91c452f"},
+    {file = "substrait_validator-0.0.8-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:00af8bda91bdc287b3e73e3063b3c5a2005c75dc25fe1af903a966d93f2f0a63"},
+    {file = "substrait_validator-0.0.8-cp37-none-win_amd64.whl", hash = "sha256:0ed09b8802c8ac5c91b730b1a0e4b63efda589ff0de2f0c6b03dc6318e63c3c5"},
+    {file = "substrait_validator-0.0.8-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:a5cbd2ad55285eb7814996261b58ea7f72778446360985ed3007992ee0118592"},
+    {file = "substrait_validator-0.0.8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:835e09bc358660ba032dab476bf5554ab368472b4986f27b719a605646bb446e"},
+    {file = "substrait_validator-0.0.8-cp38-none-win_amd64.whl", hash = "sha256:5c915c3123dc0a388a1c7db685f2abd108b649c79f4baa440e5afc7e8c580e1a"},
+    {file = "substrait_validator-0.0.8-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:85dc671466f513628d34acc13aec0686b6248e8fec87298d5ff89ae3c793050f"},
+    {file = "substrait_validator-0.0.8-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:501e7c72515233c446dde52dccbd25c9e7cef5084c47f5bca358fcf38da601aa"},
+    {file = "substrait_validator-0.0.8-cp39-none-win_amd64.whl", hash = "sha256:7afa41ff7093bc1ecbe1a9cd0d68bb95caa0815cdfb7535c3d36569c130bb79a"},
+    {file = "substrait_validator-0.0.8-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:37dcc6a3bf6d38b52fbd0e9654bdab793eda4e8efeb67dff8f360e36770de7f3"},
+    {file = "substrait_validator-0.0.8.tar.gz", hash = "sha256:a159be643a9d0ac72aa1bbc2f6426cf8c7db37d41bad9e352a7029d822850a41"},
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
