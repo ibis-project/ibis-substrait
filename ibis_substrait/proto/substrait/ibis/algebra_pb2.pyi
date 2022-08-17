@@ -21,18 +21,31 @@ class _AggregationPhase:
 class _AggregationPhaseEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_AggregationPhase.ValueType], builtins.type):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     AGGREGATION_PHASE_UNSPECIFIED: _AggregationPhase.ValueType
+    'Implies `INTERMEDIATE_TO_RESULT`.'
     AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: _AggregationPhase.ValueType
+    'Specifies that the function should be run only up to the point of\n    generating an intermediate value, to be further aggregated later using\n    INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT.\n    '
     AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: _AggregationPhase.ValueType
+    'Specifies that the inputs of the aggregate or window function are the\n    intermediate values of the function, and that the output should also be\n    an intermediate value, to be further aggregated later using\n    INTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT.\n    '
     AGGREGATION_PHASE_INITIAL_TO_RESULT: _AggregationPhase.ValueType
+    'A complete invocation: the function should aggregate the given set of\n    inputs to yield a single return value. This style must be used for\n    aggregate or window functions that are not decomposable.\n    '
     AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: _AggregationPhase.ValueType
+    'Specifies that the inputs of the aggregate or window function are the\n    intermediate values of the function, generated previously using\n    INITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.\n    This call should combine the intermediate values to yield the final\n    return value.\n    '
 
 class AggregationPhase(_AggregationPhase, metaclass=_AggregationPhaseEnumTypeWrapper):
+    """Describes which part of an aggregation or window function to perform within
+    the context of distributed algorithms.
+    """
     pass
 AGGREGATION_PHASE_UNSPECIFIED: AggregationPhase.ValueType
+'Implies `INTERMEDIATE_TO_RESULT`.'
 AGGREGATION_PHASE_INITIAL_TO_INTERMEDIATE: AggregationPhase.ValueType
+'Specifies that the function should be run only up to the point of\ngenerating an intermediate value, to be further aggregated later using\nINTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT.\n'
 AGGREGATION_PHASE_INTERMEDIATE_TO_INTERMEDIATE: AggregationPhase.ValueType
+'Specifies that the inputs of the aggregate or window function are the\nintermediate values of the function, and that the output should also be\nan intermediate value, to be further aggregated later using\nINTERMEDIATE_TO_INTERMEDIATE or INTERMEDIATE_TO_RESULT.\n'
 AGGREGATION_PHASE_INITIAL_TO_RESULT: AggregationPhase.ValueType
+'A complete invocation: the function should aggregate the given set of\ninputs to yield a single return value. This style must be used for\naggregate or window functions that are not decomposable.\n'
 AGGREGATION_PHASE_INTERMEDIATE_TO_RESULT: AggregationPhase.ValueType
+'Specifies that the inputs of the aggregate or window function are the\nintermediate values of the function, generated previously using\nINITIAL_TO_INTERMEDIATE and possibly INTERMEDIATE_TO_INTERMEDIATE calls.\nThis call should combine the intermediate values to yield the final\nreturn value.\n'
 global___AggregationPhase = AggregationPhase
 
 class RelCommon(google.protobuf.message.Message):
@@ -1134,6 +1147,259 @@ class Rel(google.protobuf.message.Message):
         ...
 global___Rel = Rel
 
+class NamedObjectWrite(google.protobuf.message.Message):
+    """A base object for writing (e.g., a table or a view)."""
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    NAMES_FIELD_NUMBER: builtins.int
+    ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+
+    @property
+    def names(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[typing.Text]:
+        """The list of string is used to represent namespacing (e.g., mydb.mytable).
+        This assumes shared catalog between systems exchanging a message.
+        """
+        pass
+
+    @property
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
+        ...
+
+    def __init__(self, *, names: typing.Optional[typing.Iterable[typing.Text]]=..., advanced_extension: typing.Optional[substrait.ibis.extensions.extensions_pb2.AdvancedExtension]=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'names', b'names']) -> None:
+        ...
+global___NamedObjectWrite = NamedObjectWrite
+
+class ExtensionObject(google.protobuf.message.Message):
+    """A stub type that can be used to extend/introduce new table types outside
+    the specification.
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DETAIL_FIELD_NUMBER: builtins.int
+
+    @property
+    def detail(self) -> google.protobuf.any_pb2.Any:
+        ...
+
+    def __init__(self, *, detail: typing.Optional[google.protobuf.any_pb2.Any]=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['detail', b'detail']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['detail', b'detail']) -> None:
+        ...
+global___ExtensionObject = ExtensionObject
+
+class DdlRel(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _DdlObject:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _DdlObjectEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DdlRel._DdlObject.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        DDL_OBJECT_UNSPECIFIED: DdlRel._DdlObject.ValueType
+        DDL_OBJECT_TABLE: DdlRel._DdlObject.ValueType
+        'A Table object in the system'
+        DDL_OBJECT_VIEW: DdlRel._DdlObject.ValueType
+        'A View object in the system'
+
+    class DdlObject(_DdlObject, metaclass=_DdlObjectEnumTypeWrapper):
+        pass
+    DDL_OBJECT_UNSPECIFIED: DdlRel.DdlObject.ValueType
+    DDL_OBJECT_TABLE: DdlRel.DdlObject.ValueType
+    'A Table object in the system'
+    DDL_OBJECT_VIEW: DdlRel.DdlObject.ValueType
+    'A View object in the system'
+
+    class _DdlOp:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _DdlOpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[DdlRel._DdlOp.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        DDL_OP_UNSPECIFIED: DdlRel._DdlOp.ValueType
+        DDL_OP_CREATE: DdlRel._DdlOp.ValueType
+        'A create operation (for any object)'
+        DDL_OP_CREATE_OR_REPLACE: DdlRel._DdlOp.ValueType
+        'A create operation if the object does not exist, or replaces it (equivalent to a DROP + CREATE) if the object already exists'
+        DDL_OP_ALTER: DdlRel._DdlOp.ValueType
+        'An operation that modifies the schema (e.g., column names, types, default values) for the target object'
+        DDL_OP_DROP: DdlRel._DdlOp.ValueType
+        'An operation that removes an object from the system'
+        DDL_OP_DROP_IF_EXIST: DdlRel._DdlOp.ValueType
+        'An operation that removes an object from the system (without throwing an exception if the object did not exist)'
+
+    class DdlOp(_DdlOp, metaclass=_DdlOpEnumTypeWrapper):
+        pass
+    DDL_OP_UNSPECIFIED: DdlRel.DdlOp.ValueType
+    DDL_OP_CREATE: DdlRel.DdlOp.ValueType
+    'A create operation (for any object)'
+    DDL_OP_CREATE_OR_REPLACE: DdlRel.DdlOp.ValueType
+    'A create operation if the object does not exist, or replaces it (equivalent to a DROP + CREATE) if the object already exists'
+    DDL_OP_ALTER: DdlRel.DdlOp.ValueType
+    'An operation that modifies the schema (e.g., column names, types, default values) for the target object'
+    DDL_OP_DROP: DdlRel.DdlOp.ValueType
+    'An operation that removes an object from the system'
+    DDL_OP_DROP_IF_EXIST: DdlRel.DdlOp.ValueType
+    'An operation that removes an object from the system (without throwing an exception if the object did not exist)'
+    NAMED_OBJECT_FIELD_NUMBER: builtins.int
+    EXTENSION_OBJECT_FIELD_NUMBER: builtins.int
+    TABLE_SCHEMA_FIELD_NUMBER: builtins.int
+    TABLE_DEFAULTS_FIELD_NUMBER: builtins.int
+    OBJECT_FIELD_NUMBER: builtins.int
+    OP_FIELD_NUMBER: builtins.int
+    VIEW_DEFINITION_FIELD_NUMBER: builtins.int
+
+    @property
+    def named_object(self) -> global___NamedObjectWrite:
+        ...
+
+    @property
+    def extension_object(self) -> global___ExtensionObject:
+        ...
+
+    @property
+    def table_schema(self) -> substrait.ibis.type_pb2.NamedStruct:
+        """The columns that will be modified (representing after-image of a schema change)"""
+        pass
+
+    @property
+    def table_defaults(self) -> global___Expression.Literal.Struct:
+        """The default values for the columns (representing after-image of a schema change)
+        E.g., in case of an ALTER TABLE that changes some of the column default values, we expect
+        the table_defaults Struct to report a full list of default values reflecting the result of applying
+        the ALTER TABLE operator successfully
+        """
+        pass
+    object: global___DdlRel.DdlObject.ValueType
+    'Which type of object we operate on'
+    op: global___DdlRel.DdlOp.ValueType
+    'The type of operation to perform'
+
+    @property
+    def view_definition(self) -> global___Rel:
+        """The body of the CREATE VIEW"""
+        pass
+
+    def __init__(self, *, named_object: typing.Optional[global___NamedObjectWrite]=..., extension_object: typing.Optional[global___ExtensionObject]=..., table_schema: typing.Optional[substrait.ibis.type_pb2.NamedStruct]=..., table_defaults: typing.Optional[global___Expression.Literal.Struct]=..., object: global___DdlRel.DdlObject.ValueType=..., op: global___DdlRel.DdlOp.ValueType=..., view_definition: typing.Optional[global___Rel]=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['extension_object', b'extension_object', 'named_object', b'named_object', 'table_defaults', b'table_defaults', 'table_schema', b'table_schema', 'view_definition', b'view_definition', 'write_type', b'write_type']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['extension_object', b'extension_object', 'named_object', b'named_object', 'object', b'object', 'op', b'op', 'table_defaults', b'table_defaults', 'table_schema', b'table_schema', 'view_definition', b'view_definition', 'write_type', b'write_type']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['write_type', b'write_type']) -> typing.Optional[typing_extensions.Literal['named_object', 'extension_object']]:
+        ...
+global___DdlRel = DdlRel
+
+class WriteRel(google.protobuf.message.Message):
+    """The operator that modifies the content of a database (operates on 1 table at a time, but tuple-selection/source can be
+    based on joining of multiple tables).
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _WriteOp:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _WriteOpEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WriteRel._WriteOp.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        WRITE_OP_UNSPECIFIED: WriteRel._WriteOp.ValueType
+        WRITE_OP_INSERT: WriteRel._WriteOp.ValueType
+        'The insert of new tuples in a table'
+        WRITE_OP_DELETE: WriteRel._WriteOp.ValueType
+        'The removal of tuples from a table'
+        WRITE_OP_UPDATE: WriteRel._WriteOp.ValueType
+        'The modification of existing tuples within a table'
+        WRITE_OP_CTAS: WriteRel._WriteOp.ValueType
+        'The Creation of a new table, and the insert of new tuples in the table'
+
+    class WriteOp(_WriteOp, metaclass=_WriteOpEnumTypeWrapper):
+        pass
+    WRITE_OP_UNSPECIFIED: WriteRel.WriteOp.ValueType
+    WRITE_OP_INSERT: WriteRel.WriteOp.ValueType
+    'The insert of new tuples in a table'
+    WRITE_OP_DELETE: WriteRel.WriteOp.ValueType
+    'The removal of tuples from a table'
+    WRITE_OP_UPDATE: WriteRel.WriteOp.ValueType
+    'The modification of existing tuples within a table'
+    WRITE_OP_CTAS: WriteRel.WriteOp.ValueType
+    'The Creation of a new table, and the insert of new tuples in the table'
+
+    class _OutputMode:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _OutputModeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[WriteRel._OutputMode.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        OUTPUT_MODE_UNSPECIFIED: WriteRel._OutputMode.ValueType
+        OUTPUT_MODE_NO_OUTPUT: WriteRel._OutputMode.ValueType
+        'return no tuples at all'
+        OUTPUT_MODE_MODIFIED_TUPLES: WriteRel._OutputMode.ValueType
+        'this mode makes the operator return all the tuple INSERTED/DELETED/UPDATED by the operator.\n        The operator returns the AFTER-image of any change. This can be further manipulated by operators upstreams\n        (e.g., retunring the typical "count of modified tuples").\n        For scenarios in which the BEFORE image is required, the user must implement a spool (via references to\n        subplans in the body of the Rel input) and return those with anounter PlanRel.relations.\n        '
+
+    class OutputMode(_OutputMode, metaclass=_OutputModeEnumTypeWrapper):
+        pass
+    OUTPUT_MODE_UNSPECIFIED: WriteRel.OutputMode.ValueType
+    OUTPUT_MODE_NO_OUTPUT: WriteRel.OutputMode.ValueType
+    'return no tuples at all'
+    OUTPUT_MODE_MODIFIED_TUPLES: WriteRel.OutputMode.ValueType
+    'this mode makes the operator return all the tuple INSERTED/DELETED/UPDATED by the operator.\n    The operator returns the AFTER-image of any change. This can be further manipulated by operators upstreams\n    (e.g., retunring the typical "count of modified tuples").\n    For scenarios in which the BEFORE image is required, the user must implement a spool (via references to\n    subplans in the body of the Rel input) and return those with anounter PlanRel.relations.\n    '
+    NAMED_TABLE_FIELD_NUMBER: builtins.int
+    EXTENSION_TABLE_FIELD_NUMBER: builtins.int
+    TABLE_SCHEMA_FIELD_NUMBER: builtins.int
+    OP_FIELD_NUMBER: builtins.int
+    INPUT_FIELD_NUMBER: builtins.int
+    OUTPUT_FIELD_NUMBER: builtins.int
+
+    @property
+    def named_table(self) -> global___NamedObjectWrite:
+        ...
+
+    @property
+    def extension_table(self) -> global___ExtensionObject:
+        ...
+
+    @property
+    def table_schema(self) -> substrait.ibis.type_pb2.NamedStruct:
+        """The schema of the table (must align with Rel input (e.g., number of leaf fields must match))"""
+        pass
+    op: global___WriteRel.WriteOp.ValueType
+    'The type of operation to perform'
+
+    @property
+    def input(self) -> global___Rel:
+        """The relation that determines the tuples to add/remove/modify
+        the schema must match with table_schema. Default values must be explicitly stated
+        in a ProjectRel at the top of the input. The match must also
+        occur in case of DELETE to ensure multi-engine plans are unequivocal.
+        """
+        pass
+    output: global___WriteRel.OutputMode.ValueType
+    'Output mode determines what is the output of executing this rel'
+
+    def __init__(self, *, named_table: typing.Optional[global___NamedObjectWrite]=..., extension_table: typing.Optional[global___ExtensionObject]=..., table_schema: typing.Optional[substrait.ibis.type_pb2.NamedStruct]=..., op: global___WriteRel.WriteOp.ValueType=..., input: typing.Optional[global___Rel]=..., output: global___WriteRel.OutputMode.ValueType=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['extension_table', b'extension_table', 'input', b'input', 'named_table', b'named_table', 'table_schema', b'table_schema', 'write_type', b'write_type']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['extension_table', b'extension_table', 'input', b'input', 'named_table', b'named_table', 'op', b'op', 'output', b'output', 'table_schema', b'table_schema', 'write_type', b'write_type']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['write_type', b'write_type']) -> typing.Optional[typing_extensions.Literal['named_table', 'extension_table']]:
+        ...
+global___WriteRel = WriteRel
+
 class FunctionArgument(google.protobuf.message.Message):
     """The argument of a function"""
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
@@ -1489,25 +1755,44 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class ScalarFunction(google.protobuf.message.Message):
+        """A scalar function call."""
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
         FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
         ARGUMENTS_FIELD_NUMBER: builtins.int
         OUTPUT_TYPE_FIELD_NUMBER: builtins.int
         ARGS_FIELD_NUMBER: builtins.int
         function_reference: builtins.int
-        'points to a function_anchor defined in this plan'
+        'Points to a function_anchor defined in this plan, which must refer\n        to a scalar function in the associated YAML file. Required; avoid\n        using anchor/reference zero.\n        '
 
         @property
         def arguments(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionArgument]:
-            ...
+            """The arguments to be bound to the function. This must have exactly the
+            number of arguments specified in the function definition, and the
+            argument types must also match exactly:
+
+             - Value arguments must be bound using FunctionArgument.value, and
+               the expression in that must yield a value of a type that a function
+               overload is defined for.
+             - Type arguments must be bound using FunctionArgument.type.
+             - Required enum arguments must be bound using FunctionArgument.enum
+               followed by Enum.specified, with a string that case-insensitively
+               matches one of the allowed options.
+             - Optional enum arguments must be bound using FunctionArgument.enum
+               followed by either Enum.specified or Enum.unspecified. If specified,
+               the string must case-insensitively match one of the allowed options.
+            """
+            pass
 
         @property
         def output_type(self) -> substrait.ibis.type_pb2.Type:
-            ...
+            """Must be set to the return type of the function, exactly as derived
+            using the declaration in the extension.
+            """
+            pass
 
         @property
         def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
-            """deprecated; use args instead"""
+            """Deprecated; use arguments instead."""
             pass
 
         def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
@@ -1520,15 +1805,19 @@ class Expression(google.protobuf.message.Message):
             ...
 
     class WindowFunction(google.protobuf.message.Message):
+        """A window function call."""
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
         class Bound(google.protobuf.message.Message):
+            """Defines one of the two boundaries for the window of a window function."""
             DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
             class Preceding(google.protobuf.message.Message):
+                """Defines that the bound extends this far back from the current record."""
                 DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 OFFSET_FIELD_NUMBER: builtins.int
                 offset: builtins.int
+                'A strictly positive integer specifying the number of records that\n                the window extends back from the current record. Required. Use\n                CurrentRow for offset zero and Following for negative offsets.\n                '
 
                 def __init__(self, *, offset: builtins.int=...) -> None:
                     ...
@@ -1537,9 +1826,11 @@ class Expression(google.protobuf.message.Message):
                     ...
 
             class Following(google.protobuf.message.Message):
+                """Defines that the bound extends this far ahead of the current record."""
                 DESCRIPTOR: google.protobuf.descriptor.Descriptor
                 OFFSET_FIELD_NUMBER: builtins.int
                 offset: builtins.int
+                'A strictly positive integer specifying the number of records that\n                the window extends ahead of the current record. Required. Use\n                CurrentRow for offset zero and Preceding for negative offsets.\n                '
 
                 def __init__(self, *, offset: builtins.int=...) -> None:
                     ...
@@ -1548,12 +1839,17 @@ class Expression(google.protobuf.message.Message):
                     ...
 
             class CurrentRow(google.protobuf.message.Message):
+                """Defines that the bound extends to or from the current record."""
                 DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
                 def __init__(self) -> None:
                     ...
 
             class Unbounded(google.protobuf.message.Message):
+                """Defines an "unbounded bound": for lower bounds this means the start
+                of the partition, and for upper bounds this means the end of the
+                partition.
+                """
                 DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
                 def __init__(self) -> None:
@@ -1565,19 +1861,28 @@ class Expression(google.protobuf.message.Message):
 
             @property
             def preceding(self) -> global___Expression.WindowFunction.Bound.Preceding:
-                ...
+                """The bound extends some number of records behind the current record."""
+                pass
 
             @property
             def following(self) -> global___Expression.WindowFunction.Bound.Following:
-                ...
+                """The bound extends some number of records ahead of the current
+                record.
+                """
+                pass
 
             @property
             def current_row(self) -> global___Expression.WindowFunction.Bound.CurrentRow:
-                ...
+                """The bound extends to the current record."""
+                pass
 
             @property
             def unbounded(self) -> global___Expression.WindowFunction.Bound.Unbounded:
-                ...
+                """The bound extends to the start of the partition or the end of the
+                partition, depending on whether this represents the upper or lower
+                bound.
+                """
+                pass
 
             def __init__(self, *, preceding: typing.Optional[global___Expression.WindowFunction.Bound.Preceding]=..., following: typing.Optional[global___Expression.WindowFunction.Bound.Following]=..., current_row: typing.Optional[global___Expression.WindowFunction.Bound.CurrentRow]=..., unbounded: typing.Optional[global___Expression.WindowFunction.Bound.Unbounded]=...) -> None:
                 ...
@@ -1591,54 +1896,102 @@ class Expression(google.protobuf.message.Message):
             def WhichOneof(self, oneof_group: typing_extensions.Literal['kind', b'kind']) -> typing.Optional[typing_extensions.Literal['preceding', 'following', 'current_row', 'unbounded']]:
                 ...
         FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
-        PARTITIONS_FIELD_NUMBER: builtins.int
-        SORTS_FIELD_NUMBER: builtins.int
-        UPPER_BOUND_FIELD_NUMBER: builtins.int
-        LOWER_BOUND_FIELD_NUMBER: builtins.int
-        PHASE_FIELD_NUMBER: builtins.int
-        OUTPUT_TYPE_FIELD_NUMBER: builtins.int
         ARGUMENTS_FIELD_NUMBER: builtins.int
+        OUTPUT_TYPE_FIELD_NUMBER: builtins.int
+        PHASE_FIELD_NUMBER: builtins.int
+        SORTS_FIELD_NUMBER: builtins.int
+        INVOCATION_FIELD_NUMBER: builtins.int
+        PARTITIONS_FIELD_NUMBER: builtins.int
+        LOWER_BOUND_FIELD_NUMBER: builtins.int
+        UPPER_BOUND_FIELD_NUMBER: builtins.int
         ARGS_FIELD_NUMBER: builtins.int
         function_reference: builtins.int
-        'points to a function_anchor defined in this plan'
-
-        @property
-        def partitions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
-            ...
-
-        @property
-        def sorts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SortField]:
-            ...
-
-        @property
-        def upper_bound(self) -> global___Expression.WindowFunction.Bound:
-            ...
-
-        @property
-        def lower_bound(self) -> global___Expression.WindowFunction.Bound:
-            ...
-        phase: global___AggregationPhase.ValueType
-
-        @property
-        def output_type(self) -> substrait.ibis.type_pb2.Type:
-            ...
+        'Points to a function_anchor defined in this plan, which must refer\n        to a window function in the associated YAML file. Required; 0 is\n        considered to be a valid anchor/reference.\n        '
 
         @property
         def arguments(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionArgument]:
-            ...
+            """The arguments to be bound to the function. This must have exactly the
+            number of arguments specified in the function definition, and the
+            argument types must also match exactly:
+
+             - Value arguments must be bound using FunctionArgument.value, and
+               the expression in that must yield a value of a type that a function
+               overload is defined for.
+             - Type arguments must be bound using FunctionArgument.type, and a
+               function overload must be defined for that type.
+             - Required enum arguments must be bound using FunctionArgument.enum
+               followed by Enum.specified, with a string that case-insensitively
+               matches one of the allowed options.
+             - Optional enum arguments must be bound using FunctionArgument.enum
+               followed by either Enum.specified or Enum.unspecified. If specified,
+               the string must case-insensitively match one of the allowed options.
+            """
+            pass
+
+        @property
+        def output_type(self) -> substrait.ibis.type_pb2.Type:
+            """Must be set to the return type of the function, exactly as derived
+            using the declaration in the extension.
+            """
+            pass
+        phase: global___AggregationPhase.ValueType
+        'Describes which part of the window function to perform within the\n        context of distributed algorithms. Required. Must be set to\n        INITIAL_TO_RESULT for window functions that are not decomposable.\n        '
+
+        @property
+        def sorts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SortField]:
+            """If specified, the records that are part of the window defined by
+            upper_bound and lower_bound are ordered according to this list
+            before they are aggregated. The first sort field has the highest
+            priority; only if a sort field determines two records to be equivalent
+            is the next field queried. This field is optional, and is only allowed
+            if the window function is defined to support sorting.
+            """
+            pass
+        invocation: global___AggregateFunction.AggregationInvocation.ValueType
+        'Specifies whether equivalent records are merged before being aggregated.\n        Optional, defaults to AGGREGATION_INVOCATION_ALL.\n        '
+
+        @property
+        def partitions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
+            """When one or more partition expressions are specified, two records are
+            considered to be in the same partition if and only if these expressions
+            yield an equal tuple of values for both. When computing the window
+            function, only the subset of records within the bounds that are also in
+            the same partition as the current record are aggregated.
+            """
+            pass
+
+        @property
+        def lower_bound(self) -> global___Expression.WindowFunction.Bound:
+            """Defines the record relative to the current record from which the window
+            extends. The bound is inclusive. If the lower bound indexes a record
+            greater than the upper bound, TODO (null range/no records passed?
+            wrapping around as if lower/upper were swapped? error? null?).
+            Optional; defaults to the start of the partition.
+            """
+            pass
+
+        @property
+        def upper_bound(self) -> global___Expression.WindowFunction.Bound:
+            """Defines the record relative to the current record up to which the window
+            extends. The bound is inclusive. If the upper bound indexes a record
+            less than the lower bound, TODO (null range/no records passed?
+            wrapping around as if lower/upper were swapped? error? null?).
+            Optional; defaults to the end of the partition.
+            """
+            pass
 
         @property
         def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
-            """deprecated; use args instead"""
+            """Deprecated; use arguments instead."""
             pass
 
-        def __init__(self, *, function_reference: builtins.int=..., partitions: typing.Optional[typing.Iterable[global___Expression]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., upper_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., lower_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
+        def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., phase: global___AggregationPhase.ValueType=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., partitions: typing.Optional[typing.Iterable[global___Expression]]=..., lower_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., upper_bound: typing.Optional[global___Expression.WindowFunction.Bound]=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['lower_bound', b'lower_bound', 'output_type', b'output_type', 'upper_bound', b'upper_bound']) -> builtins.bool:
             ...
 
-        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'lower_bound', b'lower_bound', 'output_type', b'output_type', 'partitions', b'partitions', 'phase', b'phase', 'sorts', b'sorts', 'upper_bound', b'upper_bound']) -> None:
+        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'invocation', b'invocation', 'lower_bound', b'lower_bound', 'output_type', b'output_type', 'partitions', b'partitions', 'phase', b'phase', 'sorts', b'sorts', 'upper_bound', b'upper_bound']) -> None:
             ...
 
     class IfThen(google.protobuf.message.Message):
@@ -2596,6 +2949,7 @@ class SortField(google.protobuf.message.Message):
 global___SortField = SortField
 
 class AggregateFunction(google.protobuf.message.Message):
+    """An aggregate function."""
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     class _AggregationInvocation:
@@ -2605,48 +2959,91 @@ class AggregateFunction(google.protobuf.message.Message):
     class _AggregationInvocationEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[AggregateFunction._AggregationInvocation.ValueType], builtins.type):
         DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
         AGGREGATION_INVOCATION_UNSPECIFIED: AggregateFunction._AggregationInvocation.ValueType
+        'This default value implies AGGREGATION_INVOCATION_ALL.'
         AGGREGATION_INVOCATION_ALL: AggregateFunction._AggregationInvocation.ValueType
-        'Use all values in aggregation calculation'
+        'Use all values in the aggregation calculation.'
         AGGREGATION_INVOCATION_DISTINCT: AggregateFunction._AggregationInvocation.ValueType
-        'Use only distinct values in aggregation calculation'
+        'Use only distinct values in the aggregation calculation.'
 
     class AggregationInvocation(_AggregationInvocation, metaclass=_AggregationInvocationEnumTypeWrapper):
+        """Method in which equivalent records are merged before being aggregated."""
         pass
     AGGREGATION_INVOCATION_UNSPECIFIED: AggregateFunction.AggregationInvocation.ValueType
+    'This default value implies AGGREGATION_INVOCATION_ALL.'
     AGGREGATION_INVOCATION_ALL: AggregateFunction.AggregationInvocation.ValueType
-    'Use all values in aggregation calculation'
+    'Use all values in the aggregation calculation.'
     AGGREGATION_INVOCATION_DISTINCT: AggregateFunction.AggregationInvocation.ValueType
-    'Use only distinct values in aggregation calculation'
+    'Use only distinct values in the aggregation calculation.'
+
+    class ReferenceRel(google.protobuf.message.Message):
+        """This rel is used  to create references,
+        in case we refer to a RelRoot field names will be ignored
+        """
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        SUBTREE_ORDINAL_FIELD_NUMBER: builtins.int
+        subtree_ordinal: builtins.int
+
+        def __init__(self, *, subtree_ordinal: builtins.int=...) -> None:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['subtree_ordinal', b'subtree_ordinal']) -> None:
+            ...
     FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
     ARGUMENTS_FIELD_NUMBER: builtins.int
-    SORTS_FIELD_NUMBER: builtins.int
-    PHASE_FIELD_NUMBER: builtins.int
     OUTPUT_TYPE_FIELD_NUMBER: builtins.int
+    PHASE_FIELD_NUMBER: builtins.int
+    SORTS_FIELD_NUMBER: builtins.int
     INVOCATION_FIELD_NUMBER: builtins.int
     ARGS_FIELD_NUMBER: builtins.int
     function_reference: builtins.int
-    'points to a function_anchor defined in this plan'
+    'Points to a function_anchor defined in this plan, which must refer\n    to an aggregate function in the associated YAML file. Required; 0 is\n    considered to be a valid anchor/reference.\n    '
 
     @property
     def arguments(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionArgument]:
-        ...
+        """The arguments to be bound to the function. This must have exactly the
+        number of arguments specified in the function definition, and the
+        argument types must also match exactly:
 
-    @property
-    def sorts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SortField]:
-        ...
-    phase: global___AggregationPhase.ValueType
+         - Value arguments must be bound using FunctionArgument.value, and
+           the expression in that must yield a value of a type that a function
+           overload is defined for.
+         - Type arguments must be bound using FunctionArgument.type, and a
+           function overload must be defined for that type.
+         - Required enum arguments must be bound using FunctionArgument.enum
+           followed by Enum.specified, with a string that case-insensitively
+           matches one of the allowed options.
+         - Optional enum arguments must be bound using FunctionArgument.enum
+           followed by either Enum.specified or Enum.unspecified. If specified,
+           the string must case-insensitively match one of the allowed options.
+        """
+        pass
 
     @property
     def output_type(self) -> substrait.ibis.type_pb2.Type:
-        ...
+        """Must be set to the return type of the function, exactly as derived
+        using the declaration in the extension.
+        """
+        pass
+    phase: global___AggregationPhase.ValueType
+    'Describes which part of the aggregation to perform within the context of\n    distributed algorithms. Required. Must be set to INITIAL_TO_RESULT for\n    aggregate functions that are not decomposable.\n    '
+
+    @property
+    def sorts(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___SortField]:
+        """If specified, the aggregated records are ordered according to this list
+        before they are aggregated. The first sort field has the highest
+        priority; only if a sort field determines two records to be equivalent is
+        the next field queried. This field is optional.
+        """
+        pass
     invocation: global___AggregateFunction.AggregationInvocation.ValueType
+    'Specifies whether equivalent records are merged before being aggregated.\n    Optional, defaults to AGGREGATION_INVOCATION_ALL.\n    '
 
     @property
     def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
-        """deprecated; use args instead"""
+        """deprecated; use arguments instead"""
         pass
 
-    def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., phase: global___AggregationPhase.ValueType=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
+    def __init__(self, *, function_reference: builtins.int=..., arguments: typing.Optional[typing.Iterable[global___FunctionArgument]]=..., output_type: typing.Optional[substrait.ibis.type_pb2.Type]=..., phase: global___AggregationPhase.ValueType=..., sorts: typing.Optional[typing.Iterable[global___SortField]]=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: typing.Optional[typing.Iterable[global___Expression]]=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
