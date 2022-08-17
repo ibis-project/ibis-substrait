@@ -120,15 +120,22 @@ jobs:
   check-poetry-lock:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: install nix
+        uses: cachix/install-nix-action@v17
         with:
-          python-version: "3.x"
-      - run: pip3 install poetry
-      - run: poetry lock --no-update
-        env:
-          PYTHONHASHSEED: "0"
-      - run: git diff --exit-code poetry.lock
+          nix_path: nixpkgs=channel:nixos-unstable-small
+
+      - name: setup cachix
+        uses: cachix/cachix-action@v10
+        with:
+          name: ibis-substrait
+          extraPullNames: nix-community,poetry2nix
+
+      - name: verify lockfile
+        run: ./dev/lockfile_diff.sh
   release:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}

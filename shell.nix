@@ -56,7 +56,5 @@ pkgs.mkShell {
 
   buildInputs = devDeps ++ [ ibisSubstraitDevEnv genProtos ];
 
-  PYTHONHASHSEED = 0;
-
   PYTHONPATH = builtins.toPath ./.;
 }
