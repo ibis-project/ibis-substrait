@@ -301,6 +301,7 @@ def test_roundtrip_join(compiler, s, r):
     assert result.equals(expr)
 
 
+@pytest.mark.xfail(reason="extra projection showing up in decompilation")
 def test_roundtrip_join_column_name_overlap(compiler, s, t):
     expr = s.join(t, s.c == t.c)
 
@@ -315,4 +316,18 @@ def test_roundtrip_nested_join(compiler, s, r, q):
 
     plan = compiler.compile(expr)
     (result,) = decompile(plan)
-    assert result.equals(expr)
+
+    # Yes, this is a little gross.
+    # Ibis allows us to select join predicates using root tables
+    # This cannot be represented in Substrait, so we get _equivalent_ expressions
+    # but they are not _identical_.
+    #
+    # So, for now, we compare the compiled SQL of the two expressions as
+    # an equivalence check
+    #
+    # A possible fix for this is to have Ibis automatically "promote" these sorts
+    # of predicates so that they refer to the column in the previous join
+    from ibis.backends.duckdb import DuckDBSQLCompiler
+
+    sql_compiler = DuckDBSQLCompiler()
+    assert str(sql_compiler.to_sql(expr)) == str(sql_compiler.to_sql(result))

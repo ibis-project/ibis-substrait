@@ -19,6 +19,7 @@ import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
+import toolz
 from ibis import util
 from packaging import version
 
@@ -676,7 +677,7 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
         right_keys = _get_child_relation_field_offsets(table_op.right)
         root_tables = [table_op.left.op(), table_op.right.op()]
         accum = [0, len(root_tables[0].schema)]
-        return {**left_keys, **right_keys, **dict(zip(root_tables, accum))}
+        return toolz.merge(left_keys, right_keys, dict(zip(root_tables, accum)))
     return {}
 
 
