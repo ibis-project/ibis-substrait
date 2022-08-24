@@ -60,6 +60,8 @@ filterwarnings = [
   # older importlib metadata that there's no real point in breaking with
   "ignore:SelectableGroups:DeprecationWarning",
   "ignore:`parse_type` is deprecated:FutureWarning",
+  # ibis on postgres + windows
+  "ignore:locale specific date formats:UserWarning",
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]
