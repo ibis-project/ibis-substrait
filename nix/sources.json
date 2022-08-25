@@ -5,10 +5,10 @@
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "gitignore.nix",
-        "rev": "f2ea0f8ff1bce948ccb6b893d15d5ea3efaf1364",
-        "sha256": "02q2yvakyh9x9h9x9az2rr3h6h0zymhrl0z2xflc6blvz6zzqkf2",
+        "rev": "a20de23b925fd8264fd7fad6454652e142fd7f73",
+        "sha256": "07vg2i9va38zbld9abs9lzqblz193vc5wvqd6h7amkmwf66ljcgh",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/gitignore.nix/archive/f2ea0f8ff1bce948ccb6b893d15d5ea3efaf1364.tar.gz",
+        "url": "https://github.com/hercules-ci/gitignore.nix/archive/a20de23b925fd8264fd7fad6454652e142fd7f73.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -17,10 +17,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "fb520531bbed31c8f4adbc9aa87a786eec2f51f7",
-        "sha256": "13n395fhpqc81lxfddnk76nqvnkhb2drmh62m22v0x8ryi3c6bls",
+        "rev": "12b0f8840fafedbfa498d56e41d1f31d434ede31",
+        "sha256": "1479zwr4a8499w2y5hglc7s0xx8dz7ld01g7y8dbpy2gqsv1zb90",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/fb520531bbed31c8f4adbc9aa87a786eec2f51f7.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/12b0f8840fafedbfa498d56e41d1f31d434ede31.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "poetry2nix": {
@@ -29,10 +29,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "75dc1a401fba508c4ed42e34d04a03c682a11f2f",
-        "sha256": "0p1i954brrgrqvv5345k92r2cf2dqj2y58gh5d7rnx0zpypbny80",
+        "rev": "8b6239cf2ded121f8f3d570d2563d69f05d4208f",
+        "sha256": "0ffzrvjzp2v3l73544k740mvp8imxc29sncf5kdiwb2c08rjbyax",
         "type": "tarball",
-        "url": "https://github.com/nix-community/poetry2nix/archive/75dc1a401fba508c4ed42e34d04a03c682a11f2f.tar.gz",
+        "url": "https://github.com/nix-community/poetry2nix/archive/8b6239cf2ded121f8f3d570d2563d69f05d4208f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "pre-commit-hooks": {
@@ -41,10 +41,10 @@
         "homepage": "",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "6a9402e8f233de16536349d1dd3f4595c23386a4",
-        "sha256": "104shb5xv6dh6znj9bxq0v5i5inpq6x17x1fzil7dp47lrmfznkk",
+        "rev": "8cb8ea5f1c7bc2984f460587fddd5f2e558f6eb8",
+        "sha256": "0ll3dbqbsj6cawvjj66c1h8635qwbrhp8i34lzhbc2rnmzfp2j0x",
         "type": "tarball",
-        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/6a9402e8f233de16536349d1dd3f4595c23386a4.tar.gz",
+        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/8cb8ea5f1c7bc2984f460587fddd5f2e558f6eb8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
