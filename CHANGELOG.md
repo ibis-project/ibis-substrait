@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.10.1](https://github.com/ibis-project/ibis-substrait/compare/v2.10.0...v2.10.1) (2022-08-27)
+
+
+### Bug Fixes
+
+* **joins:** compute field offsets for nested joins ([9f7177e](https://github.com/ibis-project/ibis-substrait/commit/9f7177e71c826294a4af9ddb5870954fb9356e5d))
+
 ## [2.10.0](https://github.com/ibis-project/ibis-substrait/compare/v2.9.8...v2.10.0) (2022-08-10)
 
 
