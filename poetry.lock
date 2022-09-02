@@ -223,9 +223,9 @@ tabulate = ">=0.8.9,<1"
 toolz = ">=0.11,<0.13"
 
 [package.extras]
-all = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "dask[dataframe,array] (>=2021.10.0)", "datafusion (>=0.4,<0.7)", "duckdb (>=0.3.2,<0.5.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "fsspec (>=2022.1.0)", "GeoAlchemy2 (>=0.6.3,<0.13)", "geopandas (>=0.6,<0.12)", "graphviz (>=0.16,<0.21)", "impyla[kerberos] (>=0.17,<0.19)", "lz4 (>=3.1.10,<5)", "psycopg2 (>=2.8.4,<3)", "pyarrow (>=1,<9)", "pymysql (>=1,<2)", "pyspark (>=3,<4)", "requests (>=2,<3)", "Shapely (>=1.6,<1.8.3)", "sqlalchemy (>=1.4,<2.0)"]
+all = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "dask[array,dataframe] (>=2021.10.0)", "datafusion (>=0.4,<0.7)", "duckdb (>=0.3.2,<0.5.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "fsspec (>=2022.1.0)", "GeoAlchemy2 (>=0.6.3,<0.13)", "geopandas (>=0.6,<0.12)", "graphviz (>=0.16,<0.21)", "impyla[kerberos] (>=0.17,<0.19)", "lz4 (>=3.1.10,<5)", "psycopg2 (>=2.8.4,<3)", "pyarrow (>=1,<9)", "pymysql (>=1,<2)", "pyspark (>=3,<4)", "requests (>=2,<3)", "Shapely (>=1.6,<1.8.3)", "sqlalchemy (>=1.4,<2.0)"]
 clickhouse = ["clickhouse-cityhash (>=1.0.2,<2)", "clickhouse-driver[numpy] (>=0.1,<0.3)", "lz4 (>=3.1.10,<5)"]
-dask = ["dask[dataframe,array] (>=2021.10.0)", "pyarrow (>=1,<9)"]
+dask = ["dask[array,dataframe] (>=2021.10.0)", "pyarrow (>=1,<9)"]
 datafusion = ["datafusion (>=0.4,<0.7)"]
 duckdb = ["duckdb (>=0.3.2,<0.5.0)", "duckdb-engine (>=0.1.8,<0.3.0)", "sqlalchemy (>=1.4,<2.0)"]
 impala = ["fsspec (>=2022.1.0)", "impyla[kerberos] (>=0.17,<0.19)", "requests (>=2,<3)"]
@@ -967,7 +967,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "a4b60844fd0c9aa42669ce7a346a39eab1769eae0af5d895f36845772996e32c"
+content-hash = "55e0f61c1191a6f0437c35af919db99b624993827e8482229131f70c1fdef139"
 
 [metadata.files]
 appnope = [

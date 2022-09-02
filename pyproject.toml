@@ -22,7 +22,6 @@ classifiers = [
 python = ">=3.8,<3.11"
 ibis-framework = ">=2,<4"
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
-packaging = "^21.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -45,6 +44,7 @@ types-pytz = "^2022.0.0"
 pytest-lazy-fixture = "^0.6.3"
 substrait-validator = "^0.0.8"
 ibis-framework = {version = ">=2<4", extras = ["duckdb"]}
+packaging = "^21.3"
 
 [tool.pytest.ini_options]
 xfail_strict = true
