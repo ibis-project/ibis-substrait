@@ -70,7 +70,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Sum": "sum",
     "Tan": "tan",
     "Uppercase": "upper",
-    "Xor": "xor"
+    "Xor": "xor",
 }
 
 SUBSTRAIT_IBIS_OP_MAPPING = {
