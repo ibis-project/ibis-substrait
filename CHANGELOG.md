@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.10.2](https://github.com/ibis-project/ibis-substrait/compare/v2.10.1...v2.10.2) (2022-09-23)
+
+
+### Bug Fixes
+
+* invalid syntax in pyproject.toml ([24691b1](https://github.com/ibis-project/ibis-substrait/commit/24691b1e5970df8f793e41eba05a04b9d6fc5e75))
+
 ## [2.10.1](https://github.com/ibis-project/ibis-substrait/compare/v2.10.0...v2.10.1) (2022-08-27)
 
 
