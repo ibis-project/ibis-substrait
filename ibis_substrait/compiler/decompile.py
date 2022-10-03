@@ -571,7 +571,7 @@ def _decompile_expression_aggregate_function(
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[aggregate_function.function_reference]
-    function_name = extension.name
+    function_name = extension.name.split(":")[0]
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
     args = [
         decompile(arg, children, field_offsets, decompiler)
@@ -847,7 +847,7 @@ def _decompile_expression_scalar_function(
     decompiler: SubstraitDecompiler,
 ) -> ir.ValueExpr:
     extension = decompiler.function_extensions[msg.function_reference]
-    function_name = extension.name
+    function_name = extension.name.split(":")[0]
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
     args = [
         decompile(arg, children, field_offsets, decompiler) for arg in msg.arguments

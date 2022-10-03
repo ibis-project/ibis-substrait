@@ -645,7 +645,9 @@ def unbound_table(
     )
 
 
-def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode, int]:
+def _get_child_relation_field_offsets(
+    table_op: ops.TableNode,
+) -> dict[ops.TableNode, int]:
     """Return the offset of each of table's fields.
 
     This function calculates the starting index of a relations fields, as if
@@ -666,7 +668,6 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
     >>> mapping[t2.op()]  # first relation has 3 fields, so the second starts at 3
     3
     """
-    table_op = table.op()
     if isinstance(table_op, ops.Join):
         # Descend into the left and right tables to grab offsets from nested joins
         left_keys = _get_child_relation_field_offsets(table_op.left)
@@ -719,6 +720,10 @@ def selection(
             sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
         )
     ]
+    # TODO: if selection is "only" a selection (projection from parent table
+    # without mutation) then we should "emit" here instaed of using a
+    # ProjectRel.
+    # RelCommon -> Emit -> output_mapping (or maybe a RelCommon -> Direct)
     if op.selections:
         relation = stalg.Rel(
             project=stalg.ProjectRel(

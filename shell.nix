@@ -29,6 +29,7 @@ let
     runtimeInputs = with pkgs; [ buf ];
     text = ''
       proto_dir=./proto
+      extension_dir=./ibis_substrait/extensions
       mkdir -p "$proto_dir"
       mkdir -p "$extension_dir"
       chmod u+rwx "$proto_dir"
@@ -36,6 +37,7 @@ let
       rm -r "$proto_dir"
       rm -r "$extension_dir"
       cp -fr ${pkgs.substrait}/proto "$proto_dir"
+      cp -fr ${pkgs.substrait}/extensions "$extension_dir"
       find "$proto_dir" -type d -exec chmod u+rwx {} +
       find "$proto_dir" -type f -exec chmod u+rw {} +
       find "$extension_dir" -type d -exec chmod u+rwx {} +
