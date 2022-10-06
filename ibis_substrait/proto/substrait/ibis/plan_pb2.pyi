@@ -47,11 +47,18 @@ class Plan(google.protobuf.message.Message):
     For compactness sake, identifiers are normalized at the plan level.
     """
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    VERSION_FIELD_NUMBER: builtins.int
     EXTENSION_URIS_FIELD_NUMBER: builtins.int
     EXTENSIONS_FIELD_NUMBER: builtins.int
     RELATIONS_FIELD_NUMBER: builtins.int
     ADVANCED_EXTENSIONS_FIELD_NUMBER: builtins.int
     EXPECTED_TYPE_URLS_FIELD_NUMBER: builtins.int
+
+    @property
+    def version(self) -> global___Version:
+        """Substrait version of the plan. Optional up to 0.17.0, required for later
+        versions.
+        """
 
     @property
     def extension_uris(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[substrait.ibis.extensions.extensions_pb2.SimpleExtensionURI]:
@@ -78,12 +85,59 @@ class Plan(google.protobuf.message.Message):
         one or more message types defined here are unknown.
         """
 
-    def __init__(self, *, extension_uris: collections.abc.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionURI] | None=..., extensions: collections.abc.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionDeclaration] | None=..., relations: collections.abc.Iterable[global___PlanRel] | None=..., advanced_extensions: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=..., expected_type_urls: collections.abc.Iterable[builtins.str] | None=...) -> None:
+    def __init__(self, *, version: global___Version | None=..., extension_uris: collections.abc.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionURI] | None=..., extensions: collections.abc.Iterable[substrait.ibis.extensions.extensions_pb2.SimpleExtensionDeclaration] | None=..., relations: collections.abc.Iterable[global___PlanRel] | None=..., advanced_extensions: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=..., expected_type_urls: collections.abc.Iterable[builtins.str] | None=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['advanced_extensions', b'advanced_extensions']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extensions', b'advanced_extensions', 'version', b'version']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['advanced_extensions', b'advanced_extensions', 'expected_type_urls', b'expected_type_urls', 'extension_uris', b'extension_uris', 'extensions', b'extensions', 'relations', b'relations']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extensions', b'advanced_extensions', 'expected_type_urls', b'expected_type_urls', 'extension_uris', b'extension_uris', 'extensions', b'extensions', 'relations', b'relations', 'version', b'version']) -> None:
         ...
 global___Plan = Plan
+
+class PlanVersion(google.protobuf.message.Message):
+    """This message type can be used to deserialize only the version of a Substrait
+    Plan message. This prevents deserialization errors when there were breaking
+    changes between the Substrait version of the tool that produced the plan and
+    the Substrait version used to deserialize it, such that a consumer can emit
+    a more helpful error message in this case.
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    VERSION_FIELD_NUMBER: builtins.int
+
+    @property
+    def version(self) -> global___Version:
+        ...
+
+    def __init__(self, *, version: global___Version | None=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['version', b'version']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['version', b'version']) -> None:
+        ...
+global___PlanVersion = PlanVersion
+
+class Version(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    MAJOR_FIELD_NUMBER: builtins.int
+    MINOR_FIELD_NUMBER: builtins.int
+    PATCH_FIELD_NUMBER: builtins.int
+    GIT_HASH_FIELD_NUMBER: builtins.int
+    PRODUCER_FIELD_NUMBER: builtins.int
+    major: builtins.int
+    'Substrait version number.'
+    minor: builtins.int
+    patch: builtins.int
+    git_hash: builtins.str
+    'If a particular version of Substrait is used that does not correspond to\n    a version number exactly (for example when using an unofficial fork or\n    using a version that is not yet released or is between versions), set this\n    to the full git hash of the utilized commit of\n    https://github.com/substrait-io/substrait (or fork thereof), represented\n    using a lowercase hex ASCII string 40 characters in length. The version\n    number above should be set to the most recent version tag in the history\n    of that commit.\n    '
+    producer: builtins.str
+    'Identifying information for the producer that created this plan. Under\n    ideal circumstances, consumers should not need this information. However,\n    it is foreseen that consumers may need to work around bugs in particular\n    producers in practice, and therefore may need to know which producer\n    created the plan.\n    '
+
+    def __init__(self, *, major: builtins.int=..., minor: builtins.int=..., patch: builtins.int=..., git_hash: builtins.str=..., producer: builtins.str=...) -> None:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['git_hash', b'git_hash', 'major', b'major', 'minor', b'minor', 'patch', b'patch', 'producer', b'producer']) -> None:
+        ...
+global___Version = Version

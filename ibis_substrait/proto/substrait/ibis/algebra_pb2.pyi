@@ -275,6 +275,12 @@ class ReadRel(google.protobuf.message.Message):
 
                 def __init__(self) -> None:
                     ...
+
+            class DwrfReadOptions(google.protobuf.message.Message):
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+                def __init__(self) -> None:
+                    ...
             URI_PATH_FIELD_NUMBER: builtins.int
             URI_PATH_GLOB_FIELD_NUMBER: builtins.int
             URI_FILE_FIELD_NUMBER: builtins.int
@@ -286,6 +292,7 @@ class ReadRel(google.protobuf.message.Message):
             ARROW_FIELD_NUMBER: builtins.int
             ORC_FIELD_NUMBER: builtins.int
             EXTENSION_FIELD_NUMBER: builtins.int
+            DWRF_FIELD_NUMBER: builtins.int
             uri_path: builtins.str
             'A URI that can refer to either a single folder or a single file'
             uri_path_glob: builtins.str
@@ -317,17 +324,21 @@ class ReadRel(google.protobuf.message.Message):
             def extension(self) -> google.protobuf.any_pb2.Any:
                 ...
 
-            def __init__(self, *, uri_path: builtins.str=..., uri_path_glob: builtins.str=..., uri_file: builtins.str=..., uri_folder: builtins.str=..., partition_index: builtins.int=..., start: builtins.int=..., length: builtins.int=..., parquet: global___ReadRel.LocalFiles.FileOrFiles.ParquetReadOptions | None=..., arrow: global___ReadRel.LocalFiles.FileOrFiles.ArrowReadOptions | None=..., orc: global___ReadRel.LocalFiles.FileOrFiles.OrcReadOptions | None=..., extension: google.protobuf.any_pb2.Any | None=...) -> None:
+            @property
+            def dwrf(self) -> global___ReadRel.LocalFiles.FileOrFiles.DwrfReadOptions:
                 ...
 
-            def HasField(self, field_name: typing_extensions.Literal['arrow', b'arrow', 'extension', b'extension', 'file_format', b'file_format', 'orc', b'orc', 'parquet', b'parquet', 'path_type', b'path_type', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> builtins.bool:
+            def __init__(self, *, uri_path: builtins.str=..., uri_path_glob: builtins.str=..., uri_file: builtins.str=..., uri_folder: builtins.str=..., partition_index: builtins.int=..., start: builtins.int=..., length: builtins.int=..., parquet: global___ReadRel.LocalFiles.FileOrFiles.ParquetReadOptions | None=..., arrow: global___ReadRel.LocalFiles.FileOrFiles.ArrowReadOptions | None=..., orc: global___ReadRel.LocalFiles.FileOrFiles.OrcReadOptions | None=..., extension: google.protobuf.any_pb2.Any | None=..., dwrf: global___ReadRel.LocalFiles.FileOrFiles.DwrfReadOptions | None=...) -> None:
                 ...
 
-            def ClearField(self, field_name: typing_extensions.Literal['arrow', b'arrow', 'extension', b'extension', 'file_format', b'file_format', 'length', b'length', 'orc', b'orc', 'parquet', b'parquet', 'partition_index', b'partition_index', 'path_type', b'path_type', 'start', b'start', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> None:
+            def HasField(self, field_name: typing_extensions.Literal['arrow', b'arrow', 'dwrf', b'dwrf', 'extension', b'extension', 'file_format', b'file_format', 'orc', b'orc', 'parquet', b'parquet', 'path_type', b'path_type', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> builtins.bool:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['arrow', b'arrow', 'dwrf', b'dwrf', 'extension', b'extension', 'file_format', b'file_format', 'length', b'length', 'orc', b'orc', 'parquet', b'parquet', 'partition_index', b'partition_index', 'path_type', b'path_type', 'start', b'start', 'uri_file', b'uri_file', 'uri_folder', b'uri_folder', 'uri_path', b'uri_path', 'uri_path_glob', b'uri_path_glob']) -> None:
                 ...
 
             @typing.overload
-            def WhichOneof(self, oneof_group: typing_extensions.Literal['file_format', b'file_format']) -> typing_extensions.Literal['parquet', 'arrow', 'orc', 'extension'] | None:
+            def WhichOneof(self, oneof_group: typing_extensions.Literal['file_format', b'file_format']) -> typing_extensions.Literal['parquet', 'arrow', 'orc', 'extension', 'dwrf'] | None:
                 ...
 
             @typing.overload
@@ -773,7 +784,9 @@ class SetRel(google.protobuf.message.Message):
 
     @property
     def inputs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Rel]:
-        ...
+        """The first input is the primary input, the remaining are secondary
+        inputs.  There must be at least two inputs.
+        """
     op: global___SetRel.SetOp.ValueType
 
     @property
