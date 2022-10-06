@@ -45,6 +45,7 @@ pytest-lazy-fixture = "^0.6.3"
 substrait-validator = "^0.0.8"
 ibis-framework = {version = ">=2,<4", extras = ["duckdb"]}
 packaging = "^21.3"
+types-PyYAML = "^6.0.12"
 
 [tool.pytest.ini_options]
 xfail_strict = true
