@@ -30,11 +30,16 @@ let
     text = ''
       proto_dir=./proto
       mkdir -p "$proto_dir"
+      mkdir -p "$extension_dir"
       chmod u+rwx "$proto_dir"
+      chmod u+rwx "$extension_dir"
       rm -r "$proto_dir"
+      rm -r "$extension_dir"
       cp -fr ${pkgs.substrait}/proto "$proto_dir"
       find "$proto_dir" -type d -exec chmod u+rwx {} +
       find "$proto_dir" -type f -exec chmod u+rw {} +
+      find "$extension_dir" -type d -exec chmod u+rwx {} +
+      find "$extension_dir" -type f -exec chmod u+rw {} +
       rm -rf ./ibis_substrait/proto
       python proto_prefix.py "$proto_dir"/tmp substrait.ibis "$proto_dir"/substrait
       mv "$proto_dir"/substrait substrait.bak
