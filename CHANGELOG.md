@@ -1,6 +1,18 @@
 Release Notes
 ---
 
+## [2.11.0](https://github.com/ibis-project/ibis-substrait/compare/v2.10.2...v2.11.0) (2022-10-12)
+
+
+### Features
+
+* add more mappings for ibis ops and substrait scalar functions ([abbdf13](https://github.com/ibis-project/ibis-substrait/commit/abbdf130ec2ed6b4491709614cd09ca0744f888e))
+
+
+### Bug Fixes
+
+* reformat with black ([37924ec](https://github.com/ibis-project/ibis-substrait/commit/37924eca9bbc4c786723ac949696d1e99fbf0f27))
+
 ## [2.10.2](https://github.com/ibis-project/ibis-substrait/compare/v2.10.1...v2.10.2) (2022-09-23)
 
 
