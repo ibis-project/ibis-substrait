@@ -38,6 +38,10 @@ self: super:
     nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.flit-core ];
   });
 
+  jdot = super.jdot.overridePythonAttrs (attrs: {
+    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.setuptools ];
+  });
+
   pandas = parallelizeSetuptoolsBuild super.pandas;
   pydantic = parallelizeSetuptoolsBuild super.pydantic;
   substrait-validator = super.substrait-validator.override {
