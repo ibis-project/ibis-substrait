@@ -874,7 +874,7 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "substrait-validator"
-version = "0.0.8"
+version = "0.0.9"
 description = "Validator for Substrait query plans"
 category = "dev"
 optional = false
@@ -993,7 +993,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "a42a08330b12471bd6fbc340b92d13ad4f56654ebecc93f51d021320cfc18110"
+content-hash = "cc3a98c75f466708c0e349506d4f3c6a73570f1e9d0634de35941e6843f8381c"
 
 [metadata.files]
 appnope = [
@@ -1703,21 +1703,22 @@ stack-data = [
     {file = "stack_data-0.5.0.tar.gz", hash = "sha256:715c8855fbf5c43587b141e46cc9d9339cc0d1f8d6e0f98ed0d01c6cb974e29f"},
 ]
 substrait-validator = [
-    {file = "substrait_validator-0.0.8-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:e033833b33bea4129fa9fdfa66f2394b78dc16f5a2dc97146696636575bce24d"},
-    {file = "substrait_validator-0.0.8-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:abd78c83d6f862873b505cb11dda5dfe59876dd887f5e2a541eb3cded4244f4b"},
-    {file = "substrait_validator-0.0.8-cp310-none-win_amd64.whl", hash = "sha256:d4ee41dd7416338d98eea5ac50f60d8fd10665eb17dd9d38a90d8c30233ef31b"},
-    {file = "substrait_validator-0.0.8-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:bbbc6de138f890de83314a949a8a31afdb237d6a85be617679c018e61ccf360d"},
-    {file = "substrait_validator-0.0.8-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:127726d850cfe70122ad1693a5223ec4a29ef61a4117e895e1cd9df3e91c452f"},
-    {file = "substrait_validator-0.0.8-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:00af8bda91bdc287b3e73e3063b3c5a2005c75dc25fe1af903a966d93f2f0a63"},
-    {file = "substrait_validator-0.0.8-cp37-none-win_amd64.whl", hash = "sha256:0ed09b8802c8ac5c91b730b1a0e4b63efda589ff0de2f0c6b03dc6318e63c3c5"},
-    {file = "substrait_validator-0.0.8-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:a5cbd2ad55285eb7814996261b58ea7f72778446360985ed3007992ee0118592"},
-    {file = "substrait_validator-0.0.8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:835e09bc358660ba032dab476bf5554ab368472b4986f27b719a605646bb446e"},
-    {file = "substrait_validator-0.0.8-cp38-none-win_amd64.whl", hash = "sha256:5c915c3123dc0a388a1c7db685f2abd108b649c79f4baa440e5afc7e8c580e1a"},
-    {file = "substrait_validator-0.0.8-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:85dc671466f513628d34acc13aec0686b6248e8fec87298d5ff89ae3c793050f"},
-    {file = "substrait_validator-0.0.8-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:501e7c72515233c446dde52dccbd25c9e7cef5084c47f5bca358fcf38da601aa"},
-    {file = "substrait_validator-0.0.8-cp39-none-win_amd64.whl", hash = "sha256:7afa41ff7093bc1ecbe1a9cd0d68bb95caa0815cdfb7535c3d36569c130bb79a"},
-    {file = "substrait_validator-0.0.8-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:37dcc6a3bf6d38b52fbd0e9654bdab793eda4e8efeb67dff8f360e36770de7f3"},
-    {file = "substrait_validator-0.0.8.tar.gz", hash = "sha256:a159be643a9d0ac72aa1bbc2f6426cf8c7db37d41bad9e352a7029d822850a41"},
+    {file = "substrait_validator-0.0.9-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:eaef2353014872f6a00a08ea300c5a84d1105090733c12392183c7ac8da06989"},
+    {file = "substrait_validator-0.0.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:84a5d89c8cb930be111ab2a19e441b2d17d2a4ebb1097ccb78dec2db874224d2"},
+    {file = "substrait_validator-0.0.9-cp310-none-win_amd64.whl", hash = "sha256:a2212473db877c93f3b2bfc3a8eee92dc334c52e25f03fe83ec33e2e0d80a802"},
+    {file = "substrait_validator-0.0.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ffd11ed8c524812be7a0b6393e2c53e0b3a599803575f08241bb1e22db7cccae"},
+    {file = "substrait_validator-0.0.9-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d148dcb2a678b8e828913875bb52725e7a8e030f5c7b6cb3e8f0873bc8be4909"},
+    {file = "substrait_validator-0.0.9-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:81ce4437c140ff400e0a50b1699cd661b444cc10b3b780b2c36a42b9582c5811"},
+    {file = "substrait_validator-0.0.9-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a538b3492c4e18a8af34b4600e233938cbb6ab2d1fd600b48558d37b58f2f905"},
+    {file = "substrait_validator-0.0.9-cp37-none-win_amd64.whl", hash = "sha256:a1a4926fd50856ad1f66a88fb37c015b8a7f35cc391377192da1ab6b9187e8fc"},
+    {file = "substrait_validator-0.0.9-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:0be80bf32d1d6786019e94e7090c6a6e678b999581ad32c0133c5e7c8decb75a"},
+    {file = "substrait_validator-0.0.9-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6a3a7ac1a23b5798192458aaa9642824f53ab0f1fbe3c4288753b33888b182cf"},
+    {file = "substrait_validator-0.0.9-cp38-none-win_amd64.whl", hash = "sha256:8e04b2ee8eb974d262068391b65d0a71374b19cd6d882d374faa3429e7b3cd1c"},
+    {file = "substrait_validator-0.0.9-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:d7312f7364d32035df18d0f632af22b0dac31aa6fb13feb88b10d44a452a0689"},
+    {file = "substrait_validator-0.0.9-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:de4c0898f9052c3cdb267cd4d584ee5c5af736bfc94e60fa9d88ad6c09937127"},
+    {file = "substrait_validator-0.0.9-cp39-none-win_amd64.whl", hash = "sha256:0b4309be76124930f1efe521bcfc032fcf1dd24de070e70a7d1d3b8d1ed89717"},
+    {file = "substrait_validator-0.0.9-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1dd033f0e3dde5556f314e88421d040018b28ccdb5f13ba33125b936944e849a"},
+    {file = "substrait_validator-0.0.9.tar.gz", hash = "sha256:c4bb904d344360633271a029bc358976bb4f3b390ce4bb5ee294e909a0f95585"},
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
