@@ -3,5 +3,5 @@
   "lockFileMaintenance": { "enabled": true },
   "automerge": true,
   "labels": ["dependencies"],
-  "ignoreDeps: ["protobuf"]
+  "ignoreDeps": ["protobuf"]
 }
