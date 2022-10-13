@@ -24,7 +24,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
@@ -40,7 +40,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
@@ -129,7 +129,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
       - name: setup cachix
-        uses: cachix/cachix-action@v10
+        uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix
@@ -161,7 +161,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable-small
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
