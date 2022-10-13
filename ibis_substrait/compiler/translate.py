@@ -940,6 +940,26 @@ def _simple_searched_case(
     return stalg.Expression(if_then=stalg.Expression.IfThen(ifs=_ifs, **_else))
 
 
+@translate.register(ops.Where)
+def _where(
+    op: ops.Where,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    # the field names for an `if_then` are `if` and `else` which means we need
+    # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
+    _if = {
+        "if": translate(op.bool_expr, compiler, **kwargs),
+        "then": translate(op.true_expr, compiler, **kwargs),
+    }
+    _else = {"else": translate(op.false_null_expr, compiler, **kwargs)}
+
+    _ifs = [stalg.Expression.IfThen.IfClause(**_if)]
+
+    return stalg.Expression(if_then=stalg.Expression.IfThen(ifs=_ifs, **_else))
+
+
 @translate.register(ops.Contains)
 def _contains(
     op: ops.Contains,
