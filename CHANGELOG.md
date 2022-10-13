@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.12.1](https://github.com/ibis-project/ibis-substrait/compare/v2.12.0...v2.12.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* dont set nullable=True for Literals ([681576e](https://github.com/ibis-project/ibis-substrait/commit/681576ef473e125e091cfaeffad2bdc1c838426d))
+
 ## [2.12.0](https://github.com/ibis-project/ibis-substrait/compare/v2.11.2...v2.12.0) (2022-10-13)
 
 
