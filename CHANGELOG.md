@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.12.0](https://github.com/ibis-project/ibis-substrait/compare/v2.11.2...v2.12.0) (2022-10-13)
+
+
+### Features
+
+* add dispatch for ops.Where ([9144cf1](https://github.com/ibis-project/ibis-substrait/commit/9144cf14547fb3d7b336f8618254d67d92132a30))
+
 ## [2.11.2](https://github.com/ibis-project/ibis-substrait/compare/v2.11.1...v2.11.2) (2022-10-13)
 
 
