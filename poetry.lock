@@ -542,16 +542,16 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "protoletariat"
-version = "0.9.4"
+version = "1.0.1"
 description = "Python protocol buffers for the rest of us"
 category = "dev"
 optional = false
-python-versions = ">=3.7,<3.11"
+python-versions = ">=3.8,<3.11"
 
 [package.dependencies]
-astunparse = {version = ">=1.6.3,<2.0.0", markers = "python_version < \"3.9\""}
+astunparse = {version = ">=1.6.3,<2", markers = "python_version < \"3.9\""}
 click = ">=7.1.2,<9"
-protobuf = ">=3.19.1,<4.0.0"
+protobuf = ">=3.19.1,<5"
 
 [[package]]
 name = "ptyprocess"
@@ -683,7 +683,7 @@ rich = ">=8.0.0"
 
 [[package]]
 name = "pytest-cov"
-version = "3.0.0"
+version = "4.0.0"
 description = "Pytest plugin for measuring coverage."
 category = "dev"
 optional = false
@@ -754,7 +754,7 @@ python-versions = "*"
 
 [[package]]
 name = "pyupgrade"
-version = "2.37.3"
+version = "3.1.0"
 description = "A tool to automatically upgrade syntax for newer versions."
 category = "dev"
 optional = false
@@ -874,7 +874,7 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "substrait-validator"
-version = "0.0.8"
+version = "0.0.9"
 description = "Validator for Substrait query plans"
 category = "dev"
 optional = false
@@ -993,7 +993,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "a42a08330b12471bd6fbc340b92d13ad4f56654ebecc93f51d021320cfc18110"
+content-hash = "a5ef6e337b75292fa5e04bdd0d492bbcd53f8e2bf5fc6f9c33dc5a9f7a80af9f"
 
 [metadata.files]
 appnope = [
@@ -1419,8 +1419,8 @@ protobuf = [
     {file = "protobuf-3.20.1.tar.gz", hash = "sha256:adc31566d027f45efe3f44eeb5b1f329da43891634d61c75a5944e9be6dd42c9"},
 ]
 protoletariat = [
-    {file = "protoletariat-0.9.4-py3-none-any.whl", hash = "sha256:25f2dec490ef66a3a577c6956d03835ffbcb769865ecefd709798a81ffd46b30"},
-    {file = "protoletariat-0.9.4.tar.gz", hash = "sha256:f34633c9b1d4b0c4efccadd09a4f2a3c3dc1ddb3d38240dfdbafad2553f85fe3"},
+    {file = "protoletariat-1.0.1-py3-none-any.whl", hash = "sha256:c1937ab63c22f33f18bd504e7a37d5fd4a0746bb37b1ef80e1b96b6671e40c12"},
+    {file = "protoletariat-1.0.1.tar.gz", hash = "sha256:df3a2ac380d0a3d5e2c9f592fc1feb98e332ecd919c3953ba64656cff4c616e9"},
 ]
 ptyprocess = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
@@ -1499,8 +1499,8 @@ pytest-clarity = [
     {file = "pytest-clarity-1.0.1.tar.gz", hash = "sha256:505fe345fad4fe11c6a4187fe683f2c7c52c077caa1e135f3e483fe112db7772"},
 ]
 pytest-cov = [
-    {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
-    {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
+    {file = "pytest-cov-4.0.0.tar.gz", hash = "sha256:996b79efde6433cdbd0088872dbc5fb3ed7fe1578b68cdbba634f14bb8dd0470"},
+    {file = "pytest_cov-4.0.0-py3-none-any.whl", hash = "sha256:2feb1b751d66a8bd934e5edfa2e961d11309dc37b73b0eabe73b5945fee20f6b"},
 ]
 pytest-lazy-fixture = [
     {file = "pytest-lazy-fixture-0.6.3.tar.gz", hash = "sha256:0e7d0c7f74ba33e6e80905e9bfd81f9d15ef9a790de97993e34213deb5ad10ac"},
@@ -1523,8 +1523,8 @@ pytz = [
     {file = "pytz-2022.2.1.tar.gz", hash = "sha256:cea221417204f2d1a2aa03ddae3e867921971d0d76f14d87abb4414415bbdcf5"},
 ]
 pyupgrade = [
-    {file = "pyupgrade-2.37.3-py2.py3-none-any.whl", hash = "sha256:9746efd064dbf53d7f86d6f88a1d48120f58dbfc378f517768634740ea2225e2"},
-    {file = "pyupgrade-2.37.3.tar.gz", hash = "sha256:1414c7a7c558004cf610e6180716b876814b639b5a5789c3da023c5cdaebcd49"},
+    {file = "pyupgrade-3.1.0-py2.py3-none-any.whl", hash = "sha256:77c6101a710be3e24804891e43388cedbee617258e93b09c8c5e58de08617758"},
+    {file = "pyupgrade-3.1.0.tar.gz", hash = "sha256:7a8d393d85e15e0e2753e90b7b2e173b9d29dfd71e61f93d93e985b242627ed3"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},
@@ -1703,21 +1703,22 @@ stack-data = [
     {file = "stack_data-0.5.0.tar.gz", hash = "sha256:715c8855fbf5c43587b141e46cc9d9339cc0d1f8d6e0f98ed0d01c6cb974e29f"},
 ]
 substrait-validator = [
-    {file = "substrait_validator-0.0.8-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:e033833b33bea4129fa9fdfa66f2394b78dc16f5a2dc97146696636575bce24d"},
-    {file = "substrait_validator-0.0.8-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:abd78c83d6f862873b505cb11dda5dfe59876dd887f5e2a541eb3cded4244f4b"},
-    {file = "substrait_validator-0.0.8-cp310-none-win_amd64.whl", hash = "sha256:d4ee41dd7416338d98eea5ac50f60d8fd10665eb17dd9d38a90d8c30233ef31b"},
-    {file = "substrait_validator-0.0.8-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:bbbc6de138f890de83314a949a8a31afdb237d6a85be617679c018e61ccf360d"},
-    {file = "substrait_validator-0.0.8-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:127726d850cfe70122ad1693a5223ec4a29ef61a4117e895e1cd9df3e91c452f"},
-    {file = "substrait_validator-0.0.8-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:00af8bda91bdc287b3e73e3063b3c5a2005c75dc25fe1af903a966d93f2f0a63"},
-    {file = "substrait_validator-0.0.8-cp37-none-win_amd64.whl", hash = "sha256:0ed09b8802c8ac5c91b730b1a0e4b63efda589ff0de2f0c6b03dc6318e63c3c5"},
-    {file = "substrait_validator-0.0.8-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:a5cbd2ad55285eb7814996261b58ea7f72778446360985ed3007992ee0118592"},
-    {file = "substrait_validator-0.0.8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:835e09bc358660ba032dab476bf5554ab368472b4986f27b719a605646bb446e"},
-    {file = "substrait_validator-0.0.8-cp38-none-win_amd64.whl", hash = "sha256:5c915c3123dc0a388a1c7db685f2abd108b649c79f4baa440e5afc7e8c580e1a"},
-    {file = "substrait_validator-0.0.8-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:85dc671466f513628d34acc13aec0686b6248e8fec87298d5ff89ae3c793050f"},
-    {file = "substrait_validator-0.0.8-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:501e7c72515233c446dde52dccbd25c9e7cef5084c47f5bca358fcf38da601aa"},
-    {file = "substrait_validator-0.0.8-cp39-none-win_amd64.whl", hash = "sha256:7afa41ff7093bc1ecbe1a9cd0d68bb95caa0815cdfb7535c3d36569c130bb79a"},
-    {file = "substrait_validator-0.0.8-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:37dcc6a3bf6d38b52fbd0e9654bdab793eda4e8efeb67dff8f360e36770de7f3"},
-    {file = "substrait_validator-0.0.8.tar.gz", hash = "sha256:a159be643a9d0ac72aa1bbc2f6426cf8c7db37d41bad9e352a7029d822850a41"},
+    {file = "substrait_validator-0.0.9-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:eaef2353014872f6a00a08ea300c5a84d1105090733c12392183c7ac8da06989"},
+    {file = "substrait_validator-0.0.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:84a5d89c8cb930be111ab2a19e441b2d17d2a4ebb1097ccb78dec2db874224d2"},
+    {file = "substrait_validator-0.0.9-cp310-none-win_amd64.whl", hash = "sha256:a2212473db877c93f3b2bfc3a8eee92dc334c52e25f03fe83ec33e2e0d80a802"},
+    {file = "substrait_validator-0.0.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ffd11ed8c524812be7a0b6393e2c53e0b3a599803575f08241bb1e22db7cccae"},
+    {file = "substrait_validator-0.0.9-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d148dcb2a678b8e828913875bb52725e7a8e030f5c7b6cb3e8f0873bc8be4909"},
+    {file = "substrait_validator-0.0.9-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:81ce4437c140ff400e0a50b1699cd661b444cc10b3b780b2c36a42b9582c5811"},
+    {file = "substrait_validator-0.0.9-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a538b3492c4e18a8af34b4600e233938cbb6ab2d1fd600b48558d37b58f2f905"},
+    {file = "substrait_validator-0.0.9-cp37-none-win_amd64.whl", hash = "sha256:a1a4926fd50856ad1f66a88fb37c015b8a7f35cc391377192da1ab6b9187e8fc"},
+    {file = "substrait_validator-0.0.9-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:0be80bf32d1d6786019e94e7090c6a6e678b999581ad32c0133c5e7c8decb75a"},
+    {file = "substrait_validator-0.0.9-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6a3a7ac1a23b5798192458aaa9642824f53ab0f1fbe3c4288753b33888b182cf"},
+    {file = "substrait_validator-0.0.9-cp38-none-win_amd64.whl", hash = "sha256:8e04b2ee8eb974d262068391b65d0a71374b19cd6d882d374faa3429e7b3cd1c"},
+    {file = "substrait_validator-0.0.9-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:d7312f7364d32035df18d0f632af22b0dac31aa6fb13feb88b10d44a452a0689"},
+    {file = "substrait_validator-0.0.9-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:de4c0898f9052c3cdb267cd4d584ee5c5af736bfc94e60fa9d88ad6c09937127"},
+    {file = "substrait_validator-0.0.9-cp39-none-win_amd64.whl", hash = "sha256:0b4309be76124930f1efe521bcfc032fcf1dd24de070e70a7d1d3b8d1ed89717"},
+    {file = "substrait_validator-0.0.9-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1dd033f0e3dde5556f314e88421d040018b28ccdb5f13ba33125b936944e849a"},
+    {file = "substrait_validator-0.0.9.tar.gz", hash = "sha256:c4bb904d344360633271a029bc358976bb4f3b390ce4bb5ee294e909a0f95585"},
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
