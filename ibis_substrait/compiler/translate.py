@@ -10,6 +10,7 @@ import collections.abc
 import datetime
 import decimal
 import functools
+import itertools
 import operator
 import uuid
 from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
@@ -20,6 +21,7 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import toolz
 from ibis import util
+from ibis.util import to_op_dag
 
 from ..proto.substrait.ibis import algebra_pb2 as stalg
 from ..proto.substrait.ibis import type_pb2 as stt
@@ -637,6 +639,7 @@ def unbound_table(
         read=stalg.ReadRel(
             # TODO: filter,
             # TODO: projection,
+            common=stalg.RelCommon(direct=stalg.RelCommon.Direct()),
             base_schema=translate(op.schema),
             named_table=stalg.ReadRel.NamedTable(names=[op.name]),
         )
@@ -694,7 +697,6 @@ def selection(
         child_rel_field_offsets=child_rel_field_offsets,
         **kwargs,
     )
-
     # filter
     if op.predicates:
         relation = stalg.Rel(
@@ -709,7 +711,7 @@ def selection(
             )
         )
 
-    # projection
+    # projection / emit
     selections = [
         col
         for sel in op.selections
@@ -717,10 +719,31 @@ def selection(
             sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
         )
     ]
-    if op.selections:
+
+    # TODO: there has to be a better way to get a list of unbound tables
+    # underlying an expression
+    unbound_tables = {
+        t for t in to_op_dag(op.to_expr()).keys() if isinstance(t, ops.UnboundTable)
+    }
+    mapping_counter = itertools.count(sum(map(lambda t: len(t.schema), unbound_tables)))
+    if selections:
+
+        if relation.project.common.ListFields():
+            # if there is already an `emit` in RelCommon then we're stacking
+            # projections and we need to update the output_mapping to refer to
+            # the number of fields present in the most recent emit
+            mapping_counter = itertools.count(
+                len(relation.project.common.emit.output_mapping)
+            )
+
         relation = stalg.Rel(
             project=stalg.ProjectRel(
                 input=relation,
+                common=stalg.RelCommon(
+                    emit=stalg.RelCommon.Emit(
+                        output_mapping=[next(mapping_counter) for _ in selections]
+                    )
+                ),
                 expressions=[
                     translate(
                         selection,

@@ -93,8 +93,10 @@ def test_translate_table_expansion(compiler):
     result = translate(expr, compiler)
     expected = {
         "project": {
+            "common": {"emit": {"outputMapping": [2, 3, 4]}},
             "input": {
                 "read": {
+                    "common": {"direct": {}},
                     "baseSchema": {
                         "names": ["a", "b"],
                         "struct": {
@@ -151,6 +153,103 @@ def test_translate_table_expansion(compiler):
         }
     }
     assert to_dict(result) == expected
+
+
+def test_emit_mutate_select_all(compiler):
+    t = ibis.table([("a", "int64"), ("b", "char"), ("c", "int32")], name="table0")
+    expr = t.mutate(d=t.a + 1)
+    result = translate(expr, compiler)
+    expected = {
+        "project": {
+            "common": {"emit": {"outputMapping": [3, 4, 5, 6]}},
+            "input": {
+                "read": {
+                    "common": {"direct": {}},
+                    "baseSchema": {
+                        "names": ["a", "b", "c"],
+                        "struct": {
+                            "types": [
+                                {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
+                                {"string": {"nullability": "NULLABILITY_NULLABLE"}},
+                                {"i32": {"nullability": "NULLABILITY_NULLABLE"}},
+                            ],
+                            "nullability": "NULLABILITY_REQUIRED",
+                        },
+                    },
+                    "namedTable": {"names": ["table0"]},
+                }
+            },
+            "expressions": [
+                {
+                    "selection": {
+                        "directReference": {"structField": {}},
+                        "rootReference": {},
+                    }
+                },
+                {
+                    "selection": {
+                        "directReference": {"structField": {"field": 1}},
+                        "rootReference": {},
+                    }
+                },
+                {
+                    "selection": {
+                        "directReference": {"structField": {"field": 2}},
+                        "rootReference": {},
+                    }
+                },
+                {
+                    "scalarFunction": {
+                        "functionReference": 1,
+                        "outputType": {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
+                        "arguments": [
+                            {"enum": {"specified": "ERROR"}},
+                            {
+                                "value": {
+                                    "selection": {
+                                        "directReference": {"structField": {}},
+                                        "rootReference": {},
+                                    }
+                                },
+                            },
+                            {"value": {"literal": {"i8": 1}}},
+                        ],
+                    }
+                },
+            ],
+        }
+    }
+
+    assert to_dict(result) == expected
+
+
+def test_emit_nested_projection_output_mapping(compiler):
+    t = ibis.table(
+        [
+            ("a", "int64"),
+            ("b", "int64"),
+            ("c", "int64"),
+            ("d", "int64"),
+        ],
+        name="t",
+    )
+    expr = t["a", "b", "c", "d"]
+    result = translate(expr, compiler)
+    # root table has 4 columns, so output mapping starts at index 4
+    # should have 4 entries
+    assert result.project.common.emit.output_mapping == [4, 5, 6, 7]
+
+    expr = expr["a", "b", "c"]
+    result = translate(expr, compiler)
+    # previous emit has 4 columns, so output mapping starts at index 4
+    # should have 3 entries
+    assert result.project.common.emit.output_mapping == [4, 5, 6]
+
+    expr = expr["a", "b"]
+    result = translate(expr, compiler)
+    # previous emit has 3 columns, so output mapping starts at index 3
+    # should have 2 entries
+    assert result.project.common.emit.output_mapping == [3, 4]
 
 
 def test_ibis_schema_to_substrait_schema():
