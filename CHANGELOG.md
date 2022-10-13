@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.12.2](https://github.com/ibis-project/ibis-substrait/compare/v2.12.1...v2.12.2) (2022-10-13)
+
+
+### Bug Fixes
+
+* re-pin protobuf, regenerate stubs, disable renovate ([3021502](https://github.com/ibis-project/ibis-substrait/commit/3021502dfaa256bd24ab49d15269c57b65d532f9))
+
 ## [2.12.1](https://github.com/ibis-project/ibis-substrait/compare/v2.12.0...v2.12.1) (2022-10-13)
 
 
