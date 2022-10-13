@@ -542,16 +542,16 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "protoletariat"
-version = "0.9.4"
+version = "1.0.1"
 description = "Python protocol buffers for the rest of us"
 category = "dev"
 optional = false
-python-versions = ">=3.7,<3.11"
+python-versions = ">=3.8,<3.11"
 
 [package.dependencies]
-astunparse = {version = ">=1.6.3,<2.0.0", markers = "python_version < \"3.9\""}
+astunparse = {version = ">=1.6.3,<2", markers = "python_version < \"3.9\""}
 click = ">=7.1.2,<9"
-protobuf = ">=3.19.1,<4.0.0"
+protobuf = ">=3.19.1,<5"
 
 [[package]]
 name = "ptyprocess"
@@ -993,7 +993,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "4bac3cff2ff982285691bbf1a22736a74919158585bb443d5f0a56738149c65f"
+content-hash = "5a0712be1363d5e377f58602a2c05d6a5c5abae0edce09e6487677282726c5e6"
 
 [metadata.files]
 appnope = [
@@ -1419,8 +1419,8 @@ protobuf = [
     {file = "protobuf-3.20.1.tar.gz", hash = "sha256:adc31566d027f45efe3f44eeb5b1f329da43891634d61c75a5944e9be6dd42c9"},
 ]
 protoletariat = [
-    {file = "protoletariat-0.9.4-py3-none-any.whl", hash = "sha256:25f2dec490ef66a3a577c6956d03835ffbcb769865ecefd709798a81ffd46b30"},
-    {file = "protoletariat-0.9.4.tar.gz", hash = "sha256:f34633c9b1d4b0c4efccadd09a4f2a3c3dc1ddb3d38240dfdbafad2553f85fe3"},
+    {file = "protoletariat-1.0.1-py3-none-any.whl", hash = "sha256:c1937ab63c22f33f18bd504e7a37d5fd4a0746bb37b1ef80e1b96b6671e40c12"},
+    {file = "protoletariat-1.0.1.tar.gz", hash = "sha256:df3a2ac380d0a3d5e2c9f592fc1feb98e332ecd919c3953ba64656cff4c616e9"},
 ]
 ptyprocess = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
