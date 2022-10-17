@@ -127,6 +127,7 @@ def test_translate_table_expansion(compiler):
                     "scalarFunction": {
                         "functionReference": 1,
                         "arguments": [
+                            {"enum": {"specified": "ERROR"}},
                             {
                                 "value": {
                                     "selection": {
