@@ -74,7 +74,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
 }
 
 SUBSTRAIT_IBIS_OP_MAPPING = {
-    v: getattr(ops, k) for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items()
+    v: getattr(ops, k) for k, v in IBIS_SUBSTRAIT_OP_MAPPING.items() if hasattr(ops, k)
 }
 # override when reversing many-to-one mappings
 SUBSTRAIT_IBIS_OP_MAPPING["extract"] = lambda span, table: getattr(
