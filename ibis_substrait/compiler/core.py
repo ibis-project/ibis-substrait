@@ -79,14 +79,14 @@ class SubstraitCompiler:
             )
         return function_extension.function_anchor
 
-    def compile(self, expr: ir.TableExpr) -> stp.Plan:
+    def compile(self, expr: ir.TableExpr, **kwargs: Any) -> stp.Plan:
         """Construct a Substrait plan from an ibis table expression."""
         from .translate import translate
 
         expr_schema = expr.schema()
         rel = stp.PlanRel(
             root=stalg.RelRoot(
-                input=translate(expr.op(), expr, self),
+                input=translate(expr.op(), expr, self, **kwargs),
                 names=translate(expr_schema).names,
             )
         )
