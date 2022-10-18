@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.13.0](https://github.com/ibis-project/ibis-substrait/compare/v2.12.3...v2.13.0) (2022-10-18)
+
+
+### Features
+
+* support kwargs in compile ([eba2ae3](https://github.com/ibis-project/ibis-substrait/commit/eba2ae35d97591cb429c6a71184c98fce8242816))
+
 ## [2.12.3](https://github.com/ibis-project/ibis-substrait/compare/v2.12.2...v2.12.3) (2022-10-18)
 
 
