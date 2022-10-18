@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.12.3](https://github.com/ibis-project/ibis-substrait/compare/v2.12.2...v2.12.3) (2022-10-18)
+
+
+### Bug Fixes
+
+* **3.x:** ignore missing ops when generating inverse mapping ([01248b0](https://github.com/ibis-project/ibis-substrait/commit/01248b017c42df09cfe5a5aa0a9ee8f0bad3c7b1))
+
 ## [2.12.2](https://github.com/ibis-project/ibis-substrait/compare/v2.12.1...v2.12.2) (2022-10-13)
 
 
