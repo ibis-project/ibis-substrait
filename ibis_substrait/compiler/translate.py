@@ -580,6 +580,7 @@ def table_column(
     _: SubstraitCompiler,
     *,
     child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
+    **kwargs: Any,
 ) -> stalg.Expression:
     schema = op.table.schema()
     relative_offset = schema._name_locs[op.name]
