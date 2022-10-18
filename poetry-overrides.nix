@@ -30,6 +30,15 @@ self: super:
     }
   );
 
+  duckdb = super.duckdb.overridePythonAttrs (
+    _: {
+      prePatch = ''
+        substituteInPlace setup.py --replace "multiprocessing.cpu_count()" "int(os.getenv('NIX_BUILD_CORES', multiprocessing.cpu_count()))"
+
+      '';
+    }
+  );
+
   protoletariat = super.protoletariat.overridePythonAttrs (attrs: {
     nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.poetry-core ];
   });
