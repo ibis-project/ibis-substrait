@@ -88,6 +88,9 @@ jobs:
           - "3.8"
           - "3.9"
           - "3.10"
+        ibis-version:
+          - "3.0.2"
+          - "^3.2"
 
     steps:
       - uses: actions/checkout@v3
@@ -97,8 +100,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: pip3 install poetry
+      - run: poetry add ibis-framework=${{ matrix.ibis-version }}
       - run: poetry install
       - run: poetry run pytest
+
   dry-run-release:
     runs-on: ubuntu-latest
     steps:
