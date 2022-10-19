@@ -93,7 +93,7 @@ jobs:
           body: ${{ steps.compare-commits.outputs.differences }}
           labels: dependencies,autorebase:opt-in
 
-      - uses: juliangruber/approve-pull-request-action@v1.1.1
+      - uses: juliangruber/approve-pull-request-action@v1.1.5
         if: ${{ fromJSON(steps.needs-pr.outputs.did-change) }}
         with:
           github-token: ${{ steps.generate-pr-approval-token.outputs.token }}
