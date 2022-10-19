@@ -1,6 +1,14 @@
 Release Notes
 ---
 
+## [2.13.1](https://github.com/ibis-project/ibis-substrait/compare/v2.13.0...v2.13.1) (2022-10-19)
+
+
+### Bug Fixes
+
+* **projection:** use emit and not project for column selection ([489beb8](https://github.com/ibis-project/ibis-substrait/commit/489beb87f5cc1f89d396f25a7530e89a7cc20a55))
+* **ScalarFunction:** add (currently) required error enum ([135320b](https://github.com/ibis-project/ibis-substrait/commit/135320bb6da8e3a3eb2742692348f895afcdc99c))
+
 ## [2.13.0](https://github.com/ibis-project/ibis-substrait/compare/v2.12.3...v2.13.0) (2022-10-18)
 
 
