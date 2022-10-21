@@ -735,12 +735,16 @@ def selection(
         )
     ]
 
-    # TODO: there has to be a better way to get a list of unbound tables
+    # TODO: there has to be a better way to get a list of source tables
     # underlying an expression
-    unbound_tables = {
-        t for t in to_op_dag(op.to_expr()).keys() if isinstance(t, ops.UnboundTable)
+    # TODO: settle on a better source table definition than "PhysicalTable with
+    # a schema"
+    source_tables = {
+        t
+        for t in to_op_dag(op.to_expr()).keys()
+        if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
     }
-    mapping_counter = itertools.count(sum(map(lambda t: len(t.schema), unbound_tables)))
+    mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
     if selections:
 
         if relation.project.common.ListFields():
