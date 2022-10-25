@@ -29,6 +29,7 @@ from ibis.util import to_op_dag
 from ..proto import extension_rels_pb2 as extrel
 from ..proto.substrait.ibis import algebra_pb2 as stalg
 from ..proto.substrait.ibis import type_pb2 as stt
+from ..proto.substrait.ibis import extension_rel_pb2 as extrel
 from .core import SubstraitCompiler, _get_fields
 
 T = TypeVar("T")
@@ -859,6 +860,39 @@ def join(
         )
     )
 
+@translate.register(ops.AsOfJoin)
+def asof_join(
+    op: ops.AsOfJoin,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Rel:
+    # TODO: Throw on multiple predicates for now (until supported)
+    pred = op.predicates[0]
+
+    left = pred.op().left
+    right = pred.op().right
+
+    left_tr = extrel.AsOfJoinRel.AsOfJoinKeys(on=translate(left.op(), expr, compiler))
+    right_tr = extrel.AsOfJoinRel.AsOfJoinKeys(on=translate(right.op(), expr, compiler))
+
+    detail = pb2_any()
+    detail.Pack(extrel.AsOfJoinRel(
+                    input_keys=[left_tr, right_tr],
+                    tolerance=100
+                ),
+                "" # HACK: Clear out prefix from @type
+    )
+
+    return stalg.Rel(
+        extension_multi=stalg.ExtensionMultiRel(
+            inputs=[
+                translate(op.left, compiler, **kwargs),
+                translate(op.right, compiler, **kwargs)
+            ],
+            detail=detail
+        )
+    )
 
 @translate.register(ops.AsOfJoin)
 def asof_join(
