@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.14.0](https://github.com/ibis-project/ibis-substrait/compare/v2.13.1...v2.14.0) (2022-10-25)
+
+
+### Features
+
+* allow source tables other than `UnboundTable` ([22d90f1](https://github.com/ibis-project/ibis-substrait/commit/22d90f126191ea66bf87097f7d3a750b846ca306))
+
 ## [2.13.1](https://github.com/ibis-project/ibis-substrait/compare/v2.13.0...v2.13.1) (2022-10-19)
 
 
