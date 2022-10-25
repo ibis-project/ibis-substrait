@@ -29,10 +29,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "d62ba59f1e28c382665c57203a4b9ad11fd7f449",
-        "sha256": "1ajkw5f964p7grmkqnpv97xahxrfn6ck8d9mb26r9sxk499bahc0",
+        "rev": "3b9040d19e18db212f8f83cb9241f8102b519f94",
+        "sha256": "1pmgvgv0zkylyhvd9gq10z9sy2amzlcl4w5wxm715g8vfck59j8w",
         "type": "tarball",
-        "url": "https://github.com/nix-community/poetry2nix/archive/d62ba59f1e28c382665c57203a4b9ad11fd7f449.tar.gz",
+        "url": "https://github.com/nix-community/poetry2nix/archive/3b9040d19e18db212f8f83cb9241f8102b519f94.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "pre-commit-hooks": {
@@ -41,10 +41,10 @@
         "homepage": "",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "94b0f300dd9a23d4e851aa2a947a1511d3410e2d",
-        "sha256": "1mm9c71smmd3khz6rhd0gdljh2w4ga6kzhbdyd7vm36lingp7ks1",
+        "rev": "e6c8efee1c108bb27522b9fd25b1cd0eb3288681",
+        "sha256": "0kj05b4kbhi0vkgw73vk2ikblhw6yxdhpxv99cr3acv8mbxjxd7i",
         "type": "tarball",
-        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/94b0f300dd9a23d4e851aa2a947a1511d3410e2d.tar.gz",
+        "url": "https://github.com/cachix/pre-commit-hooks.nix/archive/e6c8efee1c108bb27522b9fd25b1cd0eb3288681.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
