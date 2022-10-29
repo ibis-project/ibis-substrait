@@ -1,6 +1,6 @@
 { python ? "3.10" }:
 let
-  pkgs = import ./nix;
+  pkgs = import ./nix { };
   inherit (pkgs) lib;
 
   ibisSubstraitDevEnv = pkgs."ibisSubstraitDevEnv${pythonShortVersion}";
