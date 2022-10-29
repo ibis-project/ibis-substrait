@@ -26,6 +26,8 @@ ibis-framework = [
   { version = "*", python = "<4" }
 ]
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
+# TODO: remove this when ibis-framework@4 is released
+sqlalchemy = ">=1,<2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
