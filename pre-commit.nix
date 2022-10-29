@@ -1,5 +1,5 @@
 let
-  inherit (import ./nix) lib;
+  inherit (import ./nix { }) lib;
   sources = import ./nix/sources.nix;
   pre-commit-hooks = import sources.pre-commit-hooks;
   protoExcludePattern = "ibis_substrait/proto/.+\\.py";

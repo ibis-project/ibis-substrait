@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -I nixpkgs=channel:nixos-unstable-small --pure -p git nodejs nix -i bash
+#!nix-shell -I nixpkgs=./nix --pure -p git nodejs nix -i bash
 # shellcheck shell=bash
 
 set -euo pipefail
