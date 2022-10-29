@@ -22,8 +22,8 @@ classifiers = [
 python = "^3.8"
 ibis-framework = [
   # TODO: remove these constraints when ibis-framework@4 is released
-  { version = "^3", python = "<3.11" },
-  { version = "*", python = "<4" }
+  { version = "^3", python = ">=3.8,<3.11" },
+  { version = "*", python = ">=3.8,<4" }
 ]
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
 # TODO: remove this when ibis-framework@4 is released
