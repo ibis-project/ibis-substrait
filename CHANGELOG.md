@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.14.1](https://github.com/ibis-project/ibis-substrait/compare/v2.14.0...v2.14.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* **python:** relax python upper bound ([93215da](https://github.com/ibis-project/ibis-substrait/commit/93215da2a17a7192f34eea1c7f937f72c23d9118))
+
 ## [2.14.0](https://github.com/ibis-project/ibis-substrait/compare/v2.13.1...v2.14.0) (2022-10-25)
 
 
