@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.16.0](https://github.com/ibis-project/ibis-substrait/compare/v2.15.0...v2.16.0) (2022-11-02)
+
+
+### Features
+
+* add support for ops.FloorDivide ([45eb64f](https://github.com/ibis-project/ibis-substrait/commit/45eb64f80e5d0f76ac38219caae48af3bfbb8d91))
+
 ## [2.15.0](https://github.com/ibis-project/ibis-substrait/compare/v2.14.1...v2.15.0) (2022-11-02)
 
 
