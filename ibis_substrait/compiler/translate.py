@@ -1089,3 +1089,33 @@ def _floordivide(
 ) -> stalg.Expression:
     left, right = op.left, op.right
     return translate((left / right).floor(), compiler, **kwargs)
+
+
+@translate.register(ops.Clip)
+def _clip(
+    op: ops.Clip,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    arg, lower, upper = op.arg, op.lower, op.upper
+
+    if lower is not None and upper is not None:
+        return translate(
+            (arg >= lower).ifelse((arg <= upper).ifelse(arg, upper), lower),
+            compiler,
+            **kwargs,
+        )
+    elif lower is not None:
+        return translate(
+            (arg >= lower).ifelse(arg, lower),
+            compiler,
+            **kwargs,
+        )
+    elif upper is not None:
+        return translate(
+            (arg <= upper).ifelse(arg, upper),
+            compiler,
+            **kwargs,
+        )
+    assert False
