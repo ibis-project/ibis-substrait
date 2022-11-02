@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.17.0](https://github.com/ibis-project/ibis-substrait/compare/v2.16.0...v2.17.0) (2022-11-02)
+
+
+### Features
+
+* add support for manual ops.Clip ([a67713e](https://github.com/ibis-project/ibis-substrait/commit/a67713e029c3b5ca15b2c456a20529e02d436473))
+
 ## [2.16.0](https://github.com/ibis-project/ibis-substrait/compare/v2.15.0...v2.16.0) (2022-11-02)
 
 
