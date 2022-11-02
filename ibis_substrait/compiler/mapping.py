@@ -32,6 +32,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Less": "lt",
     "LessEqual": "lte",
     "Ln": "ln",
+    "Log": "logb",
     "Log2": "log2",
     "Log10": "log10",
     "Lowercase": "lower",

@@ -11,10 +11,12 @@ import datetime
 import decimal
 import functools
 import itertools
+import math
 import operator
 import uuid
 from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
 
+import ibis
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
@@ -1053,4 +1055,26 @@ def _extractdatefield(
     )
     scalar_func.arguments.add(enum=stalg.FunctionArgument.Enum(specified=span))
     scalar_func.arguments.extend(arguments)
+    return stalg.Expression(scalar_function=scalar_func)
+
+
+@translate.register(ops.Log)
+def _log(
+    op: ops.Log,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    arg = stalg.FunctionArgument(value=translate(op.arg, compiler, **kwargs))
+    base = stalg.FunctionArgument(
+        value=translate(
+            op.base if op.base is not None else ibis.literal(math.e), compiler, **kwargs
+        )
+    )
+
+    scalar_func = stalg.Expression.ScalarFunction(
+        function_reference=compiler.function_id(expr),
+        output_type=translate(expr.type()),
+        arguments=[arg, base],
+    )
     return stalg.Expression(scalar_function=scalar_func)
