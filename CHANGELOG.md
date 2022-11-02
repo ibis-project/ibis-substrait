@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.15.0](https://github.com/ibis-project/ibis-substrait/compare/v2.14.1...v2.15.0) (2022-11-02)
+
+
+### Features
+
+* add support for ops.Log ([226074e](https://github.com/ibis-project/ibis-substrait/commit/226074e20648419c831d46971e3e630818ae063a))
+
 ## [2.14.1](https://github.com/ibis-project/ibis-substrait/compare/v2.14.0...v2.14.1) (2022-11-01)
 
 
