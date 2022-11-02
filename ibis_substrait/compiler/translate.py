@@ -1078,3 +1078,14 @@ def _log(
         arguments=[arg, base],
     )
     return stalg.Expression(scalar_function=scalar_func)
+
+
+@translate.register(ops.FloorDivide)
+def _floordivide(
+    op: ops.FloorDivide,
+    expr: ir.TableExpr,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.Expression:
+    left, right = op.left, op.right
+    return translate((left / right).floor(), compiler, **kwargs)
