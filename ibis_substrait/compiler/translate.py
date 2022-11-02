@@ -1287,7 +1287,7 @@ def _exists_subquery(
     predicates = [pred.op().to_expr() for pred in op.predicates]
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
-            input=translate(op.foreign_table, compiler),
+            input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
                 functools.reduce(operator.and_, predicates),
                 compiler,
@@ -1318,10 +1318,10 @@ def _not_exists_subquery(
     predicates = [pred.op().to_expr() for pred in op.predicates]
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
-            input=translate(op.foreign_table, compiler),
+            input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
                 functools.reduce(operator.and_, predicates),
-                compiler,
+                compiler=compiler,
                 **kwargs,
             ),
         )
@@ -1343,5 +1343,41 @@ def _not_exists_subquery(
                     )
                 )
             ],
+        )
+    )
+
+
+@translate.register(ops.Floor)
+@translate.register(ops.Ceil)
+def _floor_ceil_cast(
+    op: ops.Floor,
+    expr: ir.Column | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    if compiler is None:
+        raise ValueError
+    output_type = translate(op.output_dtype)
+    input = stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
+            function_reference=compiler.function_id(
+                expr=expr if expr is not None else op.to_expr()
+            ),
+            output_type=output_type,
+            arguments=[
+                stalg.FunctionArgument(
+                    value=translate(arg, compiler=compiler, **kwargs)
+                )
+                for arg in op.args
+                if isinstance(arg, (ir.Expr, ops.Value))
+            ],
+        )
+    )
+    return stalg.Expression(
+        cast=stalg.Expression.Cast(
+            type=output_type,
+            input=input,
+            failure_behavior=stalg.Expression.Cast.FAILURE_BEHAVIOR_THROW_EXCEPTION,
         )
     )
