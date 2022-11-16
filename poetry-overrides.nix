@@ -1,5 +1,6 @@
 { pkgs, ... }:
 let
+  inherit (pkgs) lib stdenv;
   parallelizeSetuptoolsBuild = drv: drv.overridePythonAttrs (attrs: {
     format = "setuptools";
     enableParallelBuilding = true;
@@ -51,8 +52,11 @@ self: super:
     nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.setuptools ];
   });
 
+  pydantic = (parallelizeSetuptoolsBuild super.pydantic).overridePythonAttrs (attrs: {
+    buildInputs = attrs.buildInputs or [ ] ++ lib.optionals (self.pythonOlder "3.9") [ pkgs.libxcrypt ];
+  });
+
   pandas = parallelizeSetuptoolsBuild super.pandas;
-  pydantic = parallelizeSetuptoolsBuild super.pydantic;
   substrait-validator = super.substrait-validator.override {
     preferWheel = true;
   };
