@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.18.0](https://github.com/ibis-project/ibis-substrait/compare/v2.17.0...v2.18.0) (2022-11-16)
+
+
+### Features
+
+* add more string mappings ([5d7b58d](https://github.com/ibis-project/ibis-substrait/commit/5d7b58da3b248b6874a2eb59225c2cb5335101b5))
+
 ## [2.17.0](https://github.com/ibis-project/ibis-substrait/compare/v2.16.0...v2.17.0) (2022-11-02)
 
 
