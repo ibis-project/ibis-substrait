@@ -127,7 +127,6 @@ def test_translate_table_expansion(compiler):
                     "scalarFunction": {
                         "functionReference": 1,
                         "arguments": [
-                            {"enum": {"specified": "ERROR"}},
                             {
                                 "value": {
                                     "selection": {
@@ -204,7 +203,6 @@ def test_emit_mutate_select_all(compiler):
                         "functionReference": 1,
                         "outputType": {"i64": {"nullability": "NULLABILITY_NULLABLE"}},
                         "arguments": [
-                            {"enum": {"specified": "ERROR"}},
                             {
                                 "value": {
                                     "selection": {

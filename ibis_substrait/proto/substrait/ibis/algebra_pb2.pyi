@@ -6,7 +6,6 @@ import builtins
 import collections.abc
 import google.protobuf.any_pb2
 import google.protobuf.descriptor
-import google.protobuf.empty_pb2
 import google.protobuf.internal.containers
 import google.protobuf.internal.enum_type_wrapper
 import google.protobuf.message
@@ -366,6 +365,7 @@ class ReadRel(google.protobuf.message.Message):
     COMMON_FIELD_NUMBER: builtins.int
     BASE_SCHEMA_FIELD_NUMBER: builtins.int
     FILTER_FIELD_NUMBER: builtins.int
+    BEST_EFFORT_FILTER_FIELD_NUMBER: builtins.int
     PROJECTION_FIELD_NUMBER: builtins.int
     ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
     VIRTUAL_TABLE_FIELD_NUMBER: builtins.int
@@ -383,6 +383,10 @@ class ReadRel(google.protobuf.message.Message):
 
     @property
     def filter(self) -> global___Expression:
+        ...
+
+    @property
+    def best_effort_filter(self) -> global___Expression:
         ...
 
     @property
@@ -409,13 +413,13 @@ class ReadRel(google.protobuf.message.Message):
     def extension_table(self) -> global___ReadRel.ExtensionTable:
         ...
 
-    def __init__(self, *, common: global___RelCommon | None=..., base_schema: substrait.ibis.type_pb2.NamedStruct | None=..., filter: global___Expression | None=..., projection: global___Expression.MaskExpression | None=..., advanced_extension: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=..., virtual_table: global___ReadRel.VirtualTable | None=..., local_files: global___ReadRel.LocalFiles | None=..., named_table: global___ReadRel.NamedTable | None=..., extension_table: global___ReadRel.ExtensionTable | None=...) -> None:
+    def __init__(self, *, common: global___RelCommon | None=..., base_schema: substrait.ibis.type_pb2.NamedStruct | None=..., filter: global___Expression | None=..., best_effort_filter: global___Expression | None=..., projection: global___Expression.MaskExpression | None=..., advanced_extension: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=..., virtual_table: global___ReadRel.VirtualTable | None=..., local_files: global___ReadRel.LocalFiles | None=..., named_table: global___ReadRel.NamedTable | None=..., extension_table: global___ReadRel.ExtensionTable | None=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'best_effort_filter', b'best_effort_filter', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'base_schema', b'base_schema', 'best_effort_filter', b'best_effort_filter', 'common', b'common', 'extension_table', b'extension_table', 'filter', b'filter', 'local_files', b'local_files', 'named_table', b'named_table', 'projection', b'projection', 'read_type', b'read_type', 'virtual_table', b'virtual_table']) -> None:
         ...
 
     def WhichOneof(self, oneof_group: typing_extensions.Literal['read_type', b'read_type']) -> typing_extensions.Literal['virtual_table', 'local_files', 'named_table', 'extension_table'] | None:
@@ -1405,35 +1409,10 @@ global___WriteRel = WriteRel
 class FunctionArgument(google.protobuf.message.Message):
     """The argument of a function"""
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    class Enum(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
-        SPECIFIED_FIELD_NUMBER: builtins.int
-        UNSPECIFIED_FIELD_NUMBER: builtins.int
-        specified: builtins.str
-
-        @property
-        def unspecified(self) -> google.protobuf.empty_pb2.Empty:
-            ...
-
-        def __init__(self, *, specified: builtins.str=..., unspecified: google.protobuf.empty_pb2.Empty | None=...) -> None:
-            ...
-
-        def HasField(self, field_name: typing_extensions.Literal['enum_kind', b'enum_kind', 'specified', b'specified', 'unspecified', b'unspecified']) -> builtins.bool:
-            ...
-
-        def ClearField(self, field_name: typing_extensions.Literal['enum_kind', b'enum_kind', 'specified', b'specified', 'unspecified', b'unspecified']) -> None:
-            ...
-
-        def WhichOneof(self, oneof_group: typing_extensions.Literal['enum_kind', b'enum_kind']) -> typing_extensions.Literal['specified', 'unspecified'] | None:
-            ...
     ENUM_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int
     VALUE_FIELD_NUMBER: builtins.int
-
-    @property
-    def enum(self) -> global___FunctionArgument.Enum:
-        ...
+    enum: builtins.str
 
     @property
     def type(self) -> substrait.ibis.type_pb2.Type:
@@ -1443,7 +1422,7 @@ class FunctionArgument(google.protobuf.message.Message):
     def value(self) -> global___Expression:
         ...
 
-    def __init__(self, *, enum: global___FunctionArgument.Enum | None=..., type: substrait.ibis.type_pb2.Type | None=..., value: global___Expression | None=...) -> None:
+    def __init__(self, *, enum: builtins.str=..., type: substrait.ibis.type_pb2.Type | None=..., value: global___Expression | None=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['arg_type', b'arg_type', 'enum', b'enum', 'type', b'type', 'value', b'value']) -> builtins.bool:
@@ -1455,6 +1434,33 @@ class FunctionArgument(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal['arg_type', b'arg_type']) -> typing_extensions.Literal['enum', 'type', 'value'] | None:
         ...
 global___FunctionArgument = FunctionArgument
+
+class FunctionOption(google.protobuf.message.Message):
+    """An optional function argument.  Typically used for specifying behavior in
+    invalid or corner cases.
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    NAME_FIELD_NUMBER: builtins.int
+    PREFERENCE_FIELD_NUMBER: builtins.int
+    name: builtins.str
+    'Name of the option to set. If the consumer does not recognize the\n    option, it must reject the plan. The name is matched case-insensitively\n    with option names defined for the function.\n    '
+
+    @property
+    def preference(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+        """List of behavior options allowed by the producer. At least one must be
+        specified; to leave an option unspecified, simply don't add an entry to
+        `options`. The consumer must use the first option from the list that it
+        supports. If the consumer supports none of the specified options, it
+        must reject the plan. The name is matched case-insensitively and must
+        match one of the option values defined for the option.
+        """
+
+    def __init__(self, *, name: builtins.str=..., preference: collections.abc.Iterable[builtins.str] | None=...) -> None:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['name', b'name', 'preference', b'preference']) -> None:
+        ...
+global___FunctionOption = FunctionOption
 
 class Expression(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
@@ -1751,11 +1757,120 @@ class Expression(google.protobuf.message.Message):
         def WhichOneof(self, oneof_group: typing_extensions.Literal['literal_type', b'literal_type']) -> typing_extensions.Literal['boolean', 'i8', 'i16', 'i32', 'i64', 'fp32', 'fp64', 'string', 'binary', 'timestamp', 'date', 'time', 'interval_year_to_month', 'interval_day_to_second', 'fixed_char', 'var_char', 'fixed_binary', 'decimal', 'struct', 'map', 'timestamp_tz', 'uuid', 'null', 'list', 'empty_list', 'empty_map', 'user_defined'] | None:
             ...
 
+    class Nested(google.protobuf.message.Message):
+        """Expression to dynamically construct nested types."""
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        class Map(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+            class KeyValue(google.protobuf.message.Message):
+                DESCRIPTOR: google.protobuf.descriptor.Descriptor
+                KEY_FIELD_NUMBER: builtins.int
+                VALUE_FIELD_NUMBER: builtins.int
+
+                @property
+                def key(self) -> global___Expression:
+                    """Mandatory key/value expressions."""
+
+                @property
+                def value(self) -> global___Expression:
+                    ...
+
+                def __init__(self, *, key: global___Expression | None=..., value: global___Expression | None=...) -> None:
+                    ...
+
+                def HasField(self, field_name: typing_extensions.Literal['key', b'key', 'value', b'value']) -> builtins.bool:
+                    ...
+
+                def ClearField(self, field_name: typing_extensions.Literal['key', b'key', 'value', b'value']) -> None:
+                    ...
+            KEY_VALUES_FIELD_NUMBER: builtins.int
+
+            @property
+            def key_values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression.Nested.Map.KeyValue]:
+                """One or more key-value pairs. To specify an empty map, use
+                Literal.empty_map (otherwise type information would be missing).
+                """
+
+            def __init__(self, *, key_values: collections.abc.Iterable[global___Expression.Nested.Map.KeyValue] | None=...) -> None:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['key_values', b'key_values']) -> None:
+                ...
+
+        class Struct(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+            FIELDS_FIELD_NUMBER: builtins.int
+
+            @property
+            def fields(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
+                """Zero or more possibly heterogeneously-typed list of expressions that
+                form the struct fields.
+                """
+
+            def __init__(self, *, fields: collections.abc.Iterable[global___Expression] | None=...) -> None:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['fields', b'fields']) -> None:
+                ...
+
+        class List(google.protobuf.message.Message):
+            DESCRIPTOR: google.protobuf.descriptor.Descriptor
+            VALUES_FIELD_NUMBER: builtins.int
+
+            @property
+            def values(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
+                """A homogeneously-typed list of one or more expressions that form the
+                list entries. To specify an empty list, use Literal.empty_list
+                (otherwise type information would be missing).
+                """
+
+            def __init__(self, *, values: collections.abc.Iterable[global___Expression] | None=...) -> None:
+                ...
+
+            def ClearField(self, field_name: typing_extensions.Literal['values', b'values']) -> None:
+                ...
+        NULLABLE_FIELD_NUMBER: builtins.int
+        TYPE_VARIATION_REFERENCE_FIELD_NUMBER: builtins.int
+        STRUCT_FIELD_NUMBER: builtins.int
+        LIST_FIELD_NUMBER: builtins.int
+        MAP_FIELD_NUMBER: builtins.int
+        nullable: builtins.bool
+        'Whether the returned nested type is nullable.'
+        type_variation_reference: builtins.int
+        'Optionally points to a type_variation_anchor defined in this plan for\n        the returned nested type.\n        '
+
+        @property
+        def struct(self) -> global___Expression.Nested.Struct:
+            ...
+
+        @property
+        def list(self) -> global___Expression.Nested.List:
+            ...
+
+        @property
+        def map(self) -> global___Expression.Nested.Map:
+            ...
+
+        def __init__(self, *, nullable: builtins.bool=..., type_variation_reference: builtins.int=..., struct: global___Expression.Nested.Struct | None=..., list: global___Expression.Nested.List | None=..., map: global___Expression.Nested.Map | None=...) -> None:
+            ...
+
+        def HasField(self, field_name: typing_extensions.Literal['list', b'list', 'map', b'map', 'nested_type', b'nested_type', 'struct', b'struct']) -> builtins.bool:
+            ...
+
+        def ClearField(self, field_name: typing_extensions.Literal['list', b'list', 'map', b'map', 'nested_type', b'nested_type', 'nullable', b'nullable', 'struct', b'struct', 'type_variation_reference', b'type_variation_reference']) -> None:
+            ...
+
+        def WhichOneof(self, oneof_group: typing_extensions.Literal['nested_type', b'nested_type']) -> typing_extensions.Literal['struct', 'list', 'map'] | None:
+            ...
+
     class ScalarFunction(google.protobuf.message.Message):
         """A scalar function call."""
         DESCRIPTOR: google.protobuf.descriptor.Descriptor
         FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
         ARGUMENTS_FIELD_NUMBER: builtins.int
+        OPTIONS_FIELD_NUMBER: builtins.int
         OUTPUT_TYPE_FIELD_NUMBER: builtins.int
         ARGS_FIELD_NUMBER: builtins.int
         function_reference: builtins.int
@@ -1771,12 +1886,16 @@ class Expression(google.protobuf.message.Message):
                the expression in that must yield a value of a type that a function
                overload is defined for.
              - Type arguments must be bound using FunctionArgument.type.
-             - Required enum arguments must be bound using FunctionArgument.enum
+             - Enum arguments must be bound using FunctionArgument.enum
                followed by Enum.specified, with a string that case-insensitively
                matches one of the allowed options.
-             - Optional enum arguments must be bound using FunctionArgument.enum
-               followed by either Enum.specified or Enum.unspecified. If specified,
-               the string must case-insensitively match one of the allowed options.
+            """
+
+        @property
+        def options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionOption]:
+            """Options to specify behavior for corner cases, or leave behavior
+            unspecified if the consumer does not need specific behavior in these
+            cases.
             """
 
         @property
@@ -1789,13 +1908,13 @@ class Expression(google.protobuf.message.Message):
         def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
             """Deprecated; use arguments instead."""
 
-        def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
+        def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., options: collections.abc.Iterable[global___FunctionOption] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
             ...
 
-        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'output_type', b'output_type']) -> None:
+        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'options', b'options', 'output_type', b'output_type']) -> None:
             ...
 
     class WindowFunction(google.protobuf.message.Message):
@@ -1887,6 +2006,7 @@ class Expression(google.protobuf.message.Message):
                 ...
         FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
         ARGUMENTS_FIELD_NUMBER: builtins.int
+        OPTIONS_FIELD_NUMBER: builtins.int
         OUTPUT_TYPE_FIELD_NUMBER: builtins.int
         PHASE_FIELD_NUMBER: builtins.int
         SORTS_FIELD_NUMBER: builtins.int
@@ -1909,12 +2029,16 @@ class Expression(google.protobuf.message.Message):
                overload is defined for.
              - Type arguments must be bound using FunctionArgument.type, and a
                function overload must be defined for that type.
-             - Required enum arguments must be bound using FunctionArgument.enum
+             - Enum arguments must be bound using FunctionArgument.enum
                followed by Enum.specified, with a string that case-insensitively
                matches one of the allowed options.
-             - Optional enum arguments must be bound using FunctionArgument.enum
-               followed by either Enum.specified or Enum.unspecified. If specified,
-               the string must case-insensitively match one of the allowed options.
+            """
+
+        @property
+        def options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionOption]:
+            """Options to specify behavior for corner cases, or leave behavior
+            unspecified if the consumer does not need specific behavior in these
+            cases.
             """
 
         @property
@@ -1968,13 +2092,13 @@ class Expression(google.protobuf.message.Message):
         def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
             """Deprecated; use arguments instead."""
 
-        def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., phase: global___AggregationPhase.ValueType=..., sorts: collections.abc.Iterable[global___SortField] | None=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., partitions: collections.abc.Iterable[global___Expression] | None=..., lower_bound: global___Expression.WindowFunction.Bound | None=..., upper_bound: global___Expression.WindowFunction.Bound | None=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
+        def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., options: collections.abc.Iterable[global___FunctionOption] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., phase: global___AggregationPhase.ValueType=..., sorts: collections.abc.Iterable[global___SortField] | None=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., partitions: collections.abc.Iterable[global___Expression] | None=..., lower_bound: global___Expression.WindowFunction.Bound | None=..., upper_bound: global___Expression.WindowFunction.Bound | None=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
             ...
 
         def HasField(self, field_name: typing_extensions.Literal['lower_bound', b'lower_bound', 'output_type', b'output_type', 'upper_bound', b'upper_bound']) -> builtins.bool:
             ...
 
-        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'invocation', b'invocation', 'lower_bound', b'lower_bound', 'output_type', b'output_type', 'partitions', b'partitions', 'phase', b'phase', 'sorts', b'sorts', 'upper_bound', b'upper_bound']) -> None:
+        def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'invocation', b'invocation', 'lower_bound', b'lower_bound', 'options', b'options', 'output_type', b'output_type', 'partitions', b'partitions', 'phase', b'phase', 'sorts', b'sorts', 'upper_bound', b'upper_bound']) -> None:
             ...
 
     class IfThen(google.protobuf.message.Message):
@@ -2810,6 +2934,7 @@ class Expression(google.protobuf.message.Message):
     MULTI_OR_LIST_FIELD_NUMBER: builtins.int
     CAST_FIELD_NUMBER: builtins.int
     SUBQUERY_FIELD_NUMBER: builtins.int
+    NESTED_FIELD_NUMBER: builtins.int
     ENUM_FIELD_NUMBER: builtins.int
 
     @property
@@ -2853,22 +2978,26 @@ class Expression(google.protobuf.message.Message):
         ...
 
     @property
+    def nested(self) -> global___Expression.Nested:
+        ...
+
+    @property
     def enum(self) -> global___Expression.Enum:
         """deprecated: enum literals are only sensible in the context of
         function arguments, for which FunctionArgument should now be
         used
         """
 
-    def __init__(self, *, literal: global___Expression.Literal | None=..., selection: global___Expression.FieldReference | None=..., scalar_function: global___Expression.ScalarFunction | None=..., window_function: global___Expression.WindowFunction | None=..., if_then: global___Expression.IfThen | None=..., switch_expression: global___Expression.SwitchExpression | None=..., singular_or_list: global___Expression.SingularOrList | None=..., multi_or_list: global___Expression.MultiOrList | None=..., cast: global___Expression.Cast | None=..., subquery: global___Expression.Subquery | None=..., enum: global___Expression.Enum | None=...) -> None:
+    def __init__(self, *, literal: global___Expression.Literal | None=..., selection: global___Expression.FieldReference | None=..., scalar_function: global___Expression.ScalarFunction | None=..., window_function: global___Expression.WindowFunction | None=..., if_then: global___Expression.IfThen | None=..., switch_expression: global___Expression.SwitchExpression | None=..., singular_or_list: global___Expression.SingularOrList | None=..., multi_or_list: global___Expression.MultiOrList | None=..., cast: global___Expression.Cast | None=..., subquery: global___Expression.Subquery | None=..., nested: global___Expression.Nested | None=..., enum: global___Expression.Enum | None=...) -> None:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['cast', b'cast', 'enum', b'enum', 'if_then', b'if_then', 'literal', b'literal', 'multi_or_list', b'multi_or_list', 'rex_type', b'rex_type', 'scalar_function', b'scalar_function', 'selection', b'selection', 'singular_or_list', b'singular_or_list', 'subquery', b'subquery', 'switch_expression', b'switch_expression', 'window_function', b'window_function']) -> builtins.bool:
+    def HasField(self, field_name: typing_extensions.Literal['cast', b'cast', 'enum', b'enum', 'if_then', b'if_then', 'literal', b'literal', 'multi_or_list', b'multi_or_list', 'nested', b'nested', 'rex_type', b'rex_type', 'scalar_function', b'scalar_function', 'selection', b'selection', 'singular_or_list', b'singular_or_list', 'subquery', b'subquery', 'switch_expression', b'switch_expression', 'window_function', b'window_function']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['cast', b'cast', 'enum', b'enum', 'if_then', b'if_then', 'literal', b'literal', 'multi_or_list', b'multi_or_list', 'rex_type', b'rex_type', 'scalar_function', b'scalar_function', 'selection', b'selection', 'singular_or_list', b'singular_or_list', 'subquery', b'subquery', 'switch_expression', b'switch_expression', 'window_function', b'window_function']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['cast', b'cast', 'enum', b'enum', 'if_then', b'if_then', 'literal', b'literal', 'multi_or_list', b'multi_or_list', 'nested', b'nested', 'rex_type', b'rex_type', 'scalar_function', b'scalar_function', 'selection', b'selection', 'singular_or_list', b'singular_or_list', 'subquery', b'subquery', 'switch_expression', b'switch_expression', 'window_function', b'window_function']) -> None:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['rex_type', b'rex_type']) -> typing_extensions.Literal['literal', 'selection', 'scalar_function', 'window_function', 'if_then', 'switch_expression', 'singular_or_list', 'multi_or_list', 'cast', 'subquery', 'enum'] | None:
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['rex_type', b'rex_type']) -> typing_extensions.Literal['literal', 'selection', 'scalar_function', 'window_function', 'if_then', 'switch_expression', 'singular_or_list', 'multi_or_list', 'cast', 'subquery', 'nested', 'enum'] | None:
         ...
 global___Expression = Expression
 
@@ -2961,6 +3090,7 @@ class AggregateFunction(google.protobuf.message.Message):
             ...
     FUNCTION_REFERENCE_FIELD_NUMBER: builtins.int
     ARGUMENTS_FIELD_NUMBER: builtins.int
+    OPTIONS_FIELD_NUMBER: builtins.int
     OUTPUT_TYPE_FIELD_NUMBER: builtins.int
     PHASE_FIELD_NUMBER: builtins.int
     SORTS_FIELD_NUMBER: builtins.int
@@ -2980,12 +3110,19 @@ class AggregateFunction(google.protobuf.message.Message):
            overload is defined for.
          - Type arguments must be bound using FunctionArgument.type, and a
            function overload must be defined for that type.
-         - Required enum arguments must be bound using FunctionArgument.enum
+         - Enum arguments must be bound using FunctionArgument.enum
            followed by Enum.specified, with a string that case-insensitively
            matches one of the allowed options.
          - Optional enum arguments must be bound using FunctionArgument.enum
            followed by either Enum.specified or Enum.unspecified. If specified,
            the string must case-insensitively match one of the allowed options.
+        """
+
+    @property
+    def options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___FunctionOption]:
+        """Options to specify behavior for corner cases, or leave behavior
+        unspecified if the consumer does not need specific behavior in these
+        cases.
         """
 
     @property
@@ -3010,12 +3147,12 @@ class AggregateFunction(google.protobuf.message.Message):
     def args(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression]:
         """deprecated; use arguments instead"""
 
-    def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., phase: global___AggregationPhase.ValueType=..., sorts: collections.abc.Iterable[global___SortField] | None=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
+    def __init__(self, *, function_reference: builtins.int=..., arguments: collections.abc.Iterable[global___FunctionArgument] | None=..., options: collections.abc.Iterable[global___FunctionOption] | None=..., output_type: substrait.ibis.type_pb2.Type | None=..., phase: global___AggregationPhase.ValueType=..., sorts: collections.abc.Iterable[global___SortField] | None=..., invocation: global___AggregateFunction.AggregationInvocation.ValueType=..., args: collections.abc.Iterable[global___Expression] | None=...) -> None:
         ...
 
     def HasField(self, field_name: typing_extensions.Literal['output_type', b'output_type']) -> builtins.bool:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'invocation', b'invocation', 'output_type', b'output_type', 'phase', b'phase', 'sorts', b'sorts']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['args', b'args', 'arguments', b'arguments', 'function_reference', b'function_reference', 'invocation', b'invocation', 'options', b'options', 'output_type', b'output_type', 'phase', b'phase', 'sorts', b'sorts']) -> None:
         ...
 global___AggregateFunction = AggregateFunction

@@ -814,13 +814,12 @@ class FunctionArgumentDecompiler:
 
     @staticmethod
     def decompile_enum(
-        msg: stalg.FunctionArgument.Enum,
+        msg: str,
         _children: Sequence[ir.TableExpr],
         _field_offsets: Sequence[int],
         _decompiler: SubstraitDecompiler,
     ) -> ir.ValueExpr:
-        # TODO: add support for `unspecified` (empty) content
-        return msg.specified
+        return msg
 
 
 @decompile.register
