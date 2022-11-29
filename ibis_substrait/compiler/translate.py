@@ -478,27 +478,12 @@ def value_op(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
-    error_args = []
-    # TODO(gforsyth): remove this brittle workaround after extension parsing is ready
-    # TODO(gforsyth): sending in `ERROR` for floating point ops doesn't match
-    # the substrait spec but is what pyarrow currently expects.
-    if (
-        isinstance(op, ops.BinaryOp)
-        and not isinstance(op, ops.Comparison)
-        and isinstance(op.left.type(), (dt.Integer, dt.Floating))
-        and isinstance(op.right.type(), (dt.Integer, dt.Floating))
-    ):
-        error_args.append(
-            stalg.FunctionArgument(enum=stalg.FunctionArgument.Enum(specified="ERROR"))
-        )
-
     # given the details of `op` -> function id
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
             function_reference=compiler.function_id(expr),
             output_type=translate(expr.type()),
-            arguments=error_args
-            + [
+            arguments=[
                 stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
                 for arg in op.args
                 if isinstance(arg, ir.Expr)
@@ -1053,7 +1038,7 @@ def _extractdatefield(
         function_reference=compiler.function_id(expr),
         output_type=translate(expr.type()),
     )
-    scalar_func.arguments.add(enum=stalg.FunctionArgument.Enum(specified=span))
+    scalar_func.arguments.add(enum=span)
     scalar_func.arguments.extend(arguments)
     return stalg.Expression(scalar_function=scalar_func)
 

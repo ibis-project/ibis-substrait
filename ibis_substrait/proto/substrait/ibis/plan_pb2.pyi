@@ -121,23 +121,23 @@ global___PlanVersion = PlanVersion
 
 class Version(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
-    MAJOR_FIELD_NUMBER: builtins.int
-    MINOR_FIELD_NUMBER: builtins.int
-    PATCH_FIELD_NUMBER: builtins.int
+    MAJOR_NUMBER_FIELD_NUMBER: builtins.int
+    MINOR_NUMBER_FIELD_NUMBER: builtins.int
+    PATCH_NUMBER_FIELD_NUMBER: builtins.int
     GIT_HASH_FIELD_NUMBER: builtins.int
     PRODUCER_FIELD_NUMBER: builtins.int
-    major: builtins.int
+    major_number: builtins.int
     'Substrait version number.'
-    minor: builtins.int
-    patch: builtins.int
+    minor_number: builtins.int
+    patch_number: builtins.int
     git_hash: builtins.str
     'If a particular version of Substrait is used that does not correspond to\n    a version number exactly (for example when using an unofficial fork or\n    using a version that is not yet released or is between versions), set this\n    to the full git hash of the utilized commit of\n    https://github.com/substrait-io/substrait (or fork thereof), represented\n    using a lowercase hex ASCII string 40 characters in length. The version\n    number above should be set to the most recent version tag in the history\n    of that commit.\n    '
     producer: builtins.str
     'Identifying information for the producer that created this plan. Under\n    ideal circumstances, consumers should not need this information. However,\n    it is foreseen that consumers may need to work around bugs in particular\n    producers in practice, and therefore may need to know which producer\n    created the plan.\n    '
 
-    def __init__(self, *, major: builtins.int=..., minor: builtins.int=..., patch: builtins.int=..., git_hash: builtins.str=..., producer: builtins.str=...) -> None:
+    def __init__(self, *, major_number: builtins.int=..., minor_number: builtins.int=..., patch_number: builtins.int=..., git_hash: builtins.str=..., producer: builtins.str=...) -> None:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['git_hash', b'git_hash', 'major', b'major', 'minor', b'minor', 'patch', b'patch', 'producer', b'producer']) -> None:
+    def ClearField(self, field_name: typing_extensions.Literal['git_hash', b'git_hash', 'major_number', b'major_number', 'minor_number', b'minor_number', 'patch_number', b'patch_number', 'producer', b'producer']) -> None:
         ...
 global___Version = Version
