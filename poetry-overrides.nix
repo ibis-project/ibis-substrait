@@ -14,7 +14,6 @@ self: super:
       format = "setuptools";
       setupPyBuildFlags = attrs.setupPyBuildFlags or [ ] ++ [ "--cpp_implementation" ];
 
-      nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ [ self.pyext ];
       propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs or [ ] ++ [
         pkgs.buildPackages.protobuf3_20
       ];
