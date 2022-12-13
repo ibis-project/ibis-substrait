@@ -19,7 +19,7 @@ in
       flake8 = {
         enable = true;
         language = "python";
-        entry = "flake8";
+        entry = lib.mkForce "flake8";
         types = [ "python" ];
         excludes = [ protoExcludePattern ];
       };
