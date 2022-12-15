@@ -1576,28 +1576,28 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "substrait-validator"
-version = "0.0.9"
+version = "0.0.11"
 description = "Validator for Substrait query plans"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "substrait_validator-0.0.9-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:eaef2353014872f6a00a08ea300c5a84d1105090733c12392183c7ac8da06989"},
-    {file = "substrait_validator-0.0.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:84a5d89c8cb930be111ab2a19e441b2d17d2a4ebb1097ccb78dec2db874224d2"},
-    {file = "substrait_validator-0.0.9-cp310-none-win_amd64.whl", hash = "sha256:a2212473db877c93f3b2bfc3a8eee92dc334c52e25f03fe83ec33e2e0d80a802"},
-    {file = "substrait_validator-0.0.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ffd11ed8c524812be7a0b6393e2c53e0b3a599803575f08241bb1e22db7cccae"},
-    {file = "substrait_validator-0.0.9-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d148dcb2a678b8e828913875bb52725e7a8e030f5c7b6cb3e8f0873bc8be4909"},
-    {file = "substrait_validator-0.0.9-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:81ce4437c140ff400e0a50b1699cd661b444cc10b3b780b2c36a42b9582c5811"},
-    {file = "substrait_validator-0.0.9-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a538b3492c4e18a8af34b4600e233938cbb6ab2d1fd600b48558d37b58f2f905"},
-    {file = "substrait_validator-0.0.9-cp37-none-win_amd64.whl", hash = "sha256:a1a4926fd50856ad1f66a88fb37c015b8a7f35cc391377192da1ab6b9187e8fc"},
-    {file = "substrait_validator-0.0.9-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:0be80bf32d1d6786019e94e7090c6a6e678b999581ad32c0133c5e7c8decb75a"},
-    {file = "substrait_validator-0.0.9-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6a3a7ac1a23b5798192458aaa9642824f53ab0f1fbe3c4288753b33888b182cf"},
-    {file = "substrait_validator-0.0.9-cp38-none-win_amd64.whl", hash = "sha256:8e04b2ee8eb974d262068391b65d0a71374b19cd6d882d374faa3429e7b3cd1c"},
-    {file = "substrait_validator-0.0.9-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:d7312f7364d32035df18d0f632af22b0dac31aa6fb13feb88b10d44a452a0689"},
-    {file = "substrait_validator-0.0.9-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:de4c0898f9052c3cdb267cd4d584ee5c5af736bfc94e60fa9d88ad6c09937127"},
-    {file = "substrait_validator-0.0.9-cp39-none-win_amd64.whl", hash = "sha256:0b4309be76124930f1efe521bcfc032fcf1dd24de070e70a7d1d3b8d1ed89717"},
-    {file = "substrait_validator-0.0.9-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1dd033f0e3dde5556f314e88421d040018b28ccdb5f13ba33125b936944e849a"},
-    {file = "substrait_validator-0.0.9.tar.gz", hash = "sha256:c4bb904d344360633271a029bc358976bb4f3b390ce4bb5ee294e909a0f95585"},
+    {file = "substrait_validator-0.0.11-cp310-cp310-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:b0ba1e323acac17d8b799657a74b0989f39b2039e76c53ad51cbe1c687ef95c9"},
+    {file = "substrait_validator-0.0.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f4dc5947fd283c98898ef046e1d50e8313f2a58e99f8d63b32afe4a408499e3e"},
+    {file = "substrait_validator-0.0.11-cp310-none-win_amd64.whl", hash = "sha256:dea2edbf64d7df1554c1c667bf7ea8d47a10565c7f4519ccfd7be342118be739"},
+    {file = "substrait_validator-0.0.11-cp311-cp311-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:6e4ae977c9d9e430306756feb96e1c8e2d322176c5a1edc8261e6e5b808cca9d"},
+    {file = "substrait_validator-0.0.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:56a7c2e717cf8d0783644e919c24bc9cbd73ad874e94cf9bee46e898cb375654"},
+    {file = "substrait_validator-0.0.11-cp311-none-win_amd64.whl", hash = "sha256:8ea87116f86acf1f6e34bd7df15003437cae3eef25a677f9495980b3a7085156"},
+    {file = "substrait_validator-0.0.11-cp37-cp37m-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:82a401cbb0427c13b5d61517254171439d72148ac16cc519937858dfee8738fd"},
+    {file = "substrait_validator-0.0.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7cd220353117f204b4fdd3a2ea998ad2fe4c83a2c9a090fffbdbfac6a95679dd"},
+    {file = "substrait_validator-0.0.11-cp37-none-win_amd64.whl", hash = "sha256:a7f8acd8043cc984388d267b1759ba9d23dbab6b0c5825b1d4ccda5b62982e0d"},
+    {file = "substrait_validator-0.0.11-cp38-cp38-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:f45a8c44aeedfacf14901d729795cec8c370856558b6102b64639cc18fd38dc5"},
+    {file = "substrait_validator-0.0.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2854f6e361c775e7a9b06255fd887e081fbe21fcf1b5bbcdd65865ba7de17d27"},
+    {file = "substrait_validator-0.0.11-cp38-none-win_amd64.whl", hash = "sha256:4536ad5d16b8deaacf5e38919326172d60bf81a4e372b547a51fd3fad2302679"},
+    {file = "substrait_validator-0.0.11-cp39-cp39-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:2a7fa7e24f75dd5247f176aa873fa567ee57543466fd085f57f385b867921f2c"},
+    {file = "substrait_validator-0.0.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c35ac35fc637d4e1e01dbfd8a3b866e3605e5ea5ffffa2344c851513b4944361"},
+    {file = "substrait_validator-0.0.11-cp39-none-win_amd64.whl", hash = "sha256:9df9db086a7742172de40c224feee81c4eb4a8584facf073b2c31895c93a8d1a"},
+    {file = "substrait_validator-0.0.11.tar.gz", hash = "sha256:798b0aeb887268aba4a0fecafe4295cada6c586d53b4bc547189dcb53a8119c6"},
 ]
 
 [package.dependencies]
@@ -1743,4 +1743,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "b4b8ce02efdbf6a4012478578afb43a4958bef5a06d74931537345c8ec686405"
+content-hash = "3fc2b061c588e6e91a0a23eed70a63e6687e90f48d7d6c2b380afc13c40fd003"
