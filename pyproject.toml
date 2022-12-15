@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8.1,<4"
 ibis-framework = [
   # TODO: remove these constraints when ibis-framework@4 is released
   { version = "^3", python = ">=3.8,<3.11" },
@@ -31,7 +31,7 @@ sqlalchemy = ">=1,<2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
-flake8 = "^5.0.0"
+flake8 = "^6.0.0"
 ipython = "^8.2.0"
 isort = "^5.9.3"
 mypy = "^0.982"
