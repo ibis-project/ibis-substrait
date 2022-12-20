@@ -311,6 +311,8 @@ def test_roundtrip_join_column_name_overlap(compiler, s, t):
 
 
 def test_roundtrip_nested_join(compiler, s, r, q):
+    _ = pytest.importorskip("pyarrow")
+
     expr = s.join(r, s.c == r.a)
     expr = expr.join(q, r.a == q.e)
 

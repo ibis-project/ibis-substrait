@@ -20,13 +20,12 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4"
+# TODO: remove these constraints when ibis-framework@3 is no longer supported
 ibis-framework = [
-  # TODO: remove these constraints when ibis-framework@4 is released
-  { version = "^3", python = ">=3.8,<3.11" },
-  { version = "*", python = ">=3.8,<4" }
-]
+  { version = ">=4,<5", python = ">=3.8,<4" },
+  { version = ">=3,<4", python = ">=3.8,<3.11" },
+  ]
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
-# TODO: remove this when ibis-framework@4 is released
 sqlalchemy = ">=1,<2"
 
 [tool.poetry.group.dev.dependencies]
@@ -50,7 +49,10 @@ pytest-randomly = "^3.10.1"
 pytest-lazy-fixture = "^0.6.3"
 pytz = "^2022.1"
 substrait-validator = "^0.0.11"
-ibis-framework = { version = ">=3,<4", extras = ["duckdb"] }
+ibis-framework = [
+  { version = ">=4,<5", python = ">=3.8,<4", extras = ["duckdb"] },
+  { version = ">=3,<4", python = ">=3.8,<3.11", extras = ["duckdb"] },
+]
 packaging = "^21.3"
 pathspec = "0.10.3"
 
@@ -134,6 +136,12 @@ filterwarnings = [
   "ignore:`parse_type` is deprecated:FutureWarning",
   # ibis on postgres + windows
   "ignore:locale specific date formats:UserWarning",
+  # ignore op deprecation warning while we still support 3.x
+  "ignore:`Node.op` is deprecated:FutureWarning",
+  # ignore sort_by deprecation while we still support 3.x
+  "ignore:`Table.sort_by` is deprecated:FutureWarning",
+  # ignore groupby deprecation while we still support 3.x
+  "ignore:`Table.groupby` is deprecated:FutureWarning",
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]

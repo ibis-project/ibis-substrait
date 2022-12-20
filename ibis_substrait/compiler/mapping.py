@@ -15,6 +15,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Coalesce": "coalesce",
     "Cos": "cos",
     "Count": "count",
+    "CountStar": "count",
     "CountDistinct": "countdistinct",
     "Divide": "divide",
     "EndsWith": "ends_with",

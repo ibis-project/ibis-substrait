@@ -32,6 +32,13 @@ from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import plan_pb2 as stp
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
+try:
+    from ibis.expr.operations import CountStar
+
+    del CountStar
+except ImportError:
+    ops.CountStar = ops.Count
+
 T = TypeVar("T")
 K = TypeVar("K", bound=Hashable)
 V = TypeVar("V")
@@ -378,7 +385,7 @@ def _get_child_tables_and_field_offsets(
 ) -> tuple[Sequence[ops.TableNode], list[int]]:
     child_op = child.op()
     if isinstance(child_op, ops.Join):
-        return [child_op.left, child_op.right], [0, len(child_op.left.schema())]
+        return [child_op.left, child_op.right], [0, len(child_op.left.op().schema)]
     return [child], [0]
 
 
@@ -583,7 +590,7 @@ def _decompile_expression_aggregate_function(
     ]
 
     # XXX: handle table.count(); what an annoying hack
-    if not args and issubclass(op_type, ops.Count):
+    if not args and issubclass(op_type, (ops.Count, ops.CountStar)):
         args += tuple(children)
 
     expr = op_type(*args).to_expr()
@@ -663,6 +670,11 @@ def _get_field(
     relative_offset: int,
 ) -> ir.ValueExpr:
     raise NotImplementedError(f"accessing field of type {type(child)} is not supported")
+
+
+@_get_field.register(ops.Node)
+def _get_field_ops_node(child: ops.Node, relative_offset: int) -> ir.ValueExpr:
+    return _get_field(child.to_expr(), relative_offset)
 
 
 @_get_field.register(ir.TableExpr)
@@ -924,9 +936,9 @@ def _decompile_if_then_comparison(
 ) -> ir.ValueExpr:
     if len(ifs) > 1:
         assert all(
-            _if.op().left.get_name() == base_op.left.get_name() for _if in ifs[1:]
+            _if.op().left.op().name == base_op.left.op().name for _if in ifs[1:]
         ), "SimpleCase should compare against same column"
-    base_case = base_op.left.case()
+    base_case = base_op.left.op().to_expr().case()
     for case, result in zip((_if.op().right for _if in ifs), thens):
         base_case = base_case.when(case, result)
     return base_case.else_(
@@ -946,9 +958,14 @@ def _decompile_if_then_stringlike(
 ) -> ir.ValueExpr:
     assert len(thens) == 1, "only one result in a stringlike"
 
-    return base_op.arg.like(base_op.pattern).ifelse(
-        thens[0],
-        decompile(getattr(msg, "else"), children, field_offsets, decompiler),
+    return (
+        base_op.arg.op()
+        .to_expr()
+        .like(base_op.pattern)
+        .ifelse(
+            thens[0],
+            decompile(getattr(msg, "else"), children, field_offsets, decompiler),
+        )
     )
 
 

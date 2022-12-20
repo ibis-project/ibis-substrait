@@ -23,12 +23,33 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import toolz
 from ibis import util
-from ibis.util import to_op_dag
 
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 from .core import SubstraitCompiler, _get_fields
+
+IBIS_4 = False
+try:
+    from ibis.util import to_op_dag
+
+    # Bit of a hack -- there is no ops.CountStar in Ibis 3.x but to register it
+    # for 4.x below, it can't be undefined here.
+    # We remap it to ops.Count just to avoid an attribute error, it will never
+    # be used to route in Ibis 3.x because it doesn't exist.
+    ops.CountStar = ops.Count
+except ImportError:
+    import warnings
+
+    from ibis.common.graph import toposort
+
+    warnings.filterwarnings(
+        "ignore",
+        message="`Node.op` is deprecated",
+        category=FutureWarning,
+    )
+
+    IBIS_4 = True
 
 T = TypeVar("T")
 
@@ -205,17 +226,18 @@ def _expr(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
-    return translate(expr.op(), expr, compiler, **kwargs)
+    return translate(expr.op(), expr, compiler=compiler, **kwargs)
 
 
 @translate.register(ops.Literal)
 def _literal(
     op: ops.Literal,
-    expr: ir.ScalarExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ScalarExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    dtype = expr.type()
+    dtype = op.output_dtype
     value = op.value
     if value is None:
         return stalg.Expression(
@@ -435,6 +457,10 @@ def _translate_window_bounds(
     preceding = util.promote_list(precedes)
     following = util.promote_list(follows)
 
+    # Change in behavior of `promote_list` in Ibis 4.x so we do this for now
+    preceding = [None] if precedes is None else preceding
+    following = [None] if follows is None else following
+
     if len(preceding) == 2:
         if following:
             raise ValueError(
@@ -464,30 +490,38 @@ def _translate_window_bounds(
 @translate.register(ops.Alias)
 def alias_op(
     op: ops.Alias,
-    expr: ir.ValueExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ValueExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
+    alias_op = op.arg.op()
     # For an alias, dispatch on the underlying argument
-    return translate(op.arg.op(), op.arg, compiler, **kwargs)
+    return translate(op.arg.op(), alias_op.to_expr(), compiler=compiler, **kwargs)
 
 
 @translate.register(ops.ValueOp)
 def value_op(
     op: ops.ValueOp,
-    expr: ir.ValueExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ValueExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
+    if compiler is None:
+        raise ValueError
     # given the details of `op` -> function id
+    expr = expr if expr is not None else op.to_expr()
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
             function_reference=compiler.function_id(expr),
             output_type=translate(expr.type()),
             arguments=[
-                stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
+                stalg.FunctionArgument(
+                    value=translate(arg, compiler=compiler, **kwargs)
+                )
                 for arg in op.args
-                if isinstance(arg, ir.Expr)
+                if isinstance(arg, (ir.Expr, ops.Value))
             ],
         )
     )
@@ -496,10 +530,14 @@ def value_op(
 @translate.register(ops.WindowOp)
 def window_op(
     op: ops.WindowOp,
-    expr: ir.ValueExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ValueExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
+    if compiler is None:
+        raise ValueError
+    expr = expr if expr is not None else op.to_expr()
     lower_bound, upper_bound = _translate_window_bounds(
         op.window.preceding, op.window.following
     )
@@ -507,13 +545,17 @@ def window_op(
         window_function=stalg.Expression.WindowFunction(
             function_reference=compiler.function_id(op.expr),
             partitions=[
-                translate(gb, compiler, **kwargs) for gb in op.window._group_by
+                translate(gb, compiler=compiler, **kwargs) for gb in op.window._group_by
             ],
-            sorts=[translate(ob, compiler, **kwargs) for ob in op.window._order_by],
+            sorts=[
+                translate(ob, compiler=compiler, **kwargs) for ob in op.window._order_by
+            ],
             output_type=translate(expr.type()),
             phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
             arguments=[
-                stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
+                stalg.FunctionArgument(
+                    value=translate(arg, compiler=compiler, **kwargs)
+                )
                 for arg in op.expr.op().args
                 if isinstance(arg, ir.Expr)
             ],
@@ -526,13 +568,19 @@ def window_op(
 @translate.register(ops.Reduction)
 def _reduction(
     op: ops.Reduction,
-    expr: ir.ScalarExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ScalarExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
+    if compiler is None:
+        raise ValueError
+    expr = expr if expr is not None else op.to_expr()
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
-        arguments=[stalg.FunctionArgument(value=translate(op.arg, compiler, **kwargs))],
+        arguments=[
+            stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
+        ],
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
         output_type=translate(expr.type()),
@@ -540,17 +588,22 @@ def _reduction(
 
 
 @translate.register(ops.Count)
+@translate.register(ops.CountStar)
 def _count(
     op: ops.Count,
-    expr: ir.ScalarExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.ScalarExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
+    if compiler is None:
+        raise ValueError
     translated_args = []
-    arg = op.arg
-    if not isinstance(arg, ir.TableExpr):
+    arg = op.arg.op().to_expr()
+    expr = expr if expr is not None else op.to_expr()
+    if not isinstance(arg, (ir.TableExpr, ops.PhysicalTable)):
         translated_args.append(
-            stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
+            stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         )
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(expr),
@@ -564,13 +617,14 @@ def _count(
 @translate.register(ops.SortKey)
 def sort_key(
     op: ops.SortKey,
-    expr: ir.SortExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.SortExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.SortField:
     ordering = "ASC" if op.ascending else "DESC"
     return stalg.SortField(
-        expr=translate(op.expr, compiler, **kwargs),
+        expr=translate(op.expr, compiler=compiler, **kwargs),
         direction=getattr(
             stalg.SortField.SortDirection,
             f"SORT_DIRECTION_{ordering}_NULLS_FIRST",
@@ -581,13 +635,13 @@ def sort_key(
 @translate.register(ops.TableColumn)
 def table_column(
     op: ops.TableColumn,
-    expr: ir.ColumnExpr,
-    _: SubstraitCompiler,
+    expr: ir.ColumnExpr | None = None,
     *,
+    compiler: SubstraitCompiler | None = None,
     child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    schema = op.table.schema()
+    schema = op.table.op().schema
     relative_offset = schema._name_locs[op.name]
     base_offset = (child_rel_field_offsets or {}).get(op.table.op(), 0)
     absolute_offset = base_offset + relative_offset
@@ -606,15 +660,16 @@ def table_column(
 @translate.register(ops.StructField)
 def struct_field(
     op: ops.StructField,
-    _: ir.ColumnExpr,
-    compiler: SubstraitCompiler,
+    _: ir.ColumnExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     child = translate(op.arg, compiler=compiler, **kwargs)
     field_name = op.field
     # TODO: store names/types inverse mapping on datatypes.Struct for O(1)
     # access to field index
-    field_index = op.arg.type().names.index(field_name)
+    field_index = op.arg.op().output_dtype.names.index(field_name)
 
     struct_field = child.selection.direct_reference.struct_field
 
@@ -636,7 +691,11 @@ def struct_field(
 
 @translate.register(ops.UnboundTable)
 def unbound_table(
-    op: ops.UnboundTable, expr: ir.TableExpr, _: SubstraitCompiler, **kwargs: Any
+    op: ops.UnboundTable,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
 ) -> stalg.Rel:
     return stalg.Rel(
         read=stalg.ReadRel(
@@ -684,8 +743,9 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
 @translate.register(ops.Selection)
 def selection(
     op: ops.Selection,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
@@ -696,42 +756,59 @@ def selection(
     # source
     relation = translate(
         op.table,
-        compiler,
+        compiler=compiler,
         child_rel_field_offsets=child_rel_field_offsets,
         **kwargs,
     )
     # filter
     if op.predicates:
+        predicates = [pred.op().to_expr() for pred in op.predicates]
         relation = stalg.Rel(
             filter=stalg.FilterRel(
                 input=relation,
                 condition=translate(
-                    functools.reduce(operator.and_, op.predicates),
-                    compiler,
+                    functools.reduce(operator.and_, predicates),
+                    compiler=compiler,
                     child_rel_field_offsets=child_rel_field_offsets,
                     **kwargs,
                 ),
             )
         )
 
-    # projection / emit
-    selections = [
-        col
-        for sel in op.selections
-        for col in (
-            sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
-        )
-    ]
-
     # TODO: there has to be a better way to get a list of source tables
     # underlying an expression
     # TODO: settle on a better source table definition than "PhysicalTable with
     # a schema"
-    source_tables = {
-        t
-        for t in to_op_dag(op.to_expr()).keys()
-        if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
-    }
+    if IBIS_4:
+        # projection / emit
+        selections = [
+            col
+            for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
+            for col in (
+                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+            )
+        ]
+        source_tables = {
+            t
+            for t in toposort(op).keys()
+            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
+        }
+    else:
+
+        # projection / emit
+        selections = [
+            col
+            for sel in op.selections
+            for col in (
+                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+            )
+        ]
+        source_tables = {
+            t
+            for t in to_op_dag(op.to_expr()).keys()
+            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
+        }
+
     mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
     if selections:
 
@@ -754,7 +831,7 @@ def selection(
                 expressions=[
                     translate(
                         selection,
-                        compiler,
+                        compiler=compiler,
                         child_rel_field_offsets=child_rel_field_offsets,
                         **kwargs,
                     )
@@ -771,7 +848,7 @@ def selection(
                 sorts=[
                     translate(
                         key,
-                        compiler,
+                        compiler=compiler,
                         child_rel_field_offsets=child_rel_field_offsets,
                         **kwargs,
                     )
@@ -821,21 +898,24 @@ def _translate_anti_join(_: ops.LeftAntiJoin) -> stalg.JoinRel.JoinType.V:
 @translate.register(ops.Join)
 def join(
     op: ops.Join,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
+    expr = expr if expr is not None else op.to_expr()
     child_rel_field_offsets = kwargs.pop("child_rel_field_offsets", None)
     child_rel_field_offsets = (
         child_rel_field_offsets or _get_child_relation_field_offsets(expr)
     )
+    predicates = [pred.op().to_expr() for pred in op.predicates]
     return stalg.Rel(
         join=stalg.JoinRel(
-            left=translate(op.left, compiler, **kwargs),
-            right=translate(op.right, compiler, **kwargs),
+            left=translate(op.left, compiler=compiler, **kwargs),
+            right=translate(op.right, compiler=compiler, **kwargs),
             expression=translate(
-                functools.reduce(operator.and_, op.predicates),
-                compiler,
+                functools.reduce(operator.and_, predicates),
+                compiler=compiler,
                 child_rel_field_offsets=child_rel_field_offsets,
                 **kwargs,
             ),
@@ -847,13 +927,14 @@ def join(
 @translate.register(ops.Limit)
 def limit(
     op: ops.Limit,
-    expr: ir.Expr,
-    compiler: SubstraitCompiler,
+    expr: ir.Expr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
     return stalg.Rel(
         fetch=stalg.FetchRel(
-            input=translate(op.table, compiler, **kwargs),
+            input=translate(op.table, compiler=compiler, **kwargs),
             offset=op.offset,
             count=op.n,
         )
@@ -887,15 +968,16 @@ def set_op_type_difference(op: ops.Difference) -> stalg.SetRel.SetOp.V:
 @translate.register(ops.SetOp)
 def set_op(
     op: ops.SetOp,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
     return stalg.Rel(
         set=stalg.SetRel(
             inputs=[
-                translate(op.left, compiler, **kwargs),
-                translate(op.right, compiler, **kwargs),
+                translate(op.left, compiler=compiler, **kwargs),
+                translate(op.right, compiler=compiler, **kwargs),
             ],
             op=translate_set_op_type(op),
         )
@@ -905,18 +987,19 @@ def set_op(
 @translate.register(ops.Aggregation)
 def aggregation(
     op: ops.Aggregation,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
     if op.having:
         raise NotImplementedError("`having` not yet implemented")
 
-    table = op.table
-    predicates = op.predicates
+    table = op.table.op().to_expr()
+    predicates = [pred.op().to_expr() for pred in op.predicates]
     input = translate(
         table.filter(predicates) if predicates else table,
-        compiler,
+        compiler=compiler,
         **kwargs,
     )
 
@@ -927,19 +1010,21 @@ def aggregation(
     # aggregate class we have to sort first, so ibis will use the correct base
     # table when decompiling
     if op.sort_keys:
-        sorts = [translate(key, compiler, **kwargs) for key in op.sort_keys]
+        sorts = [translate(key, compiler=compiler, **kwargs) for key in op.sort_keys]
         input = stalg.Rel(sort=stalg.SortRel(input=input, sorts=sorts))
 
     aggregate = stalg.AggregateRel(
         input=input,
         groupings=[
             stalg.AggregateRel.Grouping(
-                grouping_expressions=[translate(by, compiler, **kwargs)]
+                grouping_expressions=[translate(by, compiler=compiler, **kwargs)]
             )
             for by in op.by
         ],
         measures=[
-            stalg.AggregateRel.Measure(measure=translate(metric, compiler, **kwargs))
+            stalg.AggregateRel.Measure(
+                measure=translate(metric, compiler=compiler, **kwargs)
+            )
             for metric in op.metrics
         ],
     )
@@ -951,22 +1036,23 @@ def aggregation(
 @translate.register(ops.SearchedCase)
 def _simple_searched_case(
     op: ops.SimpleCase | ops.SearchedCase,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     # the field names for an `if_then` are `if` and `else` which means we need
     # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
     _ifs = []
     for case, result in zip(op.cases, op.results):
-        if_expr = case if not hasattr(op, "base") else op.base == case
+        if_expr = case if not hasattr(op, "base") else op.base.op().to_expr() == case
         _if = {
-            "if": translate(if_expr, compiler, **kwargs),
-            "then": translate(result, compiler, **kwargs),
+            "if": translate(if_expr, compiler=compiler, **kwargs),
+            "then": translate(result, compiler=compiler, **kwargs),
         }
         _ifs.append(stalg.Expression.IfThen.IfClause(**_if))
 
-    _else = {"else": translate(op.default, compiler, **kwargs)}
+    _else = {"else": translate(op.default, compiler=compiler, **kwargs)}
 
     return stalg.Expression(if_then=stalg.Expression.IfThen(ifs=_ifs, **_else))
 
@@ -974,17 +1060,18 @@ def _simple_searched_case(
 @translate.register(ops.Where)
 def _where(
     op: ops.Where,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     # the field names for an `if_then` are `if` and `else` which means we need
     # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
     _if = {
-        "if": translate(op.bool_expr, compiler, **kwargs),
-        "then": translate(op.true_expr, compiler, **kwargs),
+        "if": translate(op.bool_expr, compiler=compiler, **kwargs),
+        "then": translate(op.true_expr, compiler=compiler, **kwargs),
     }
-    _else = {"else": translate(op.false_null_expr, compiler, **kwargs)}
+    _else = {"else": translate(op.false_null_expr, compiler=compiler, **kwargs)}
 
     _ifs = [stalg.Expression.IfThen.IfClause(**_if)]
 
@@ -994,14 +1081,17 @@ def _where(
 @translate.register(ops.Contains)
 def _contains(
     op: ops.Contains,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     return stalg.Expression(
         singular_or_list=stalg.Expression.SingularOrList(
-            value=translate(op.value, compiler, **kwargs),
-            options=[translate(value, compiler, **kwargs) for value in op.options],
+            value=translate(op.value, compiler=compiler, **kwargs),
+            options=[
+                translate(value, compiler=compiler, **kwargs) for value in op.options
+            ],
         )
     )
 
@@ -1009,13 +1099,14 @@ def _contains(
 @translate.register(ops.Cast)
 def _cast(
     op: ops.Cast,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     return stalg.Expression(
         cast=stalg.Expression.Cast(
-            type=translate(op.to), input=translate(op.arg, compiler, **kwargs)
+            type=translate(op.to), input=translate(op.arg, compiler=compiler, **kwargs)
         )
     )
 
@@ -1023,17 +1114,22 @@ def _cast(
 @translate.register(ops.ExtractDateField)
 def _extractdatefield(
     op: ops.ExtractDateField,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     # e.g. "ExtractYear" -> "YEAR"
     span = type(op).__name__[len("Extract") :].upper()
     arguments = (
-        stalg.FunctionArgument(value=translate(arg, compiler, **kwargs))
+        stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         for arg in op.args
-        if isinstance(arg, ir.Expr)
+        if isinstance(arg, (ir.Expr, ops.Value))
     )
+    if compiler is None:
+        raise ValueError
+
+    expr = expr if expr is not None else op.to_expr()
 
     scalar_func = stalg.Expression.ScalarFunction(
         function_reference=compiler.function_id(expr),
@@ -1047,14 +1143,21 @@ def _extractdatefield(
 @translate.register(ops.Log)
 def _log(
     op: ops.Log,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    arg = stalg.FunctionArgument(value=translate(op.arg, compiler, **kwargs))
+    if compiler is None:
+        raise ValueError
+
+    expr = expr if expr is not None else op.to_expr()
+    arg = stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
     base = stalg.FunctionArgument(
         value=translate(
-            op.base if op.base is not None else ibis.literal(math.e), compiler, **kwargs
+            op.base if op.base is not None else ibis.literal(math.e),
+            compiler=compiler,
+            **kwargs,
         )
     )
 
@@ -1069,19 +1172,21 @@ def _log(
 @translate.register(ops.FloorDivide)
 def _floordivide(
     op: ops.FloorDivide,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     left, right = op.left, op.right
-    return translate((left / right).floor(), compiler, **kwargs)
+    return translate((left / right).floor(), compiler=compiler, **kwargs)
 
 
 @translate.register(ops.Clip)
 def _clip(
     op: ops.Clip,
-    expr: ir.TableExpr,
-    compiler: SubstraitCompiler,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     arg, lower, upper = op.arg, op.lower, op.upper
@@ -1089,19 +1194,19 @@ def _clip(
     if lower is not None and upper is not None:
         return translate(
             (arg >= lower).ifelse((arg <= upper).ifelse(arg, upper), lower),
-            compiler,
+            compiler=compiler,
             **kwargs,
         )
     elif lower is not None:
         return translate(
             (arg >= lower).ifelse(arg, lower),
-            compiler,
+            compiler=compiler,
             **kwargs,
         )
     elif upper is not None:
         return translate(
             (arg <= upper).ifelse(arg, upper),
-            compiler,
+            compiler=compiler,
             **kwargs,
         )
     raise AssertionError()
