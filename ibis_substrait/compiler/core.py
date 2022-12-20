@@ -87,7 +87,7 @@ class SubstraitCompiler:
         expr_schema = expr.schema()
         rel = stp.PlanRel(
             root=stalg.RelRoot(
-                input=translate(expr.op(), expr, self, **kwargs),
+                input=translate(expr.op(), expr=expr, compiler=self, **kwargs),
                 names=translate(expr_schema).names,
             )
         )
