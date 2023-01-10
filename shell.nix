@@ -11,7 +11,6 @@ let
     git
     jq
     niv
-    nix-linter
     nixpkgs-fmt
     prettierTOML
     protobuf3_20
