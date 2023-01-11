@@ -63,7 +63,7 @@ def q():
         pytest.param(lambda t: t.union(t, distinct=True), id="set_union_distinct"),
     ]
     + [
-        pytest.param(lambda t, method=method: getattr(t, method)(), id=f"set_{method}")
+        pytest.param(lambda t, method=method: getattr(t, method)(t), id=f"set_{method}")
         for method in ("union", "difference", "intersect")
     ],
 )
