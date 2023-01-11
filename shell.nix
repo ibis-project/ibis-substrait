@@ -1,7 +1,6 @@
 { python ? "3.10" }:
 let
   pkgs = import ./nix { };
-  inherit (pkgs) lib;
 
   ibisSubstraitDevEnv = pkgs."ibisSubstraitDevEnv${pythonShortVersion}";
 
@@ -54,7 +53,5 @@ pkgs.mkShell {
     ${(import ./pre-commit.nix).pre-commit-check.shellHook}
   '';
 
-  buildInputs = devDeps ++ [ ibisSubstraitDevEnv genProtos ];
-
-  PYTHONPATH = builtins.toPath ./.;
+  nativeBuildInputs = devDeps ++ [ ibisSubstraitDevEnv genProtos ];
 }

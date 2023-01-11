@@ -25,8 +25,9 @@ import toolz
 from ibis import util
 from ibis.util import to_op_dag
 
-from ..proto.substrait.ibis import algebra_pb2 as stalg
-from ..proto.substrait.ibis import type_pb2 as stt
+from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
+
 from .core import SubstraitCompiler, _get_fields
 
 T = TypeVar("T")
@@ -1103,4 +1104,4 @@ def _clip(
             compiler,
             **kwargs,
         )
-    assert False
+    raise AssertionError()

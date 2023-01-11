@@ -32,7 +32,7 @@ jobs:
           extraPullNames: nix-community,poetry2nix,ibis
 
       - name: commitlint
-        run: nix shell -L -f '<nixpkgs>' commitlint -c commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.sha }} --verbose
+        run: nix run -L 'nixpkgs#commitlint' -- --from=${{ github.event.pull_request.base.sha }} --to=${{ github.sha }} --verbose
   pre-commit:
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +50,6 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community,poetry2nix,ibis
 
-      - run: nix develop --ignore-environment -f shell.nix -c mypy .
       - run: nix develop --ignore-environment -f shell.nix -c pre-commit run --all-files
   nix:
     runs-on: ${{ matrix.os }}
