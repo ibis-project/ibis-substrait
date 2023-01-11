@@ -1,5 +1,6 @@
 let
-  inherit (import ./nix { }) lib;
+  pkgs = import ./nix { };
+  inherit (pkgs) lib;
   sources = import ./nix/sources.nix;
   pre-commit-hooks = import sources.pre-commit-hooks;
   protoExcludePattern = "ibis_substrait/proto/.+\\.py";
@@ -9,24 +10,15 @@ in
   pre-commit-check = pre-commit-hooks.run {
     src = ./.;
     hooks = {
+      ruff = {
+        enable = true;
+        entry = "ruff --force-exclude";
+        types = [ "python" ];
+      };
+      shellcheck.enable = true;
+
       black = {
         enable = true;
-        entry = lib.mkForce "black --check";
-        types = [ "python" ];
-        excludes = [ protoExcludePattern ];
-      };
-
-      flake8 = {
-        enable = true;
-        language = "python";
-        entry = lib.mkForce "flake8";
-        types = [ "python" ];
-        excludes = [ protoExcludePattern ];
-      };
-
-      isort = {
-        enable = true;
-        language = "python";
         excludes = [ protoExcludePattern ];
       };
 
@@ -41,36 +33,25 @@ in
         ];
       };
 
-      nix-linter = {
+      deadnix = {
         enable = true;
-        entry = lib.mkForce "nix-linter";
         excludes = [ nixSourcesPattern ];
+      };
+
+      statix = {
+        enable = true;
+        entry = lib.mkForce "${pkgs.statix}/bin/statix fix";
       };
 
       nixpkgs-fmt = {
         enable = true;
-        entry = lib.mkForce "nixpkgs-fmt --check";
+        entry = lib.mkForce "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
         excludes = [ nixSourcesPattern ];
-      };
-
-      pyupgrade = {
-        enable = true;
-        entry = "pyupgrade --py38-plus";
-        types = [ "python" ];
-        excludes = [ protoExcludePattern ];
-      };
-
-      shellcheck = {
-        enable = true;
-        entry = lib.mkForce "shellcheck";
-        files = "\\.sh$";
-        types_or = lib.mkForce [ ];
       };
 
       shfmt = {
         enable = true;
-        entry = lib.mkForce "shfmt -i 2 -sr -d -s -l";
-        files = "\\.sh$";
+        entry = lib.mkForce "${pkgs.shfmt}/bin/shfmt -i 2 -sr -d -s -l";
       };
     };
   };

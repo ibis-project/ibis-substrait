@@ -1,33 +1,29 @@
 { python ? "3.10" }:
 let
   pkgs = import ./nix { };
-  drv =
-    { poetry2nix
-    , python
-    , lib
-    }: poetry2nix.mkPoetryApplication {
-      inherit python;
+  drv = { poetry2nix, python, lib }: poetry2nix.mkPoetryApplication {
+    inherit python;
 
-      projectDir = ./.;
-      src = lib.cleanSource ./.;
+    projectDir = ./.;
+    src = lib.cleanSource ./.;
 
-      overrides = pkgs.poetry2nix.overrides.withDefaults (
-        import ./poetry-overrides.nix {
-          inherit pkgs;
-          inherit (pkgs) lib stdenv;
-        }
-      );
+    checkGroups = [ "test" ];
+    preferWheels = true;
+    overrides = [
+      (import ./poetry-overrides.nix)
+      pkgs.poetry2nix.defaultPoetryOverrides
+    ];
 
-      checkPhase = ''
-        runHook preCheck
+    checkPhase = ''
+      runHook preCheck
 
-        pytest
+      pytest
 
-        runHook postCheck
-      '';
+      runHook postCheck
+    '';
 
-      pythonImportsCheck = [ "ibis_substrait" ];
-    };
+    pythonImportsCheck = [ "ibis_substrait" ];
+  };
 in
 pkgs.callPackage drv {
   python = pkgs."python${builtins.replaceStrings [ "." ] [ "" ] python}";

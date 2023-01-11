@@ -83,8 +83,10 @@ literal_cases = pytest.mark.parametrize(
             id="string",
         ),
         pytest.param(
-            ibis.literal("⋃"),
-            stalg.Expression(literal=stalg.Expression.Literal(string="⋃")),
+            ibis.literal("⋃"),  # noqa: RUF001
+            stalg.Expression(
+                literal=stalg.Expression.Literal(string="⋃")  # noqa: RUF001
+            ),
             id="unicode_string",
         ),
         # binary

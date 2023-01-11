@@ -9,9 +9,10 @@ import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.types as ir
 
-from ..proto.substrait.ibis import algebra_pb2 as stalg
-from ..proto.substrait.ibis import plan_pb2 as stp
-from ..proto.substrait.ibis.extensions import extensions_pb2 as ste
+from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
+from ibis_substrait.proto.substrait.ibis import plan_pb2 as stp
+from ibis_substrait.proto.substrait.ibis.extensions import extensions_pb2 as ste
+
 from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 
 
@@ -130,7 +131,7 @@ class SubstraitDecompiler:
             if ext.WhichOneof("mapping_type") == "extension_type"
         }
         self.type_variations = {
-            ext.extension_type_variation.type_variation_anchor: ext.extension_type_variation  # noqa: E501
+            ext.extension_type_variation.type_variation_anchor: ext.extension_type_variation
             for ext in plan.extensions
             if ext.WhichOneof("mapping_type") == "extension_type_variation"
         }

@@ -683,7 +683,7 @@ TPC_H = [
         lazy_fixture("tpc_h14"),
         marks=pytest.mark.xfail(
             raises=TypeError,
-            reason="protobuf error resulting subquery (cannot merge Expression and AggregateFunction)",  # noqa
+            reason="protobuf error resulting subquery (cannot merge Expression and AggregateFunction)",
         ),
     ),
     pytest.param(

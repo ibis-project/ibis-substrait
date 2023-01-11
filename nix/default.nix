@@ -1,7 +1,7 @@
 let
   sources = import ./sources.nix;
 in
-{ ... }@args: import sources.nixpkgs ({
+args: import sources.nixpkgs ({
   overlays = [
     (pkgs: _: {
       poetry2nix = import sources.poetry2nix {
@@ -22,12 +22,13 @@ in
         editablePackageSources = {
           ibis_substrait = ../ibis_substrait;
         };
-        overrides = pkgs.poetry2nix.overrides.withDefaults (
-          import ../poetry-overrides.nix {
-            inherit pkgs;
-            inherit (pkgs) lib stdenv;
-          }
-        );
+        groups = [ "dev" "types" "test" ];
+        preferWheels = true;
+        overrides = [
+          (import ../poetry-overrides.nix)
+          pkgs.poetry2nix.defaultPoetryOverrides
+        ];
+
       };
 
       ibisSubstraitDevEnv38 = pkgs.mkPoetryEnv pkgs.python38;
