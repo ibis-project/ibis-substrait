@@ -125,8 +125,22 @@ jobs:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
 
-      - name: run semantic-release
+      - name: Configure git info
+        run: |
+          set -euo pipefail
+
+          # not incredibly important what user we use here
+          #
+          # we're making a commit in a temporary worktree that is thrown away
+          # if the process exits successfully
+          #
+          # git requires user information to make commits
+          git config user.name 'ibis-squawk-bot[bot]'
+          git config user.email 'ibis-squawk-bot[bot]@users.noreply.github.com'
+
+      - name: dry run semantic-release
         run: ./ci/release/dry_run.sh
+
   check-poetry-lock:
     runs-on: ubuntu-latest
     steps:
