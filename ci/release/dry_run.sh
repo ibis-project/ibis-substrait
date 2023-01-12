@@ -1,6 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -I nixpkgs=./nix --pure -p git nodejs nix -i bash
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -8,20 +6,35 @@ curdir="$PWD"
 worktree="$(mktemp -d)"
 branch="$(basename "$worktree")"
 
-git worktree add "$worktree"
+nix develop '.#release' -c git worktree add "$worktree"
 
 function cleanup() {
   cd "$curdir" || exit 1
-  git worktree remove --force "$worktree"
-  git worktree prune
-  git branch -D "$branch"
+  nix develop '.#release' -c git worktree remove --force "$worktree"
+  nix develop '.#release' -c git worktree prune
+  nix develop '.#release' -c git branch -D "$branch"
 }
 
 trap cleanup EXIT ERR
 
 cd "$worktree" || exit 1
 
-npx --yes \
+nix develop '.#release' -c node <<< 'console.log(JSON.stringify(require("./.releaserc.js")))' |
+  nix develop '.#release' -c jq '.plugins |= [.[] | select(.[0] != "@semantic-release/github")]' > .releaserc.json
+
+nix develop '.#release' -c git rm .releaserc.js
+nix develop '.#release' -c git add .releaserc.json
+nix develop '.#release' -c git commit -m 'test: semantic-release dry run' --no-verify --no-gpg-sign
+
+# If this is set then semantic-release will assume the release is running
+# against a PR.
+#
+# Normally this would be fine, except that most of the release process that is
+# useful to test is prevented from running, even in dry-run mode, so we `unset`
+# this variable here and pass `--dry-run` ourselves
+unset GITHUB_ACTIONS
+
+nix develop '.#release' -c npx --yes \
   -p semantic-release \
   -p "@semantic-release/commit-analyzer" \
   -p "@semantic-release/release-notes-generator" \
@@ -33,11 +46,5 @@ npx --yes \
   semantic-release \
   --ci \
   --dry-run \
-  --preset conventionalcommits \
-  --plugins \
-  --analyze-commits "@semantic-release/commit-analyzer" \
-  --generate-notes "@semantic-release/release-notes-generator" \
-  --verify-conditions "@semantic-release/changelog,@semantic-release/exec,@semantic-release/git" \
-  --prepare "@semantic-release/changelog,@semantic-release/exec" \
   --branches "$branch" \
   --repository-url "file://$PWD"

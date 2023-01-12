@@ -1,10 +1,8 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p cacert poetry git nodejs nix -i bash
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-npx --yes \
+nix develop '.#release' -c npx --yes \
   -p semantic-release \
   -p "@semantic-release/commit-analyzer" \
   -p "@semantic-release/release-notes-generator" \

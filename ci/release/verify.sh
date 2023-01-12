@@ -1,14 +1,19 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -I nixpkgs=./nix --pure --keep POETRY_PYPI_TOKEN_PYPI -p git poetry -i bash
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-# verify TOML is sane
-poetry check
+dry_run="${1:-false}"
 
-# verify lock file is consistent with pyproject.toml
-poetry lock --check
+# verify pyproject.toml
+nix develop '.#release' -c poetry check
+
+# verify that the lock file matches pyproject.toml
+#
+# the lock file might not be the most fresh, but that's okay: it need only be
+# consistent with pyproject.toml
+nix develop '.#release' -c poetry lock --check
 
 # verify that we have a token available to push to pypi using set -u
-: "${POETRY_PYPI_TOKEN_PYPI}"
+if [ "${dry_run}" = "false" ]; then
+  : "${POETRY_PYPI_TOKEN_PYPI}"
+fi
