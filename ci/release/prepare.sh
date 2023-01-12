@@ -1,11 +1,15 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p poetry nix -i bash
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
+version="${1}"
+
 # set version
-poetry version "$1"
+nix develop '.#release' -c poetry version "$version"
 
 # build artifacts
-poetry build
+nix develop '.#release' -c poetry build
+
+# ensure that the built wheel has the correct version number
+nix develop '.#release' -c unzip -p "dist/ibis_framework-${version}-py3-none-any.whl" ibis/__init__.py |
+  nix develop '.#release' -c grep -q "__version__ = \"$version\""

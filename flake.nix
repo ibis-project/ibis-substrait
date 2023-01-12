@@ -122,6 +122,17 @@
         ibisSubstrait39 = mkDevShell pkgs.ibisSubstraitDevEnv39;
         ibisSubstrait310 = mkDevShell pkgs.ibisSubstraitDevEnv310;
 
+        release = pkgs.mkShell {
+          name = "release";
+          nativeBuildInputs = with pkgs; [
+            git
+            poetry
+            nodejs
+            unzip
+            gnugrep
+          ];
+        };
+
         default = ibisSubstrait310;
       };
     }
