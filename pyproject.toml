@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ibis-substrait"
-version = "2.18.0"
+version = "2.19.0"
 packages = [{ include = "ibis_substrait" }]
 homepage = "https://github.com/ibis-project/ibis-substrait"
 repository = "https://github.com/ibis-project/ibis-substrait"
