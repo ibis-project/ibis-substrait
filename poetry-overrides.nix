@@ -1,3 +1,3 @@
-_: super: {
-  wheel = super.wheel.override { preferWheel = false; };
+self: super: {
+  sqlalchemy = super.sqlalchemy.override { preferWheel = !self.stdenv.isDarwin; };
 }
