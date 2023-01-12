@@ -6,6 +6,8 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Add": "add",
     "And": "and",
     "Any": "any",
+    "ApproxCountDistinct": "approx_count_distinct",
+    "ApproxMedian": "median",
     "Asin": "asin",
     "Atan": "atan",
     "Atan2": "atan2",
