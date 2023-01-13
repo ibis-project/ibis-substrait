@@ -775,42 +775,7 @@ def selection(
             )
         )
 
-    # TODO: there has to be a better way to get a list of source tables
-    # underlying an expression
-    # TODO: settle on a better source table definition than "PhysicalTable with
-    # a schema"
-    if IBIS_4:
-        # projection / emit
-        selections = [
-            col
-            for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
-            for col in (
-                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
-            )
-        ]
-        source_tables = {
-            t
-            for t in toposort(op).keys()
-            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
-        }
-    else:
-
-        # projection / emit
-        selections = [
-            col
-            for sel in op.selections
-            for col in (
-                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
-            )
-        ]
-        source_tables = {
-            t
-            for t in to_op_dag(op.to_expr()).keys()
-            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
-        }
-
-    mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
-    if selections:
+    if selections := _get_selections(op):
 
         if relation.project.common.ListFields():
             # if there is already an `emit` in RelCommon then we're stacking
@@ -819,6 +784,9 @@ def selection(
             mapping_counter = itertools.count(
                 len(relation.project.common.emit.output_mapping)
             )
+        else:
+            source_tables = _find_parent_tables(op)
+            mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
 
         relation = stalg.Rel(
             project=stalg.ProjectRel(
@@ -858,6 +826,48 @@ def selection(
         )
 
     return relation
+
+
+def _get_selections(op: ops.Selection) -> Sequence[ir.Column]:
+    if IBIS_4:
+        # projection / emit
+        selections = [
+            col
+            for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
+            for col in (
+                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+            )
+        ]
+    else:
+        # projection / emit
+        selections = [
+            col
+            for sel in op.selections
+            for col in (
+                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+            )
+        ]
+
+    return selections
+
+
+def _find_parent_tables(op: ops.Selection) -> set[ir.Table]:
+    # TODO: settle on a better source table definition than "PhysicalTable with
+    # a schema"
+    if IBIS_4:
+        source_tables = {
+            t
+            for t in toposort(op).keys()
+            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
+        }
+    else:
+        source_tables = {
+            t
+            for t in to_op_dag(op.to_expr()).keys()
+            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
+        }
+
+    return source_tables
 
 
 @functools.singledispatch
