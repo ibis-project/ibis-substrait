@@ -31,7 +31,7 @@ duckdb-engine = ">=0.5"
 flake8 = "^6.0.0"
 ipython = "^8.2.0"
 protoletariat = "^2.0.0"
-ruff = "^0.0.218"
+ruff = "^0.0.220"
 
 [tool.poetry.group.types.dependencies]
 mypy = "^0.982"
