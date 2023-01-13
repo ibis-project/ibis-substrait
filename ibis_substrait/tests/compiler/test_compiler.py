@@ -251,6 +251,36 @@ def test_emit_nested_projection_output_mapping(compiler):
     assert result.project.common.emit.output_mapping == [3, 4]
 
 
+def test_aggregate_project_output_mapping(compiler):
+    t = ibis.table(
+        [
+            ("a", "int64"),
+            ("b", "int64"),
+            ("c", "int64"),
+            ("d", "int64"),
+            ("e", "int64"),
+        ],
+        name="t",
+    )
+
+    expr = t.group_by(["a", "b"]).aggregate([t.c.sum().name("sum")]).select("b", "sum")
+
+    result = translate(expr, compiler)
+    assert result.project.common.emit.output_mapping == [3, 4]
+
+    # Select 3 of 5 columns in base table to make sure output mapping reflects
+    # a count from the outputs of the aggregation ('a', 'b', and 'sum')
+    expr = (
+        t.select("a", "b", "c")
+        .group_by(["a", "b"])
+        .aggregate([t.c.sum().name("sum")])
+        .select("b", "sum")
+    )
+
+    result = translate(expr, compiler)
+    assert result.project.common.emit.output_mapping == [3, 4]
+
+
 def test_ibis_schema_to_substrait_schema():
     input = ibis.schema(
         [

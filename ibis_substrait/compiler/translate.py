@@ -777,13 +777,32 @@ def selection(
 
     if selections := _get_selections(op):
 
-        if relation.project.common.ListFields():
-            # if there is already an `emit` in RelCommon then we're stacking
-            # projections and we need to update the output_mapping to refer to
-            # the number of fields present in the most recent emit
-            mapping_counter = itertools.count(
-                len(relation.project.common.emit.output_mapping)
+        rels = [
+            (attr, getattr(relation, attr))
+            for attr in (
+                "aggregate",
+                "cross",
+                "extension_leaf",
+                "extension_multi",
+                "extension_single",
+                "fetch",
+                "filter",
+                "join",
+                "project",
+                "read",
+                "set",
+                "sort",
             )
+        ]
+        for relname, rel in rels:
+            if relname == "aggregate" and rel.measures:
+                mapping_counter = itertools.count(
+                    len(rel.measures) + len(rel.groupings)
+                )
+                break
+            elif output_mapping := rel.common.emit.output_mapping:
+                mapping_counter = itertools.count(len(output_mapping))
+                break
         else:
             source_tables = _find_parent_tables(op)
             mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
