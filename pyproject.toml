@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "ibis-substrait"
 version = "2.19.0"
+build = "build.py"
 packages = [{ include = "ibis_substrait" }]
 homepage = "https://github.com/ibis-project/ibis-substrait"
 repository = "https://github.com/ibis-project/ibis-substrait"
@@ -32,6 +33,7 @@ flake8 = "^6.0.0"
 ipython = "^8.2.0"
 protoletariat = "^2.0.0"
 ruff = "^0.0.220"
+setuptools = "^66.0.0"
 
 [tool.poetry.group.types.dependencies]
 mypy = "^0.982"
@@ -152,7 +154,7 @@ profile = "black"
 skip_glob = ["ibis_substrait/proto/**/*.py"]
 
 [tool.mypy]
-exclude = 'tests/.+\.py'
+exclude = '((tests|docs)/.+|build)\.py'
 ignore_missing_imports = true
 # untyped things
 disallow_untyped_calls = true
@@ -179,5 +181,5 @@ match_dir = "ibis_substrait"
 add_ignore = ["D100", "D101", "D102", "D103", "D104", "D105"]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "setuptools"]
 build-backend = "poetry.core.masonry.api"

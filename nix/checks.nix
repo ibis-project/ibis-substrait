@@ -34,7 +34,7 @@ in
         types = [ "python" ];
         excludes = [
           protoExcludePattern
-          "(tests|docs)/.+\\.py"
+          "((tests|docs)/.+|build)\\.py"
         ];
       };
 
