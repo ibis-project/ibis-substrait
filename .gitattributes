@@ -2,3 +2,4 @@ flake.lock linguist-generated=true
 poetry.lock linguist-generated=true
 ibis_substrait/proto/** linguist-generated=true
 proto/** linguist-generated=true
+ibis_substrait/extensions/** linguist-generated=true
