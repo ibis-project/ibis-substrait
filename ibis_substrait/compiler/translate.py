@@ -33,11 +33,15 @@ IBIS_4 = False
 try:
     from ibis.util import to_op_dag
 
-    # Bit of a hack -- there is no ops.CountStar in Ibis 3.x but to register it
-    # for 4.x below, it can't be undefined here.
+    # There is no ops.CountStar in Ibis 3.x but to register it for 4.x below, it
+    # can't be undefined here.
     # We remap it to ops.Count just to avoid an attribute error, it will never
     # be used to route in Ibis 3.x because it doesn't exist.
     ops.CountStar = ops.Count
+    # ops.ValueOp renamed to ops.Value in Ibix 3.2
+    # We manually add ops.Value here for Ibis 3.0 compatibility
+    if hasattr(ops, "ValueOp"):
+        ops.Value = ops.ValueOp
 except ImportError:
     import warnings
 
