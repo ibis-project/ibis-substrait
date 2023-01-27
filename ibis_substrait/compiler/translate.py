@@ -66,6 +66,8 @@ else:
     # We manually add ops.Value here for Ibis 3.0 compatibility
     if hasattr(ops, "ValueOp"):
         ops.Value = ops.ValueOp
+    if hasattr(ops, "BinaryOp"):
+        ops.Binary = ops.BinaryOp
 
 T = TypeVar("T")
 
@@ -1380,7 +1382,7 @@ def _floor_ceil_cast(
                 stalg.FunctionArgument(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
-                for arg in op.args
+                for arg in op.func_args
                 if isinstance(arg, (ir.Expr, ops.Value))
             ],
         )
@@ -1390,6 +1392,55 @@ def _floor_ceil_cast(
             type=output_type,
             input=input,
             failure_behavior=stalg.Expression.Cast.FAILURE_BEHAVIOR_THROW_EXCEPTION,
+        )
+    )
+
+
+@translate.register(ops.ElementWiseVectorizedUDF)
+def _elementwise_udf(
+    op: ops.ElementWiseVectorizedUDF,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    if compiler is None:
+        raise ValueError
+
+    if compiler.udf_uri is None:
+        raise ValueError(
+            """
+Cannot compile a Substrait plan that contains a UDF unless the
+compiler has a `udf_uri` attached.
+        """
+        )
+
+    # For referring to scalar function within plan use "{op_name}_{udf_name}"
+    # since op_name alone will collide with >1 UDF
+    udf_key = f"{type(op).__name__}_{op.func.__name__}"
+
+    # Explicitly register extension uri
+    extension_uri = compiler.register_extension_uri(compiler.udf_uri)
+
+    # Explicitly register extension function
+    try:
+        func_ext = compiler.function_extensions[udf_key]
+    except KeyError:
+        func_ext = compiler.function_extensions[
+            udf_key
+        ] = compiler.create_extension_function(extension_uri, op.func.__name__)
+
+    return stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
+            function_reference=func_ext.function_anchor,
+            output_type=translate(op.return_type),
+            arguments=[
+                stalg.FunctionArgument(
+                    value=translate(arg, compiler=compiler, **kwargs)
+                )
+                for arg in op.func_args
+                if isinstance(arg, (ir.Expr, ops.Value))
+            ],
         )
     )
 

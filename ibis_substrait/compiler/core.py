@@ -26,15 +26,15 @@ def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
 
 
 class SubstraitCompiler:
-    def __init__(self) -> None:
+    def __init__(self, udf_uri: str | None = None) -> None:
         """Initialize the compiler.
 
         Parameters
         ----------
-        uri
-            The extension URI to use, if any.
+        udf_uri
+            The extension URI to use for looking up registered UDFs, if any.
+            This is highly backend dependent.
         """
-        # start at id 1 because 0 is the default proto value for the type
         self.extension_uris: dict[str, ste.SimpleExtensionURI] = {}
         self.function_extensions: dict[
             str | tuple[Hashable, ...],
@@ -48,11 +48,16 @@ class SubstraitCompiler:
             int,
             ste.SimpleExtensionDeclaration.ExtensionTypeVariation,
         ] = {}
-        # similarly, start at 1 because 0 is the default value for the type
+        # start at 1 because 0 is the default value for the type
         self.id_generator = itertools.count(1)
 
+        self.udf_uri = udf_uri
+
     def function_id(
-        self, *, expr: ir.ValueExpr | None = None, op: ops.Value | None = None
+        self,
+        *,
+        expr: ir.ValueExpr | None = None,
+        op: ops.Value | None = None,
     ) -> int:
         """Create a function mapping for a given expression.
 
@@ -130,22 +135,57 @@ class SubstraitCompiler:
                 f"No matching extension type found for function {op_name} with input types {sigkey}"
             )
 
-        try:
-            extension_uri = self.extension_uris[function_extension.uri]
-        except KeyError:
-            extension_uri = self.extension_uris[
-                function_extension.uri
-            ] = ste.SimpleExtensionURI(
-                # by convention, extension URIs start at 1
-                extension_uri_anchor=len(self.extension_uris) + 1,
-                uri=function_extension.uri,
-            )
+        extension_uri = self.register_extension_uri(function_extension.uri)
 
+        extension_function = self.create_extension_function(extension_uri, op_name)
+
+        return extension_function
+
+    def create_extension_function(
+        self, extension_uri: ste.SimpleExtensionURI, scalar_func: str
+    ) -> ste.SimpleExtensionDeclaration.ExtensionFunction:
+        """Define an extension function with reference to the definition URI.
+
+        Parameters
+        ----------
+        extension_uri
+            A registered SimpleExtensionURI that points to the extension
+            function definition site
+        scalar_func
+            The name of the scalar function
+
+        Returns
+        -------
+        ste.SimpleExtensionDeclaration.ExtensionFunction
+        """
         return ste.SimpleExtensionDeclaration.ExtensionFunction(
             extension_uri_reference=extension_uri.extension_uri_anchor,
             function_anchor=next(self.id_generator),
-            name=op_name,
+            name=scalar_func,
         )
+
+    def register_extension_uri(self, uri: str) -> ste.SimpleExtensionURI:
+        """Create or retrieve the extension URI substrait entry for the given uri.
+
+        Parameters
+        ----------
+        uri
+            The URI pointing to the extension function definition location
+
+        Returns
+        -------
+        ste.SimpleExtensionURI
+        """
+        try:
+            extension_uri = self.extension_uris[uri]
+        except KeyError:
+            extension_uri = self.extension_uris[uri] = ste.SimpleExtensionURI(
+                # by convention, extension URIs start at 1
+                extension_uri_anchor=len(self.extension_uris) + 1,
+                uri=uri,
+            )
+
+        return extension_uri
 
     def compile(self, expr: ir.TableExpr, **kwargs: Any) -> stp.Plan:
         """Construct a Substrait plan from an ibis table expression."""
