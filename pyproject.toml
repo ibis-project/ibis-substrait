@@ -35,6 +35,7 @@ ipython = "^8.2.0"
 protoletariat = "^2.0.0"
 ruff = "^0.0.252"
 setuptools = "^67.0.0"
+types-pyyaml = "^6.0.12.5"
 
 [tool.poetry.group.types.dependencies]
 mypy = "^1.0"
@@ -100,6 +101,7 @@ ignore = [
   "E501",
   "E731",
   "PGH003",
+  "RET503",
   "RET504",
   "RET505",
   "RET506",

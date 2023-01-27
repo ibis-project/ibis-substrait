@@ -129,9 +129,18 @@ def test_translate_table_expansion(compiler):
                         "arguments": [
                             {
                                 "value": {
-                                    "selection": {
-                                        "directReference": {"structField": {}},
-                                        "rootReference": {},
+                                    "cast": {
+                                        "input": {
+                                            "selection": {
+                                                "directReference": {"structField": {}},
+                                                "rootReference": {},
+                                            },
+                                        },
+                                        "type": {
+                                            "i64": {
+                                                "nullability": "NULLABILITY_NULLABLE"
+                                            }
+                                        },
                                     },
                                 },
                             },
@@ -211,7 +220,18 @@ def test_emit_mutate_select_all(compiler):
                                     }
                                 },
                             },
-                            {"value": {"literal": {"i8": 1}}},
+                            {
+                                "value": {
+                                    "cast": {
+                                        "input": {"literal": {"i8": 1}},
+                                        "type": {
+                                            "i64": {
+                                                "nullability": "NULLABILITY_NULLABLE"
+                                            }
+                                        },
+                                    }
+                                }
+                            },
                         ],
                     }
                 },
@@ -263,7 +283,9 @@ def test_aggregate_project_output_mapping(compiler):
         name="t",
     )
 
-    expr = t.group_by(["a", "b"]).aggregate([t.c.sum().name("sum")]).select("b", "sum")
+    expr = (
+        t.group_by(["a", "b"]).aggregate([t.c.sum().name("sum")]).select(["b", "sum"])
+    )
 
     result = translate(expr, compiler)
     assert result.project.common.emit.output_mapping == [3, 4]
@@ -271,10 +293,10 @@ def test_aggregate_project_output_mapping(compiler):
     # Select 3 of 5 columns in base table to make sure output mapping reflects
     # a count from the outputs of the aggregation ('a', 'b', and 'sum')
     expr = (
-        t.select("a", "b", "c")
+        t.select(["a", "b", "c"])
         .group_by(["a", "b"])
         .aggregate([t.c.sum().name("sum")])
-        .select("b", "sum")
+        .select(["b", "sum"])
     )
 
     result = translate(expr, compiler)
