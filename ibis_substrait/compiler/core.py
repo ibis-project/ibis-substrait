@@ -7,13 +7,17 @@ from typing import Any, Hashable, Iterator
 
 import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
+import ibis.expr.operations as ops
 import ibis.expr.types as ir
 
+from ibis_substrait.compiler.mapping import (
+    IBIS_SUBSTRAIT_OP_MAPPING,
+    IBIS_SUBSTRAIT_TYPE_MAPPING,
+    _extension_mapping,
+)
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import plan_pb2 as stp
 from ibis_substrait.proto.substrait.ibis.extensions import extensions_pb2 as ste
-
-from .mapping import IBIS_SUBSTRAIT_OP_MAPPING
 
 
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
@@ -22,7 +26,7 @@ def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
 
 
 class SubstraitCompiler:
-    def __init__(self, uri: str | None = None) -> None:
+    def __init__(self) -> None:
         """Initialize the compiler.
 
         Parameters
@@ -31,11 +35,7 @@ class SubstraitCompiler:
             The extension URI to use, if any.
         """
         # start at id 1 because 0 is the default proto value for the type
-        self.extension_uri = (
-            ste.SimpleExtensionURI(extension_uri_anchor=1)
-            if uri is None
-            else ste.SimpleExtensionURI(extension_uri_anchor=1, uri=uri)
-        )
+        self.extension_uris: dict[str, ste.SimpleExtensionURI] = {}
         self.function_extensions: dict[
             str | tuple[Hashable, ...],
             ste.SimpleExtensionDeclaration.ExtensionFunction,
@@ -52,7 +52,7 @@ class SubstraitCompiler:
         self.id_generator = itertools.count(1)
 
     def function_id(
-        self, *, expr: ir.ValueExpr | None = None, op_name: str | None = None
+        self, *, expr: ir.ValueExpr | None = None, op: ops.Value | None = None
     ) -> int:
         """Create a function mapping for a given expression.
 
@@ -60,8 +60,8 @@ class SubstraitCompiler:
         ----------
         expr
             An ibis expression that produces a value.
-        op_name
-            Passthrough argument to directly specify desired substrait scalar function
+        op
+            Passthrough op to directly specify desired substrait scalar function
 
         Returns
         -------
@@ -69,22 +69,83 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
-        if op_name is None:
+        if op is None:
             op = expr.op() if expr is not None else None
-            op_type = type(op)
-            op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+        op_type = type(op)
+        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
 
         try:
             function_extension = self.function_extensions[op_name]
         except KeyError:
             function_extension = self.function_extensions[
                 op_name
-            ] = ste.SimpleExtensionDeclaration.ExtensionFunction(
-                extension_uri_reference=self.extension_uri.extension_uri_anchor,
-                function_anchor=next(self.id_generator),
-                name=op_name,
-            )
+            ] = self.extension_lookup(op_name, op)
         return function_extension.function_anchor
+
+    def extension_lookup(
+        self,
+        op_name: str,
+        op: ops.Node,
+    ) -> ste.SimpleExtensionDeclaration.ExtensionFunction:
+        if not _extension_mapping.get(op_name, False):
+            raise ValueError(
+                f"No available extension defined for function name {op_name}"
+            )
+
+        anykey = ("any",) * len([arg for arg in op.args if arg is not None])
+
+        # First check if `any` is an option
+        # This function will take arguments of any type
+        # although we still want to check if the number of args is correct
+        function_extension = _extension_mapping[op_name].get(anykey)
+
+        # Then try to look up extension based on input datatypes
+        # Each substrait function defines the types of the inputs and at this
+        # stage we should have performed the appropriate casts to ensure that
+        # argument types match.
+        if function_extension is None:
+            sigkey = tuple(
+                [
+                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.op().output_dtype.name]
+                    for arg in op.args
+                    if arg is not None
+                ]
+            )
+            function_extension = _extension_mapping[op_name].get(sigkey)
+
+        # Then check if extension is variadic
+        # If we're here, then it's possible that we're trying to lookup a valid
+        # signature that looks like ("boolean", "boolean") but we aren't having any
+        # luck because the function is variadic.  In this case, the variadic argument
+        # type is only repeated once, so we try to perform a lookup that way, then
+        # assert, if we find anything, that the function is, indeed, variadic.
+        if function_extension is None:
+            function_extension = _extension_mapping[op_name].get((sigkey[0],))
+            if function_extension is not None:
+                assert function_extension.variadic
+
+        # If it's still None then we're borked.
+        if function_extension is None:
+            raise ValueError(
+                f"No matching extension type found for function {op_name} with input types {sigkey}"
+            )
+
+        try:
+            extension_uri = self.extension_uris[function_extension.uri]
+        except KeyError:
+            extension_uri = self.extension_uris[
+                function_extension.uri
+            ] = ste.SimpleExtensionURI(
+                # by convention, extension URIs start at 1
+                extension_uri_anchor=len(self.extension_uris) + 1,
+                uri=function_extension.uri,
+            )
+
+        return ste.SimpleExtensionDeclaration.ExtensionFunction(
+            extension_uri_reference=extension_uri.extension_uri_anchor,
+            function_anchor=next(self.id_generator),
+            name=op_name,
+        )
 
     def compile(self, expr: ir.TableExpr, **kwargs: Any) -> stp.Plan:
         """Construct a Substrait plan from an ibis table expression."""
@@ -98,7 +159,7 @@ class SubstraitCompiler:
             )
         )
         return stp.Plan(
-            extension_uris=[self.extension_uri],
+            extension_uris=list(self.extension_uris.values()),
             extensions=list(
                 itertools.chain(
                     (

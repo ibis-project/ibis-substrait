@@ -14,7 +14,7 @@ import itertools
 import math
 import operator
 import uuid
-from typing import Any, Iterable, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Iterable, Mapping, MutableMapping, Sequence, TypeVar, Union
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -25,10 +25,19 @@ import toolz
 from ibis import util
 from packaging import version
 
+from ibis_substrait.compiler.core import SubstraitCompiler, _get_fields
+from ibis_substrait.compiler.mapping import (
+    IBIS_SUBSTRAIT_OP_MAPPING,
+    _extension_mapping,
+)
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
-from .core import SubstraitCompiler, _get_fields
+try:
+    from typing import TypeAlias
+except ImportError:
+    # Python <=3.9
+    from typing_extensions import TypeAlias
 
 IBIS_4 = False
 if version.parse(ibis.__version__) >= version.parse("4.0.0"):
@@ -517,12 +526,14 @@ def value_op(
 ) -> stalg.Expression:
     if compiler is None:
         raise ValueError
+    # Check if scalar function is valid for input dtype(s) and insert casts as needed to
+    # make sure inputs are correct.
+    op = _check_and_upcast(op)
     # given the details of `op` -> function id
-    expr = expr if expr is not None else op.to_expr()
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(expr=expr),
-            output_type=translate(expr.type()),
+            function_reference=compiler.function_id(op=op),
+            output_type=translate(op.output_dtype),
             arguments=[
                 stalg.FunctionArgument(
                     value=translate(arg, compiler=compiler, **kwargs)
@@ -1329,7 +1340,7 @@ def _not_exists_subquery(
 
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(op_name="not"),
+            function_reference=compiler.function_id(op=ops.Not(op.to_expr())),
             output_type=translate(op.output_dtype),
             arguments=[
                 stalg.FunctionArgument(
@@ -1381,3 +1392,77 @@ def _floor_ceil_cast(
             failure_behavior=stalg.Expression.Cast.FAILURE_BEHAVIOR_THROW_EXCEPTION,
         )
     )
+
+
+def _check_and_upcast(op: ops.Node) -> ops.Node:
+    """Check that arguments to extension functions have consistent types."""
+    op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+
+    anykey = ("any",) * len([arg for arg in op.args if arg is not None])
+
+    # First check if `any` is an option
+    function_extension = _extension_mapping[op_name].get(anykey)
+
+    # Otherwise, if the types don't match, cast up
+    if function_extension is None:
+        op = _upcast(op)
+
+    return op
+
+
+@functools.singledispatch
+def _upcast(op: ops.Node) -> Any:
+    return op
+
+
+@_upcast.register(ops.Binary)
+def _upcast_bin_op(op: ops.Binary) -> ops.Binary:
+    left, right = op.left.op().output_dtype, op.right.op().output_dtype
+
+    if left == right:
+        return op
+    elif dt.castable(left, right, upcast=True):
+        if IBIS_4:
+            return type(op)(ops.Cast(op.left, to=right), op.right)
+        else:
+            return type(op)(op.left.cast(right), op.right)
+    elif dt.castable(right, left, upcast=True):
+        if IBIS_4:
+            return type(op)(op.left, ops.Cast(op.right, to=left))
+        else:
+            return type(op)(op.left, op.right.cast(left))
+    else:
+        raise TypeError(
+            f"binop {type(op).__name__} called with incompatible types {left=} {right=}"
+        )
+
+
+string_op: TypeAlias = Union[
+    ops.Substring, ops.StrRight, ops.Repeat, ops.StringFind, ops.LPad, ops.RPad
+]
+
+
+@_upcast.register(ops.Substring)
+@_upcast.register(ops.StrRight)
+@_upcast.register(ops.Repeat)
+@_upcast.register(ops.StringFind)
+@_upcast.register(ops.LPad)
+@_upcast.register(ops.RPad)
+def _upcast_string_op(op: string_op) -> string_op:
+    # Substrait wants Int32 for all numeric args to string functions
+    if IBIS_4:
+        casted_args = [
+            ops.Cast(newop, to=dt.Int32())
+            if isinstance(newop.output_dtype, dt.SignedInteger)
+            else newop
+            for newop in op.args
+        ]
+    else:
+        casted_args = [
+            newop.cast(dt.Int32())
+            if isinstance(newop.type(), dt.SignedInteger)
+            else newop
+            for newop in op.args
+        ]
+
+    return type(op)(*casted_args)
