@@ -2,7 +2,9 @@ import operator
 
 import ibis
 import ibis.expr.operations as ops
+import pyarrow as pa
 import pytest
+from packaging.version import parse as vparse
 
 DEFAULT_PREFIX = "https://github.com/substrait-io/substrait/blob/main/extensions"
 
@@ -257,3 +259,33 @@ def test_extension_boolean(compiler, left, right, bin_op, exp_func, exp_uri):
     assert exp_func in scalar_func_names
 
     assert exp_uri in uris
+
+
+def test_extension_udf_compile(compiler):
+    from ibis.udf.vectorized import elementwise
+
+    pc = None
+
+    t = ibis.table([("a", "int")], name="t")
+
+    @elementwise(input_type=["int64"], output_type="int64")
+    def add1(col, ctx=None):
+        return pc.call_function("add", [col, 1], memory_pool=ctx.memory_pool)
+
+    @elementwise(input_type=["int64"], output_type="int64")
+    def sub1(col, ctx=None):
+        return pc.call_function("subtract", [col, 1], memory_pool=ctx.memory_pool)
+
+    query = t.mutate(b=add1(t.a), c=sub1(t.a))
+
+    with pytest.raises(ValueError, match="udf_uri"):
+        plan = compiler.compile(query)
+
+    compiler.udf_uri = "orkbork"
+
+    plan = compiler.compile(query)
+
+    assert plan.extension_uris[0].uri == "orkbork"
+    assert len(plan.extensions) == 2
+    assert plan.extensions[0].extension_function.name == "add1"
+    assert plan.extensions[1].extension_function.name == "sub1"
