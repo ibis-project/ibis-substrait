@@ -24,6 +24,7 @@ python = ">=3.8.1,<4"
 ibis-framework = ">=3"
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
 sqlalchemy = ">=1,<2"
+packaging = ">=21.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.1.0"

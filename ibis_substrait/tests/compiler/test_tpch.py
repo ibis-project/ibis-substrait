@@ -2,7 +2,6 @@ from datetime import date
 
 import ibis
 import pytest
-from packaging import version
 from pytest_lazyfixture import lazy_fixture
 from substrait_validator import Config, check_plan
 
@@ -616,10 +615,6 @@ def tpc_h22(customer, orders):
     return outerq.sort_by(outerq.cntrycode)
 
 
-@pytest.mark.xfail(
-    version.parse("2.1.1") < version.parse(ibis.__version__) <= version.parse("3.0.2"),
-    reason="issue with unbounded decimal precision fixed on ibis-master",
-)
 def test_tpch1(tpc_h01, lineitem, compiler):
     plan = compiler.compile(tpc_h01)
     assert plan.SerializeToString()
@@ -650,7 +645,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h02"),
         marks=pytest.mark.xfail(
-            raises=KeyError, reason="TableArrayView not implemented"
+            raises=AssertionError, reason="Correlated Subquery issues"
         ),
     ),
     lazy_fixture("tpc_h03"),
@@ -662,16 +657,12 @@ TPC_H = [
     ),
     lazy_fixture("tpc_h05"),
     lazy_fixture("tpc_h06"),
-    pytest.param(
-        lazy_fixture("tpc_h07"),
-        marks=pytest.mark.xfail(
-            raises=NotImplementedError, reason="Self reference (view)"
-        ),
-    ),
+    lazy_fixture("tpc_h07"),
     pytest.param(
         lazy_fixture("tpc_h08"),
         marks=pytest.mark.xfail(
-            raises=NotImplementedError, reason="Self reference (view)"
+            raises=TypeError,
+            reason="Aggregates need to be handled differently than they are",
         ),
     ),
     lazy_fixture("tpc_h09"),
@@ -689,15 +680,10 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h15"),
         marks=pytest.mark.xfail(
-            raises=KeyError, reason="TableArrayView not implemented"
+            raises=AssertionError, reason="Correlated Subquery issues"
         ),
     ),
-    pytest.param(
-        lazy_fixture("tpc_h16"),
-        marks=pytest.mark.xfail(
-            raises=TypeError, reason="IntegerColumn is not iterable"
-        ),
-    ),
+    lazy_fixture("tpc_h16"),
     pytest.param(
         lazy_fixture("tpc_h17"),
         marks=pytest.mark.xfail(
@@ -705,19 +691,9 @@ TPC_H = [
             reason="ibis.expr.operations.relations.Aggregation",
         ),
     ),
-    pytest.param(
-        lazy_fixture("tpc_h18"),
-        marks=pytest.mark.xfail(
-            raises=TypeError, reason="IntegerColumn is not iterable"
-        ),
-    ),
+    lazy_fixture("tpc_h18"),
     lazy_fixture("tpc_h19"),
-    pytest.param(
-        lazy_fixture("tpc_h20"),
-        marks=pytest.mark.xfail(
-            raises=TypeError, reason="IntegerColumn is not iterable"
-        ),
-    ),
+    lazy_fixture("tpc_h20"),
     pytest.param(
         lazy_fixture("tpc_h21"),
         marks=pytest.mark.xfail(
@@ -733,10 +709,6 @@ TPC_H = [
 ]
 
 
-@pytest.mark.skipif(
-    version.parse(ibis.__version__) <= version.parse("3.0.0"),
-    reason="TPC queries aren't formatted in an ibis 2.x compatible way",
-)
 @pytest.mark.parametrize(
     "query",
     TPC_H,
@@ -745,10 +717,6 @@ def test_compile(query, compiler):
     _ = compiler.compile(query)
 
 
-@pytest.mark.skipif(
-    version.parse(ibis.__version__) <= version.parse("3.0.0"),
-    reason="TPC queries aren't formatted in an ibis 2.x compatible way",
-)
 @pytest.mark.parametrize(
     "query",
     TPC_H,
