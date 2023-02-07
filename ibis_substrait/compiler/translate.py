@@ -1123,7 +1123,8 @@ def _contains(
         singular_or_list=stalg.Expression.SingularOrList(
             value=translate(op.value, compiler=compiler, **kwargs),
             options=[
-                translate(value, compiler=compiler, **kwargs) for value in op.options
+                translate(value, compiler=compiler, **kwargs)
+                for value in ibis.util.promote_list(op.options)
             ],
         )
     )
