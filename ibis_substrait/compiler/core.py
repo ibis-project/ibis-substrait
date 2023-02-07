@@ -51,13 +51,17 @@ class SubstraitCompiler:
         # similarly, start at 1 because 0 is the default value for the type
         self.id_generator = itertools.count(1)
 
-    def function_id(self, expr: ir.ValueExpr) -> int:
+    def function_id(
+        self, *, expr: ir.ValueExpr | None = None, op_name: str | None = None
+    ) -> int:
         """Create a function mapping for a given expression.
 
         Parameters
         ----------
         expr
             An ibis expression that produces a value.
+        op_name
+            Passthrough argument to directly specify desired substrait scalar function
 
         Returns
         -------
@@ -65,9 +69,11 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
-        op = expr.op()
-        op_type = type(op)
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+        if op_name is None:
+            op = expr.op() if expr is not None else None
+            op_type = type(op)
+            op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+
         try:
             function_extension = self.function_extensions[op_name]
         except KeyError:

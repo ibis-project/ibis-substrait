@@ -521,7 +521,7 @@ def value_op(
     expr = expr if expr is not None else op.to_expr()
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(expr),
+            function_reference=compiler.function_id(expr=expr),
             output_type=translate(expr.type()),
             arguments=[
                 stalg.FunctionArgument(
@@ -550,7 +550,7 @@ def window_op(
     )
     return stalg.Expression(
         window_function=stalg.Expression.WindowFunction(
-            function_reference=compiler.function_id(op.expr),
+            function_reference=compiler.function_id(expr=op.expr),
             partitions=[
                 translate(gb, compiler=compiler, **kwargs) for gb in op.window._group_by
             ],
@@ -584,7 +584,7 @@ def _reduction(
         raise ValueError
     expr = expr if expr is not None else op.to_expr()
     return stalg.AggregateFunction(
-        function_reference=compiler.function_id(expr),
+        function_reference=compiler.function_id(expr=expr),
         arguments=[
             stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
         ],
@@ -613,7 +613,7 @@ def _count(
             stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         )
     return stalg.AggregateFunction(
-        function_reference=compiler.function_id(expr),
+        function_reference=compiler.function_id(expr=expr),
         arguments=translated_args,
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
@@ -1173,7 +1173,7 @@ def _extractdatefield(
     expr = expr if expr is not None else op.to_expr()
 
     scalar_func = stalg.Expression.ScalarFunction(
-        function_reference=compiler.function_id(expr),
+        function_reference=compiler.function_id(expr=expr),
         output_type=translate(expr.type()),
     )
     scalar_func.arguments.add(enum=span)
@@ -1203,7 +1203,7 @@ def _log(
     )
 
     scalar_func = stalg.Expression.ScalarFunction(
-        function_reference=compiler.function_id(expr),
+        function_reference=compiler.function_id(expr=expr),
         output_type=translate(expr.type()),
         arguments=[arg, base],
     )
@@ -1273,3 +1273,74 @@ def _self_reference(
     **kwargs: Any,
 ) -> stalg.Expression:
     return translate(op.table, compiler=compiler, **kwargs)
+
+
+@translate.register(ops.ExistsSubquery)
+def _exists_subquery(
+    op: ops.ExistsSubquery,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    predicates = [pred.op().to_expr() for pred in op.predicates]
+    tuples = stalg.Rel(
+        filter=stalg.FilterRel(
+            input=translate(op.foreign_table, compiler),
+            condition=translate(
+                functools.reduce(operator.and_, predicates),
+                compiler,
+                **kwargs,
+            ),
+        )
+    )
+
+    return stalg.Expression(
+        subquery=stalg.Expression.Subquery(
+            set_predicate=stalg.Expression.Subquery.SetPredicate(
+                predicate_op=stalg.Expression.Subquery.SetPredicate.PREDICATE_OP_EXISTS,
+                tuples=tuples,
+            )
+        )
+    )
+
+
+@translate.register(ops.NotExistsSubquery)
+def _not_exists_subquery(
+    op: ops.NotExistsSubquery,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    assert compiler is not None
+    predicates = [pred.op().to_expr() for pred in op.predicates]
+    tuples = stalg.Rel(
+        filter=stalg.FilterRel(
+            input=translate(op.foreign_table, compiler),
+            condition=translate(
+                functools.reduce(operator.and_, predicates),
+                compiler,
+                **kwargs,
+            ),
+        )
+    )
+
+    return stalg.Expression(
+        scalar_function=stalg.Expression.ScalarFunction(
+            function_reference=compiler.function_id(op_name="not"),
+            output_type=translate(op.output_dtype),
+            arguments=[
+                stalg.FunctionArgument(
+                    value=stalg.Expression(
+                        subquery=stalg.Expression.Subquery(
+                            set_predicate=stalg.Expression.Subquery.SetPredicate(
+                                predicate_op=stalg.Expression.Subquery.SetPredicate.PREDICATE_OP_EXISTS,
+                                tuples=tuples,
+                            )
+                        )
+                    )
+                )
+            ],
+        )
+    )
