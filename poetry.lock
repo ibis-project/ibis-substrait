@@ -771,7 +771,7 @@ files = [
 name = "packaging"
 version = "23.0"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1598,4 +1598,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "2364a9177a387d7cdb3075a66a0038d1989d27575bd619d2b5360877bf179454"
+content-hash = "5327a81c125b00b40ca5d6674c51a09bf8fd3a082b65b79d20aa5532b90c50cd"

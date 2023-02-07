@@ -14,7 +14,7 @@ import itertools
 import math
 import operator
 import uuid
-from typing import Any, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Iterable, Mapping, MutableMapping, Sequence, TypeVar
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -23,6 +23,7 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import toolz
 from ibis import util
+from packaging import version
 
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
@@ -30,7 +31,21 @@ from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 from .core import SubstraitCompiler, _get_fields
 
 IBIS_4 = False
-try:
+if version.parse(ibis.__version__) >= version.parse("4.0.0"):
+    IBIS_4 = True
+
+
+if IBIS_4:
+    import warnings
+
+    from ibis.common.graph import toposort
+
+    warnings.filterwarnings(
+        "ignore",
+        message="`Node.op` is deprecated",
+        category=FutureWarning,
+    )
+else:
     from ibis.util import to_op_dag
 
     # There is no ops.CountStar in Ibis 3.x but to register it for 4.x below, it
@@ -42,18 +57,6 @@ try:
     # We manually add ops.Value here for Ibis 3.0 compatibility
     if hasattr(ops, "ValueOp"):
         ops.Value = ops.ValueOp
-except ImportError:
-    import warnings
-
-    from ibis.common.graph import toposort
-
-    warnings.filterwarnings(
-        "ignore",
-        message="`Node.op` is deprecated",
-        category=FutureWarning,
-    )
-
-    IBIS_4 = True
 
 T = TypeVar("T")
 
@@ -1119,12 +1122,16 @@ def _contains(
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
+    options = (
+        op.options
+        if isinstance(op.options, Iterable)
+        else ibis.util.promote_list(op.options)
+    )
     return stalg.Expression(
         singular_or_list=stalg.Expression.SingularOrList(
             value=translate(op.value, compiler=compiler, **kwargs),
             options=[
-                translate(value, compiler=compiler, **kwargs)
-                for value in ibis.util.promote_list(op.options)
+                translate(value, compiler=compiler, **kwargs) for value in options
             ],
         )
     )
@@ -1244,3 +1251,25 @@ def _clip(
             **kwargs,
         )
     raise AssertionError()
+
+
+@translate.register(ops.TableArrayView)
+def _table_array_view(
+    op: ops.TableArrayView,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    return translate(op.table, compiler=compiler, **kwargs)
+
+
+@translate.register(ops.SelfReference)
+def _self_reference(
+    op: ops.SelfReference,
+    expr: ir.TableExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.Expression:
+    return translate(op.table, compiler=compiler, **kwargs)
