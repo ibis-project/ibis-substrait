@@ -649,12 +649,7 @@ TPC_H = [
         ),
     ),
     lazy_fixture("tpc_h03"),
-    pytest.param(
-        lazy_fixture("tpc_h04"),
-        marks=pytest.mark.xfail(
-            raises=KeyError, reason="ExistsSubquery not implemented"
-        ),
-    ),
+    lazy_fixture("tpc_h04"),
     lazy_fixture("tpc_h05"),
     lazy_fixture("tpc_h06"),
     lazy_fixture("tpc_h07"),
@@ -694,18 +689,8 @@ TPC_H = [
     lazy_fixture("tpc_h18"),
     lazy_fixture("tpc_h19"),
     lazy_fixture("tpc_h20"),
-    pytest.param(
-        lazy_fixture("tpc_h21"),
-        marks=pytest.mark.xfail(
-            raises=KeyError, reason="ExistsSubquery not implemented"
-        ),
-    ),
-    pytest.param(
-        lazy_fixture("tpc_h22"),
-        marks=pytest.mark.xfail(
-            raises=KeyError, reason="NotExistsSubquery not implemented"
-        ),
-    ),
+    lazy_fixture("tpc_h21"),
+    lazy_fixture("tpc_h22"),
 ]
 
 
