@@ -11,5 +11,5 @@ nix develop '.#release' -c poetry version "$version"
 nix develop '.#release' -c poetry build
 
 # ensure that the built wheel has the correct version number
-nix develop '.#release' -c unzip -p "dist/ibis_framework-${version}-py3-none-any.whl" ibis/__init__.py |
+nix develop '.#release' -c unzip -p "dist/ibis_substrait-${version}*.whl" ibis_substrait/__init__.py |
   nix develop '.#release' -c grep -q "__version__ = \"$version\""
