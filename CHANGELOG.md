@@ -1,6 +1,32 @@
 Release Notes
 ---
 
+## [2.20.0](https://github.com/ibis-project/ibis-substrait/compare/v2.19.0...v2.20.0) (2023-02-08)
+
+
+### Features
+
+* adding substrait mappings for ibis approx ops ([310e3e6](https://github.com/ibis-project/ibis-substrait/commit/310e3e6d47635f4f79a78d3090ae11a4816ddfec))
+* **ops:** add rules for ops.TableArrayView and ops.SelfReference ([49a980e](https://github.com/ibis-project/ibis-substrait/commit/49a980e4f3e08eac599ddae93949223a2c8fb025))
+
+
+### Bug Fixes
+
+* **contains:** allow for isin ops to have a single option ([f0bcbe9](https://github.com/ibis-project/ibis-substrait/commit/f0bcbe93206c5ab7185a3ebd3af9fc203c342f98))
+* **emit:** check all rel types for existing output mapping ([51d69a9](https://github.com/ibis-project/ibis-substrait/commit/51d69a9c54581dfabd489978474a69629bbe65ff))
+* **ibis-3.x:** add alias for mapping ops.Value -> ops.ValueOp ([ed78bdf](https://github.com/ibis-project/ibis-substrait/commit/ed78bdf3213ebcc53c6325d2a3897afaece1c2e8))
+* **substrait:** regenerate proto stubs ([f101aab](https://github.com/ibis-project/ibis-substrait/commit/f101aabdae236fb4860955e37225e69a61815ecc))
+
+
+### Refactors
+
+* clean up output mapping in ops.Selection dispatch ([d27e8f0](https://github.com/ibis-project/ibis-substrait/commit/d27e8f00aad12d36f4ead30d83df8ebc4b433e55))
+
+
+### Documentation
+
+* **README:** add simple usage example to README ([b3fa3ac](https://github.com/ibis-project/ibis-substrait/commit/b3fa3acc1e2ccce31ada38e1176ba673a5c9a1b3))
+
 ## [2.19.0](https://github.com/ibis-project/ibis-substrait/compare/v2.18.0...v2.19.0) (2023-01-12)
 
 
