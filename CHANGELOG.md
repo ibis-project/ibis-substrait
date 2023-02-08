@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.21.1](https://github.com/ibis-project/ibis-substrait/compare/v2.21.0...v2.21.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* **columns:** remove use of removed (upstream) get_columns ([4d5e991](https://github.com/ibis-project/ibis-substrait/commit/4d5e99146d1b57255029c968367eb1f8cd5843dc))
+
 ## [2.21.0](https://github.com/ibis-project/ibis-substrait/compare/v2.20.0...v2.21.0) (2023-02-08)
 
 
