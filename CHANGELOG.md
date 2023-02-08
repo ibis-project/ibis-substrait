@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.21.0](https://github.com/ibis-project/ibis-substrait/compare/v2.20.0...v2.21.0) (2023-02-08)
+
+
+### Features
+
+* **subquery:** add support for ExistsSubquery and NotExistsSubquery ([f564018](https://github.com/ibis-project/ibis-substrait/commit/f5640189734cec4de5a17f3332997769e2958998))
+
 ## [2.20.0](https://github.com/ibis-project/ibis-substrait/compare/v2.19.0...v2.20.0) (2023-02-08)
 
 
