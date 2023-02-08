@@ -861,7 +861,9 @@ def _get_selections(op: ops.Selection) -> Sequence[ir.Column]:
             col
             for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
             for col in (
-                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]
+                map(sel.__getitem__, sel.columns)
+                if isinstance(sel, ir.TableExpr)
+                else [sel]
             )
         ]
     else:
