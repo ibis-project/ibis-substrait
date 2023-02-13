@@ -16,7 +16,7 @@ in
       statix.enable = true;
       nixpkgs-fmt.enable = true;
 
-      ruff = {
+      ruffnix = {
         enable = true;
         entry = "ruff --force-exclude";
         types = [ "python" ];
