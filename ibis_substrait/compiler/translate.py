@@ -783,7 +783,6 @@ def selection(
         )
 
     if selections := _get_selections(op):
-
         rels = [
             (attr, getattr(relation, attr))
             for attr in (

@@ -251,7 +251,6 @@ def tpc_h08(
 
 @pytest.fixture
 def tpc_h09(part, supplier, lineitem, partsupp, orders, nation):
-
     q = lineitem
     q = q.join(supplier, supplier.s_suppkey == lineitem.l_suppkey)
     q = q.join(

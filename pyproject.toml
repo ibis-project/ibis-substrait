@@ -27,7 +27,7 @@ sqlalchemy = ">=1,<2"
 packaging = ">=21.3"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.1.0"
+black = "^23.0.0"
 duckdb = ">=0.4.0"
 duckdb-engine = ">=0.5"
 flake8 = "^6.0.0"
