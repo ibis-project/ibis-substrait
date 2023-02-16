@@ -33,7 +33,7 @@ duckdb-engine = ">=0.5"
 flake8 = "^6.0.0"
 ipython = "^8.2.0"
 protoletariat = "^2.0.0"
-ruff = "^0.0.220"
+ruff = "^0.0.247"
 setuptools = "^67.0.0"
 
 [tool.poetry.group.types.dependencies]
