@@ -37,7 +37,7 @@ ruff = "^0.0.247"
 setuptools = "^67.0.0"
 
 [tool.poetry.group.types.dependencies]
-mypy = "^0.982"
+mypy = "^1.0"
 mypy-protobuf = "^3.0.0"
 types-protobuf = "^3.18.1"
 types-pytz = "^2022.0.0"
