@@ -1097,6 +1097,8 @@ class Rel(google.protobuf.message.Message):
     EXTENSION_MULTI_FIELD_NUMBER: builtins.int
     EXTENSION_LEAF_FIELD_NUMBER: builtins.int
     CROSS_FIELD_NUMBER: builtins.int
+    HASH_JOIN_FIELD_NUMBER: builtins.int
+    MERGE_JOIN_FIELD_NUMBER: builtins.int
 
     @property
     def read(self) -> global___ReadRel:
@@ -1146,16 +1148,24 @@ class Rel(google.protobuf.message.Message):
     def cross(self) -> global___CrossRel:
         ...
 
-    def __init__(self, *, read: global___ReadRel | None=..., filter: global___FilterRel | None=..., fetch: global___FetchRel | None=..., aggregate: global___AggregateRel | None=..., sort: global___SortRel | None=..., join: global___JoinRel | None=..., project: global___ProjectRel | None=..., set: global___SetRel | None=..., extension_single: global___ExtensionSingleRel | None=..., extension_multi: global___ExtensionMultiRel | None=..., extension_leaf: global___ExtensionLeafRel | None=..., cross: global___CrossRel | None=...) -> None:
+    @property
+    def hash_join(self) -> global___HashJoinRel:
+        """Physical relations"""
+
+    @property
+    def merge_join(self) -> global___MergeJoinRel:
         ...
 
-    def HasField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> builtins.bool:
+    def __init__(self, *, read: global___ReadRel | None=..., filter: global___FilterRel | None=..., fetch: global___FetchRel | None=..., aggregate: global___AggregateRel | None=..., sort: global___SortRel | None=..., join: global___JoinRel | None=..., project: global___ProjectRel | None=..., set: global___SetRel | None=..., extension_single: global___ExtensionSingleRel | None=..., extension_multi: global___ExtensionMultiRel | None=..., extension_leaf: global___ExtensionLeafRel | None=..., cross: global___CrossRel | None=..., hash_join: global___HashJoinRel | None=..., merge_join: global___MergeJoinRel | None=...) -> None:
         ...
 
-    def ClearField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'join', b'join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> None:
+    def HasField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'hash_join', b'hash_join', 'join', b'join', 'merge_join', b'merge_join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> builtins.bool:
         ...
 
-    def WhichOneof(self, oneof_group: typing_extensions.Literal['rel_type', b'rel_type']) -> typing_extensions.Literal['read', 'filter', 'fetch', 'aggregate', 'sort', 'join', 'project', 'set', 'extension_single', 'extension_multi', 'extension_leaf', 'cross'] | None:
+    def ClearField(self, field_name: typing_extensions.Literal['aggregate', b'aggregate', 'cross', b'cross', 'extension_leaf', b'extension_leaf', 'extension_multi', b'extension_multi', 'extension_single', b'extension_single', 'fetch', b'fetch', 'filter', b'filter', 'hash_join', b'hash_join', 'join', b'join', 'merge_join', b'merge_join', 'project', b'project', 'read', b'read', 'rel_type', b'rel_type', 'set', b'set', 'sort', b'sort']) -> None:
+        ...
+
+    def WhichOneof(self, oneof_group: typing_extensions.Literal['rel_type', b'rel_type']) -> typing_extensions.Literal['read', 'filter', 'fetch', 'aggregate', 'sort', 'join', 'project', 'set', 'extension_single', 'extension_multi', 'extension_leaf', 'cross', 'hash_join', 'merge_join'] | None:
         ...
 global___Rel = Rel
 
@@ -1405,6 +1415,168 @@ class WriteRel(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal['write_type', b'write_type']) -> typing_extensions.Literal['named_table', 'extension_table'] | None:
         ...
 global___WriteRel = WriteRel
+
+class HashJoinRel(google.protobuf.message.Message):
+    """The hash equijoin join operator will build a hash table out of the right input based on a set of join keys.
+    It will then probe that hash table for incoming inputs, finding matches.
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _JoinType:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _JoinTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[HashJoinRel._JoinType.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        JOIN_TYPE_UNSPECIFIED: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_INNER: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_OUTER: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT_SEMI: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT_SEMI: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT_ANTI: HashJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT_ANTI: HashJoinRel._JoinType.ValueType
+
+    class JoinType(_JoinType, metaclass=_JoinTypeEnumTypeWrapper):
+        ...
+    JOIN_TYPE_UNSPECIFIED: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_INNER: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_OUTER: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT_SEMI: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT_SEMI: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT_ANTI: HashJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT_ANTI: HashJoinRel.JoinType.ValueType
+    COMMON_FIELD_NUMBER: builtins.int
+    LEFT_FIELD_NUMBER: builtins.int
+    RIGHT_FIELD_NUMBER: builtins.int
+    LEFT_KEYS_FIELD_NUMBER: builtins.int
+    RIGHT_KEYS_FIELD_NUMBER: builtins.int
+    POST_JOIN_FILTER_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
+    ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+
+    @property
+    def common(self) -> global___RelCommon:
+        ...
+
+    @property
+    def left(self) -> global___Rel:
+        ...
+
+    @property
+    def right(self) -> global___Rel:
+        ...
+
+    @property
+    def left_keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression.FieldReference]:
+        ...
+
+    @property
+    def right_keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression.FieldReference]:
+        ...
+
+    @property
+    def post_join_filter(self) -> global___Expression:
+        ...
+    type: global___HashJoinRel.JoinType.ValueType
+
+    @property
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
+        ...
+
+    def __init__(self, *, common: global___RelCommon | None=..., left: global___Rel | None=..., right: global___Rel | None=..., left_keys: collections.abc.Iterable[global___Expression.FieldReference] | None=..., right_keys: collections.abc.Iterable[global___Expression.FieldReference] | None=..., post_join_filter: global___Expression | None=..., type: global___HashJoinRel.JoinType.ValueType=..., advanced_extension: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'left', b'left', 'post_join_filter', b'post_join_filter', 'right', b'right']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'left', b'left', 'left_keys', b'left_keys', 'post_join_filter', b'post_join_filter', 'right', b'right', 'right_keys', b'right_keys', 'type', b'type']) -> None:
+        ...
+global___HashJoinRel = HashJoinRel
+
+class MergeJoinRel(google.protobuf.message.Message):
+    """The merge equijoin does a join by taking advantage of two sets that are sorted on the join keys.
+    This allows the join operation to be done in a streaming fashion.
+    """
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    class _JoinType:
+        ValueType = typing.NewType('ValueType', builtins.int)
+        V: typing_extensions.TypeAlias = ValueType
+
+    class _JoinTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[MergeJoinRel._JoinType.ValueType], builtins.type):
+        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+        JOIN_TYPE_UNSPECIFIED: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_INNER: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_OUTER: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT_SEMI: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT_SEMI: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_LEFT_ANTI: MergeJoinRel._JoinType.ValueType
+        JOIN_TYPE_RIGHT_ANTI: MergeJoinRel._JoinType.ValueType
+
+    class JoinType(_JoinType, metaclass=_JoinTypeEnumTypeWrapper):
+        ...
+    JOIN_TYPE_UNSPECIFIED: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_INNER: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_OUTER: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT_SEMI: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT_SEMI: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_LEFT_ANTI: MergeJoinRel.JoinType.ValueType
+    JOIN_TYPE_RIGHT_ANTI: MergeJoinRel.JoinType.ValueType
+    COMMON_FIELD_NUMBER: builtins.int
+    LEFT_FIELD_NUMBER: builtins.int
+    RIGHT_FIELD_NUMBER: builtins.int
+    LEFT_KEYS_FIELD_NUMBER: builtins.int
+    RIGHT_KEYS_FIELD_NUMBER: builtins.int
+    POST_JOIN_FILTER_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
+    ADVANCED_EXTENSION_FIELD_NUMBER: builtins.int
+
+    @property
+    def common(self) -> global___RelCommon:
+        ...
+
+    @property
+    def left(self) -> global___Rel:
+        ...
+
+    @property
+    def right(self) -> global___Rel:
+        ...
+
+    @property
+    def left_keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression.FieldReference]:
+        ...
+
+    @property
+    def right_keys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Expression.FieldReference]:
+        ...
+
+    @property
+    def post_join_filter(self) -> global___Expression:
+        ...
+    type: global___MergeJoinRel.JoinType.ValueType
+
+    @property
+    def advanced_extension(self) -> substrait.ibis.extensions.extensions_pb2.AdvancedExtension:
+        ...
+
+    def __init__(self, *, common: global___RelCommon | None=..., left: global___Rel | None=..., right: global___Rel | None=..., left_keys: collections.abc.Iterable[global___Expression.FieldReference] | None=..., right_keys: collections.abc.Iterable[global___Expression.FieldReference] | None=..., post_join_filter: global___Expression | None=..., type: global___MergeJoinRel.JoinType.ValueType=..., advanced_extension: substrait.ibis.extensions.extensions_pb2.AdvancedExtension | None=...) -> None:
+        ...
+
+    def HasField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'left', b'left', 'post_join_filter', b'post_join_filter', 'right', b'right']) -> builtins.bool:
+        ...
+
+    def ClearField(self, field_name: typing_extensions.Literal['advanced_extension', b'advanced_extension', 'common', b'common', 'left', b'left', 'left_keys', b'left_keys', 'post_join_filter', b'post_join_filter', 'right', b'right', 'right_keys', b'right_keys', 'type', b'type']) -> None:
+        ...
+global___MergeJoinRel = MergeJoinRel
 
 class FunctionArgument(google.protobuf.message.Message):
     """The argument of a function"""

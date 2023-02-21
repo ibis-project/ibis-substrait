@@ -47,8 +47,8 @@ in
   substrait = final.fetchFromGitHub {
     owner = "substrait-io";
     repo = "substrait";
-    rev = "1a23f3bebdf6b273c2032b9906c77441a176da68";
-    sha256 = "9l7hztGn7PJSs10oePvtkFuZ6EZOz4zC/GTy+zHwc4c=";
+    rev = "335a4dc74ccb3ef88769878d36c35e511e47ef70";
+    sha256 = "q4kZBObYCgPSoxOAJAHuPrKcm0T+rWqRqUibHidtfPs=";
   };
 
   ibisSubstraitDevEnv38 = mkPoetryEnv final.python38;
