@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.22.0](https://github.com/ibis-project/ibis-substrait/compare/v2.21.1...v2.22.0) (2023-02-22)
+
+
+### Features
+
+* **substrait:** bump substrait version to 0.24.0 ([54b1ebd](https://github.com/ibis-project/ibis-substrait/commit/54b1ebdffa5c679c75cbee84a287babcf5acbc01))
+
 ## [2.21.1](https://github.com/ibis-project/ibis-substrait/compare/v2.21.0...v2.21.1) (2023-02-08)
 
 
