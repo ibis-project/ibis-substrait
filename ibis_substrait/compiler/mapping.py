@@ -60,6 +60,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "RegexReplace": "regexp_replace",
     "Repeat": "repeat",
     "Reverse": "reverse",
+    "Round": "round",
     "RPad": "rpad",
     "RStrip": "rtrim",
     "Sign": "sign",
