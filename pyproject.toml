@@ -141,7 +141,9 @@ filterwarnings = [
   # ignore groupby deprecation while we still support 3.x
   "ignore:`Table.groupby` is deprecated:FutureWarning",
   # ignore sqlalchemy 2.0 warnings (they're upstream in ibis)
-  "ignore: Deprecated API features detected:sqlalchemy.exc.RemovedIn20Warning"
+  "ignore: Deprecated API features detected:sqlalchemy.exc.RemovedIn20Warning",
+  # ignore struct pairs deprecation while we still support 3.x
+  "ignore: `Struct.pairs` is deprecated:FutureWarning"
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]

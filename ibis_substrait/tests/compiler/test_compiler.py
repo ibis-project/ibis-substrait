@@ -44,7 +44,7 @@ def test_aggregation_with_sort(t, compiler):
     expr = (
         t.group_by(name_len=lambda t: t.full_name.length())
         .aggregate(max_age=t.age.max(), min_age=t.age.min())
-        .sort_by("ts")
+        .sort_by(t.ts)
         .filter(lambda t: t.name_len > 3)
     )
     result = translate(expr, compiler)
