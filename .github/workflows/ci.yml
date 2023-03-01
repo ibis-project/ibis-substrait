@@ -103,7 +103,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: pip3 install poetry
+      - run: pip3 install 'poetry<1.4'
       - run: poetry install --sync
       - run: poetry run pip install ibis-framework==${{ matrix.ibis-version }}
       - run: poetry run pytest
@@ -152,7 +152,7 @@ jobs:
           python-version: "3.x"
 
       - name: install poetry
-        run: pip3 install poetry
+        run: pip3 install 'poetry<1.4'
 
       - name: verify lockfile
         run: poetry lock --check
