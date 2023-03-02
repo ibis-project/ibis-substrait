@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.23.0](https://github.com/ibis-project/ibis-substrait/compare/v2.22.0...v2.23.0) (2023-03-02)
+
+
+### Features
+
+* add substrait mappings for bitwise ops ([92911da](https://github.com/ibis-project/ibis-substrait/commit/92911dae02b98f29dd46f8680c0eaee3aee5789b))
+
 ## [2.22.0](https://github.com/ibis-project/ibis-substrait/compare/v2.21.1...v2.22.0) (2023-02-22)
 
 
