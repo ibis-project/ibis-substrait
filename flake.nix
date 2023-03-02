@@ -96,9 +96,9 @@
     in
     rec {
       packages = {
-        inherit (pkgs) ibisSubstrait38 ibisSubstrait39 ibisSubstrait310;
+        inherit (pkgs) ibisSubstrait38 ibisSubstrait39 ibisSubstrait310 ibisSubstrait311;
 
-        default = pkgs.ibisSubstrait310;
+        default = pkgs.ibisSubstrait311;
       };
 
       checks = import ./nix/checks.nix inputs system;
@@ -108,6 +108,7 @@
         ibisSubstrait38 = mkDevShell pkgs.ibisSubstraitDevEnv38;
         ibisSubstrait39 = mkDevShell pkgs.ibisSubstraitDevEnv39;
         ibisSubstrait310 = mkDevShell pkgs.ibisSubstraitDevEnv310;
+        ibisSubstrait311 = mkDevShell pkgs.ibisSubstraitDevEnv311;
 
         release = pkgs.mkShell {
           name = "release";
@@ -120,7 +121,7 @@
           ];
         };
 
-        default = ibisSubstrait310;
+        default = ibisSubstrait311;
       };
     }
   );
