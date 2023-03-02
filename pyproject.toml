@@ -35,7 +35,6 @@ ipython = "^8.2.0"
 protoletariat = "^2.0.0"
 ruff = "^0.0.252"
 setuptools = "^67.0.0"
-types-pyyaml = "^6.0.12.5"
 
 [tool.poetry.group.types.dependencies]
 mypy = "^1.0"
@@ -53,7 +52,7 @@ pytest-randomly = "^3.10.1"
 pytest-lazy-fixture = "^0.6.3"
 pytz = "^2022.1"
 substrait-validator = "^0.0.11"
-packaging = ">=21.3"
+packaging = "^23.0"
 pathspec = "0.11.0"
 
 [tool.ruff]
@@ -102,7 +101,6 @@ ignore = [
   "E501",
   "E731",
   "PGH003",
-  "RET503",
   "RET504",
   "RET505",
   "RET506",
@@ -146,7 +144,10 @@ filterwarnings = [
   # ignore sqlalchemy 2.0 warnings (they're upstream in ibis)
   "ignore: Deprecated API features detected:sqlalchemy.exc.RemovedIn20Warning",
   # ignore struct pairs deprecation while we still support 3.x
-  "ignore: `Struct.pairs` is deprecated:FutureWarning"
+  "ignore: `Struct.pairs` is deprecated:FutureWarning",
+  # ignore importlib.resources.path deprecation while 3.8 is still supported
+  # we'll drop 3.8 before we add support for 3.12, then we can handle this
+  "ignore: path is deprecated:DeprecationWarning"
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]
