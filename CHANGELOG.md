@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.24.0](https://github.com/ibis-project/ibis-substrait/compare/v2.23.0...v2.24.0) (2023-03-02)
+
+
+### Features
+
+* **round:** add ops mapping for `round` scalar func ([3f4b5a7](https://github.com/ibis-project/ibis-substrait/commit/3f4b5a7431458c21c2311e62d58b7026cb837143))
+
 ## [2.23.0](https://github.com/ibis-project/ibis-substrait/compare/v2.22.0...v2.23.0) (2023-03-02)
 
 
