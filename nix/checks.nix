@@ -28,7 +28,7 @@ in
         excludes = [ protoExcludePattern ];
       };
 
-      mypy = {
+      mypynix = {
         enable = true;
         entry = "mypy";
         types = [ "python" ];
