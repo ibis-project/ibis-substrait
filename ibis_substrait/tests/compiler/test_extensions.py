@@ -2,9 +2,7 @@ import operator
 
 import ibis
 import ibis.expr.operations as ops
-import pyarrow as pa
 import pytest
-from packaging.version import parse as vparse
 
 DEFAULT_PREFIX = "https://github.com/substrait-io/substrait/blob/main/extensions"
 
