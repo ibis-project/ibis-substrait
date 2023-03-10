@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.24.1](https://github.com/ibis-project/ibis-substrait/compare/v2.24.0...v2.24.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* cast floor and ceil to integer types to workaround acero ([0d52d4d](https://github.com/ibis-project/ibis-substrait/commit/0d52d4d65bdf5094e3c82ed3e1ff3948c16ab53f))
+
 ## [2.24.0](https://github.com/ibis-project/ibis-substrait/compare/v2.23.0...v2.24.0) (2023-03-02)
 
 
