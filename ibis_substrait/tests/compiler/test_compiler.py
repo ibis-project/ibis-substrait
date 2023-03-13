@@ -130,6 +130,7 @@ def test_translate_table_expansion(compiler):
                             {
                                 "value": {
                                     "cast": {
+                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION",
                                         "input": {
                                             "selection": {
                                                 "directReference": {"structField": {}},
@@ -223,6 +224,7 @@ def test_emit_mutate_select_all(compiler):
                             {
                                 "value": {
                                     "cast": {
+                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION",
                                         "input": {"literal": {"i8": 1}},
                                         "type": {
                                             "i64": {
