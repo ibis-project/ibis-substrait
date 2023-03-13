@@ -126,6 +126,28 @@ jobs:
       - run: poetry install --sync
       - run: poetry run pip install 'ibis-framework==4.1'
       - run: poetry run pytest
+  poetry_ibis_pyarrow_nightly:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        python-version:
+          - "3.8"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pip3 install 'poetry<1.4'
+      - run: poetry install --sync
+      - run: poetry run pip install 'ibis-framework==3.2'
+      - run: poetry run pip install --extra-index-url https://pypi.fury.io/arrow-nightlies --pre pyarrow
+      - run: poetry run pytest
   dry-run-release:
     runs-on: ubuntu-latest
     steps:
