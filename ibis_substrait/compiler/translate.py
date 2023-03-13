@@ -1161,7 +1161,9 @@ def _cast(
 ) -> stalg.Expression:
     return stalg.Expression(
         cast=stalg.Expression.Cast(
-            type=translate(op.to), input=translate(op.arg, compiler=compiler, **kwargs)
+            type=translate(op.to),
+            input=translate(op.arg, compiler=compiler, **kwargs),
+            failure_behavior=stalg.Expression.Cast.FAILURE_BEHAVIOR_THROW_EXCEPTION,
         )
     )
 
