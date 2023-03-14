@@ -1,6 +1,14 @@
 Release Notes
 ---
 
+## [2.25.0](https://github.com/ibis-project/ibis-substrait/compare/v2.24.1...v2.25.0) (2023-03-14)
+
+
+### Features
+
+* **extensions:** add correct extension URI to all scalar function calls ([8167cb8](https://github.com/ibis-project/ibis-substrait/commit/8167cb8ea5b796f55afe7d13396a726e062ef325))
+* **extensions:** add extension yaml to package ([74ec00f](https://github.com/ibis-project/ibis-substrait/commit/74ec00f6c7499d82826cf8a7cd9b33c82c7dc8a4))
+
 ## [2.24.1](https://github.com/ibis-project/ibis-substrait/compare/v2.24.0...v2.24.1) (2023-03-10)
 
 
