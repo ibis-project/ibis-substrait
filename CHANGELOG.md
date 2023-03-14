@@ -1,6 +1,18 @@
 Release Notes
 ---
 
+## [2.26.0](https://github.com/ibis-project/ibis-substrait/compare/v2.25.1...v2.26.0) (2023-03-14)
+
+
+### Features
+
+* **udf:** add support for pyarrow / acero UDFs ([9bc455b](https://github.com/ibis-project/ibis-substrait/commit/9bc455bd2a03dcfd34c42ea35d4e4fed50c03c23))
+
+
+### Bug Fixes
+
+* **cast:** specify failure behavior in cast call ([a5ed55e](https://github.com/ibis-project/ibis-substrait/commit/a5ed55e559cb570b7885aef0b8d8940a6ed54c21))
+
 ## [2.25.1](https://github.com/ibis-project/ibis-substrait/compare/v2.25.0...v2.25.1) (2023-03-14)
 
 
