@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.25.1](https://github.com/ibis-project/ibis-substrait/compare/v2.25.0...v2.25.1) (2023-03-14)
+
+
+### Bug Fixes
+
+* **deps:** add pyyaml to runtime dependencies ([59ed976](https://github.com/ibis-project/ibis-substrait/commit/59ed9769e35244f6890df535e4273e0f7d1f6b4a))
+
 ## [2.25.0](https://github.com/ibis-project/ibis-substrait/compare/v2.24.1...v2.25.0) (2023-03-14)
 
 
