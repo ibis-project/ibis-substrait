@@ -25,6 +25,7 @@ ibis-framework = ">=3"
 protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
 sqlalchemy = ">=1,<2"
 packaging = ">=21.3"
+pyyaml = ">=5"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.0.0"
