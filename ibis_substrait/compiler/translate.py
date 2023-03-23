@@ -822,6 +822,12 @@ def selection(
             elif output_mapping := rel.common.emit.output_mapping:
                 mapping_counter = itertools.count(len(output_mapping))
                 break
+            elif not isinstance(op.table.op(), ops.Join):
+                # If child table is join, we cannot reliably call schema due to
+                # potentially duplicate column names, so fallback to the orignal
+                # logic.
+                mapping_counter = itertools.count(len(op.table.op().schema))
+                break
         else:
             source_tables = _find_parent_tables(op)
             mapping_counter = itertools.count(sum(len(t.schema) for t in source_tables))
