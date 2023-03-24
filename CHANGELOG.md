@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.26.1](https://github.com/ibis-project/ibis-substrait/compare/v2.26.0...v2.26.1) (2023-03-24)
+
+
+### Bug Fixes
+
+* emit output of projection node to be based off input table instead of source tables ([c0076bc](https://github.com/ibis-project/ibis-substrait/commit/c0076bcf6a1959e4f60308d505bd08ab8d31b103))
+
 ## [2.26.0](https://github.com/ibis-project/ibis-substrait/compare/v2.25.1...v2.26.0) (2023-03-14)
 
 
