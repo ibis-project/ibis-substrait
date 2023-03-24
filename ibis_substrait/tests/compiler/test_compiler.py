@@ -4,6 +4,7 @@ import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
+from ibis import _
 
 from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
@@ -475,3 +476,29 @@ def test_function_argument_usage(compiler):
     )
 
     assert result.arguments[0] == expected
+
+
+def test_aggregate_filter_select_output_mapping(compiler):
+    t = ibis.table([("a", "int"), ("b", "float"), ("c", "int")], name="t")
+
+    expr = (
+        t.aggregate(
+            [
+                t.a.max().name("amax"),
+                t.b.max().name("bmax"),
+                t.a.min().name("amin"),
+                t.c.min().name("cmin"),
+                t.c.max().name("cmax"),
+            ]
+        )
+        .filter(_.amin < 5)
+        .select("amin", "bmax")
+    )
+
+    # Aggregate of 3 columns with 5 created columns as the output
+    # Filter to put an op between aggregate and select
+    # Project out two columns, output_mapping should be 5, 6
+    # because 0, 1, 2, 3, 4 correspond to the created aggregate cols.
+    result = translate(expr, compiler)
+
+    assert result.project.common.emit.output_mapping == [5, 6]
