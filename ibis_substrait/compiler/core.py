@@ -107,7 +107,7 @@ class SubstraitCompiler:
         if function_extension is None:
             sigkey = tuple(
                 [
-                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.op().output_dtype.name]
+                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.op().output_dtype.name]  # type: ignore
                     for arg in op.args
                     if arg is not None and isinstance(arg, (ir.Expr, ops.Node))
                 ]
@@ -183,7 +183,7 @@ class SubstraitCompiler:
 
         return extension_uri
 
-    def compile(self, expr: ir.TableExpr, **kwargs: Any) -> stp.Plan:
+    def compile(self, expr: ir.Table, **kwargs: Any) -> stp.Plan:
         """Construct a Substrait plan from an ibis table expression."""
         from .translate import translate
 
@@ -271,4 +271,12 @@ def _get_fields(dtype: dt.DataType) -> Iterator[tuple[str | None, dt.DataType]]:
         yield None, dtype.value_type
         yield None, dtype.key_type
     elif isinstance(dtype, dt.Struct):
-        yield from reversed(list(dtype.pairs.items()))
+        # Ibis 3
+        pairs = getattr(dtype, "pairs", None)
+        if pairs is None:
+            # Ibis 4 and 5
+            pairs = getattr(dtype, "fields", None)
+
+        if pairs is None:
+            raise AttributeError
+        yield from reversed(list(pairs.items()))

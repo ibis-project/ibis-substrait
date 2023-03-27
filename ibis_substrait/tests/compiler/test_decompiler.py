@@ -6,6 +6,11 @@ from packaging import version
 from ibis_substrait.compiler.decompile import decompile, decompile_schema
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
+ibis5 = pytest.mark.skipif(
+    version.parse(ibis.__version__) >= version.parse("5.0.0"),
+    reason="Not extending decompiler support further",
+)
+
 
 @pytest.fixture
 def t():
@@ -41,6 +46,7 @@ def q():
     return ibis.table([("e", "string"), ("f", "int64")], name="q")
 
 
+@ibis5
 @pytest.mark.parametrize(
     "expr_fn",
     [

@@ -98,6 +98,7 @@ jobs:
         ibis-version:
           - "3.2"
           - "4.1"
+          - "5.1"
         include:
          - os: windows-latest
            python-version: "3.10"
