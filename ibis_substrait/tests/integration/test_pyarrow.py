@@ -158,3 +158,30 @@ def test_extension_udf():
 
     assert result[1].to_pylist() == [2, 3, 4]
     assert result[2].to_pylist() == [0, 1, 2]
+
+
+@arrow12
+def test_acero_unsafe_cast(compiler):
+    """
+    Regression test to catch any behavior change in how Acero handles casting.
+
+    As of arrow 196fbe5f5e0669b1f8bf71005c8a4c6a4e0fb2da, Acero performs an
+    unsafe cast where it previously performed a safe cast. The previous behavior
+    would cause the following test to throw pyarrow.ArrowInvalid. See
+    https://github.com/apache/arrow/issues/34644 for more detail.
+    """
+    arrow_table = pa.Table.from_pydict(
+        {
+            "a": [1.8, 2.2, 3.5],
+        }
+    )
+    t = to_ibis_table(arrow_table)
+    query = t.mutate(a=t.a.cast("int"))
+    plan = compiler.compile(query)
+    result = run_query(plan, arrow_table)
+
+    assert result == pa.Table.from_pydict(
+        {
+            "a": [1, 2, 3],
+        }
+    )
