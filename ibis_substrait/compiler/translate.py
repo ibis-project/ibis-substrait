@@ -558,26 +558,38 @@ def window_op(
     if compiler is None:
         raise ValueError
     expr = expr if expr is not None else op.to_expr()
-    lower_bound, upper_bound = _translate_window_bounds(
-        op.window.preceding, op.window.following
-    )
+    if hasattr(op, "window"):
+        # Ibis <= 4.x
+        window_gb = op.window._group_by
+        window_ob = op.window._order_by
+        start = op.window.preceding
+        end = op.window.following
+        func = {"expr": op.expr}
+        func_args = op.expr.op().args
+    else:
+        # Ibis >= 5.x
+        window_gb = op.frame.group_by
+        window_ob = op.frame.order_by
+        start = op.frame.start
+        end = op.frame.end
+        func = {"op": op.func}
+        func_args = op.func.args
+
+    lower_bound, upper_bound = _translate_window_bounds(start, end)
+
     return stalg.Expression(
         window_function=stalg.Expression.WindowFunction(
-            function_reference=compiler.function_id(expr=op.expr),
-            partitions=[
-                translate(gb, compiler=compiler, **kwargs) for gb in op.window._group_by
-            ],
-            sorts=[
-                translate(ob, compiler=compiler, **kwargs) for ob in op.window._order_by
-            ],
+            function_reference=compiler.function_id(**func),
+            partitions=[translate(gb, compiler=compiler, **kwargs) for gb in window_gb],
+            sorts=[translate(ob, compiler=compiler, **kwargs) for ob in window_ob],
             output_type=translate(expr.type()),
             phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
             arguments=[
                 stalg.FunctionArgument(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
-                for arg in op.expr.op().args
-                if isinstance(arg, ir.Expr)
+                for arg in func_args
+                if isinstance(arg, (ir.Expr, ops.Value))
             ],
             lower_bound=lower_bound,
             upper_bound=upper_bound,

@@ -267,4 +267,12 @@ def _get_fields(dtype: dt.DataType) -> Iterator[tuple[str | None, dt.DataType]]:
         yield None, dtype.value_type
         yield None, dtype.key_type
     elif isinstance(dtype, dt.Struct):
-        yield from reversed(list(dtype.pairs.items()))
+        # Ibis 3
+        pairs = getattr(dtype, "pairs", None)
+        if pairs is None:
+            # Ibis 4 and 5
+            pairs = getattr(dtype, "fields", None)
+
+        if pairs is None:
+            raise AttributeError
+        yield from reversed(list(pairs.items()))
