@@ -52,10 +52,10 @@ pytest-mock = "^3.6.1"
 pytest-randomly = "^3.10.1"
 pytest-lazy-fixture = "^0.6.3"
 pytz = "^2022.1"
-substrait-validator = "^0.0.11"
+substrait-validator = ">=0.0.11"
 packaging = "^23.0"
-pathspec = "0.11.0"
-pyarrow = "^11.0.0"
+pathspec = ">=0.11.0"
+pyarrow = ">=11.0.0"
 
 [tool.ruff]
 line-length = 88
