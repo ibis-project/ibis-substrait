@@ -40,8 +40,11 @@ except ImportError:
     from typing_extensions import TypeAlias
 
 IBIS_4 = False
+IBIS_5 = False
 if version.parse(ibis.__version__) >= version.parse("4.0.0"):
     IBIS_4 = True
+if version.parse(ibis.__version__) >= version.parse("5.0.0"):
+    IBIS_5 = True
 
 
 if IBIS_4:
@@ -54,6 +57,8 @@ if IBIS_4:
         message="`Node.op` is deprecated",
         category=FutureWarning,
     )
+
+
 else:
     from ibis.util import to_op_dag
 
@@ -464,6 +469,20 @@ def _following_int(offset: int) -> stalg.Expression.WindowFunction.Bound:
     )
 
 
+if IBIS_5:
+
+    @translate_following.register
+    @translate_preceding.register
+    def _window_boundary(
+        boundary: ops.window.WindowBoundary,
+    ) -> stalg.Expression.WindowFunction.Bound:
+        # new window boundary class in Ibis 5.x
+        if boundary.preceding:
+            return translate_preceding(boundary.value.value)
+        else:
+            return translate_following(boundary.value.value)
+
+
 def _translate_window_bounds(
     precedes: tuple[int, int] | int | None,
     follows: tuple[int, int] | int | None,
@@ -480,7 +499,7 @@ def _translate_window_bounds(
     following = [None] if follows is None else following
 
     if len(preceding) == 2:
-        if following:
+        if following and following != [None]:
             raise ValueError(
                 "`following` not allowed when window bounds are both preceding"
             )
@@ -492,7 +511,7 @@ def _translate_window_bounds(
         raise ValueError(f"preceding must be length 1 or 2 got: {len(preceding)}")
 
     if len(following) == 2:
-        if preceding:
+        if preceding and preceding != [None]:
             raise ValueError(
                 "`preceding` not allowed when window bounds are both following"
             )
