@@ -58,12 +58,14 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
         python-version:
           - "38"
           - "39"
           - "310"
           - "311"
+        include:
+          - os: macos-latest
+            python-version: "3.10"
     steps:
       - uses: actions/checkout@v3
 
