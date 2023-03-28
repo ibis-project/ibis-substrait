@@ -81,7 +81,7 @@ jobs:
 
       - name: build package and run tests
         run: nix build --keep-going --print-build-logs --file . --argstr python ${{ matrix.python-version }}
-  poetry_ibis_3:
+  poetry_ibis:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -92,6 +92,10 @@ jobs:
         python-version:
           - "3.8"
           - "3.10"
+        ibis-version:
+          - "3.2"
+          - "4.1"
+          - "5"
 
     steps:
       - uses: actions/checkout@v3
@@ -102,29 +106,7 @@ jobs:
 
       - run: pip3 install 'poetry<1.4'
       - run: poetry install --sync
-      - run: poetry run pip install 'ibis-framework==3.2'
-      - run: poetry run pytest
-  poetry_ibis_4:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-        python-version:
-          - "3.8"
-          - "3.11"
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - run: pip3 install 'poetry<1.4'
-      - run: poetry install --sync
-      - run: poetry run pip install 'ibis-framework==4.1'
+      - run: poetry run pip install 'ibis-framework==${{ matrix.ibis-version }}'
       - run: poetry run pytest
   poetry_ibis_pyarrow_nightly:
     runs-on: ${{ matrix.os }}
@@ -135,6 +117,9 @@ jobs:
           - ubuntu-latest
         python-version:
           - "3.8"
+        ibis-version:
+          - "3.2"
+          - "5"
 
     steps:
       - uses: actions/checkout@v3
@@ -145,7 +130,7 @@ jobs:
 
       - run: pip3 install 'poetry<1.4'
       - run: poetry install --sync
-      - run: poetry run pip install 'ibis-framework==3.2'
+      - run: poetry run pip install 'ibis-framework==${{ matrix.ibis-version }}'
       - run: poetry run pip install --extra-index-url https://pypi.fury.io/arrow-nightlies --pre pyarrow
       - run: poetry run pytest
   dry-run-release:
@@ -202,8 +187,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' }}
     needs:
       - nix
-      - poetry_ibis_3
-      - poetry_ibis_4
+      - poetry_ibis
       - pre-commit
       - dry-run-release
       - check-poetry-lock
