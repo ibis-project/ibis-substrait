@@ -3,6 +3,8 @@
 The primary API here is :func:`decompile`.
 """
 
+# mypy: ignore-errors
+
 from __future__ import annotations
 
 import bisect
@@ -312,7 +314,7 @@ def decompile(msg: Any, *args: Any, **kwargs: Any) -> ir.Expr:
 
 
 @decompile.register(stp.Plan)
-def _decompile_plan(plan: stp.Plan) -> list[ir.TableExpr]:
+def _decompile_plan(plan: stp.Plan) -> list[ir.Table]:
     decompiler = SubstraitDecompiler(plan)
     return [decompile(relation, decompiler) for relation in plan.relations]
 
@@ -321,7 +323,7 @@ def _decompile_plan(plan: stp.Plan) -> list[ir.TableExpr]:
 def _decompile_plan_rel(
     rel: stp.PlanRel,
     decompiler: SubstraitDecompiler,
-) -> ir.TableExpr:
+) -> ir.Table:
     rel_variant_name, rel_variant = which_one_of(rel, "rel_type")
     return decompile(rel_variant, decompiler)
 
@@ -337,7 +339,7 @@ def _rename_schema(schema: ibis.Schema, names: Sequence[str]) -> ibis.Schema:
 def _decompile_rel_root(
     rel_root: stalg.RelRoot,
     decompiler: SubstraitDecompiler,
-) -> ir.TableExpr:
+) -> ir.Table:
     return decompile(rel_root.input, decompiler, collections.deque(rel_root.names))
 
 
@@ -346,7 +348,7 @@ def _decompile_rel(
     rel: stalg.Rel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     _, rel_variant = which_one_of(rel, "rel_type")
     return decompile(rel_variant, decompiler, names)
 
@@ -356,7 +358,7 @@ def _decompile_read_rel(
     read_rel: stalg.ReadRel,
     decompiler: SubstraitDecompiler,
     _names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     _, read_rel_variant = which_one_of(read_rel, "read_type")
     schema = decompile_schema(read_rel)
     return decompile(read_rel_variant, schema, decompiler)
@@ -367,7 +369,7 @@ def _decompile_named_table(
     named_table: stalg.ReadRel.NamedTable,
     schema: ibis.Schema,
     decompiler: SubstraitDecompiler,
-) -> ir.TableExpr:
+) -> ir.Table:
     names = named_table.names
     if not names:
         raise ValueError(f"no table names found when consuming {named_table}")
@@ -381,7 +383,7 @@ def _decompile_named_table(
 
 
 def _get_child_tables_and_field_offsets(
-    child: ir.TableExpr,
+    child: ir.Table,
 ) -> tuple[Sequence[ops.TableNode], list[int]]:
     child_op = child.op()
     if isinstance(child_op, ops.Join):
@@ -394,7 +396,7 @@ def _decompile_filter_rel(
     filter_rel: stalg.FilterRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     child = decompile(filter_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
     predicate = decompile(filter_rel.condition, children, field_offsets, decompiler)
@@ -406,7 +408,7 @@ def _decompile_fetch_rel(
     fetch_rel: stalg.FetchRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     child = decompile(fetch_rel.input, decompiler, names)
     return child.limit(fetch_rel.count, offset=fetch_rel.offset)
 
@@ -426,7 +428,7 @@ def _decompile_join_rel(
     join_rel: stalg.JoinRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     left_child = decompile(join_rel.left, decompiler, names)
     right_child = decompile(join_rel.right, decompiler, names)
     join_method_name = _JOIN_METHOD_TABLE[join_rel.type]
@@ -446,7 +448,7 @@ def _decompile_sort_rel(
     sort_rel: stalg.SortRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     child = decompile(sort_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
     sorts = [
@@ -497,11 +499,11 @@ def _remove_names_below(names: Deque[str], dtype: dt.DataType) -> None:
 
 def _decompile_with_name(
     expr: stalg.Expression | stalg.AggregateFunction,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.ValueExpr:
+) -> ir.Value:
     expr_name = names.popleft()
     ibis_expr = decompile(expr, children, field_offsets, decompiler).name(expr_name)
 
@@ -516,7 +518,7 @@ def _decompile_project_rel(
     project_rel: stalg.ProjectRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     child = decompile(project_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
     exprs = [
@@ -532,14 +534,14 @@ def _decompile_aggregate_rel(
     aggregate_rel: stalg.AggregateRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     # TODO: aggregate_rel.phase is ignored, do we need to preserve it?
     child = decompile(aggregate_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
 
     # TODO: only a single grouping set is allowed, implement grouping sets in
     # ibis upstream
-    by: list[ir.ValueExpr] = []
+    by: list[ir.Value] = []
 
     for grouping_expressions in map(
         operator.attrgetter("grouping_expressions"),
@@ -577,10 +579,10 @@ def _decompile_aggregate_rel(
 @decompile.register
 def _decompile_expression_aggregate_function(
     aggregate_function: stalg.AggregateFunction,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     extension = decompiler.function_extensions[aggregate_function.function_reference]
     function_name = extension.name
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
@@ -603,30 +605,30 @@ def _decompile_expression_aggregate_function(
 class SetOpDecompiler:
     @staticmethod
     def decompile_SET_OP_MINUS_PRIMARY(
-        left: ir.TableExpr,
-        right: ir.TableExpr,
-    ) -> ir.TableExpr:
+        left: ir.Table,
+        right: ir.Table,
+    ) -> ir.Table:
         return left.difference(right)
 
     @staticmethod
     def decompile_SET_OP_INTERSECTION_PRIMARY(
-        left: ir.TableExpr,
-        right: ir.TableExpr,
-    ) -> ir.TableExpr:
+        left: ir.Table,
+        right: ir.Table,
+    ) -> ir.Table:
         return left.intersect(right)
 
     @staticmethod
     def decompile_SET_OP_UNION_DISTINCT(
-        left: ir.TableExpr,
-        right: ir.TableExpr,
-    ) -> ir.TableExpr:
+        left: ir.Table,
+        right: ir.Table,
+    ) -> ir.Table:
         return left.union(right, distinct=True)
 
     @staticmethod
     def decompile_SET_OP_UNION_ALL(
-        left: ir.TableExpr,
-        right: ir.TableExpr,
-    ) -> ir.TableExpr:
+        left: ir.Table,
+        right: ir.Table,
+    ) -> ir.Table:
         return left.union(right, distinct=False)
 
 
@@ -637,7 +639,7 @@ def _decompile_set_op(
     op: stalg.SetRel.SetOp.V,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     left_expr = decompile(left, decompiler, names)
     right_expr = decompile(right, decompiler, names)
     name = stalg.SetRel.SetOp.Name(op)
@@ -652,7 +654,7 @@ def _decompile_set_op_rel(
     set_rel: stalg.SetRel,
     decompiler: SubstraitDecompiler,
     names: Deque[str],
-) -> ir.TableExpr:
+) -> ir.Table:
     return functools.reduce(
         functools.partial(
             _decompile_set_op,
@@ -666,24 +668,24 @@ def _decompile_set_op_rel(
 
 @functools.singledispatch
 def _get_field(
-    child: ir.TableExpr | ir.StructValue,
+    child: ir.Table | ir.StructValue,
     relative_offset: int,
-) -> ir.ValueExpr:
+) -> ir.Value:
     raise NotImplementedError(f"accessing field of type {type(child)} is not supported")
 
 
 @_get_field.register(ops.Node)
-def _get_field_ops_node(child: ops.Node, relative_offset: int) -> ir.ValueExpr:
+def _get_field_ops_node(child: ops.Node, relative_offset: int) -> ir.Value:
     return _get_field(child.to_expr(), relative_offset)
 
 
-@_get_field.register(ir.TableExpr)
-def _get_field_table_expr(child: ir.TableExpr, relative_offset: int) -> ir.ValueExpr:
+@_get_field.register(ir.Table)
+def _get_field_table_expr(child: ir.Table, relative_offset: int) -> ir.Value:
     return child[relative_offset]
 
 
 @_get_field.register(ir.StructValue)
-def _get_field_struct(child: ir.TableExpr, relative_offset: int) -> ir.ValueExpr:
+def _get_field_struct(child: ir.Table, relative_offset: int) -> ir.Value:
     field_type = child.type()
     return child[field_type.names[relative_offset]]
 
@@ -692,7 +694,7 @@ class ExpressionDecompiler:
     @staticmethod
     def decompile_literal(
         literal: stalg.Expression.Literal,
-        _children: Sequence[ir.TableExpr],
+        _children: Sequence[ir.Table],
         _offsets: Sequence[int],
         _decompiler: SubstraitDecompiler,
     ) -> ir.ScalarExpr:
@@ -703,8 +705,8 @@ class ExpressionDecompiler:
     def _decompile_struct_field(
         struct_field: stalg.Expression.ReferenceSegment.StructField,
         field_offsets: Sequence[int],
-        children: Sequence[ir.TableExpr | ir.StructValue],
-    ) -> ir.ValueExpr:
+        children: Sequence[ir.Table | ir.StructValue],
+    ) -> ir.Value:
         absolute_offset = struct_field.field
 
         # get the index of the child relation from a sequence of field_offsets
@@ -719,10 +721,10 @@ class ExpressionDecompiler:
     @staticmethod
     def decompile_selection(
         ref: stalg.Expression.FieldReference,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         field_offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         ref_type, ref_variant = which_one_of(ref, "reference_type")
         if ref_type != "direct_reference":
             raise NotImplementedError(
@@ -759,56 +761,56 @@ class ExpressionDecompiler:
     @staticmethod
     def decompile_scalar_function(
         scalar_func: stalg.Expression.ScalarFunction,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         field_offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(scalar_func, children, field_offsets, decompiler)
 
     @staticmethod
     def decompile_if_then(
         if_then: stalg.Expression.IfThen,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(if_then, children, offsets, decompiler)
 
     @staticmethod
     def decompile_singular_or_list(
         singular_or_list: stalg.Expression.SingularOrList,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(singular_or_list, children, offsets, decompiler)
 
     @staticmethod
     def decompile_cast(
         cast: stalg.Expression.Cast,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(cast, children, offsets, decompiler)
 
     @staticmethod
     def decompile_enum(
         enum: stalg.Expression.Enum,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(enum)
 
 
 @decompile.register
 def _decompile_function_argument(
     msg: stalg.FunctionArgument,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     arg_type_name, arg = which_one_of(msg, "arg_type")
     method = getattr(FunctionArgumentDecompiler, f"decompile_{arg_type_name}", None)
     if method is None:
@@ -822,29 +824,29 @@ class FunctionArgumentDecompiler:
     @staticmethod
     def decompile_value(
         msg: stalg.Expression,
-        children: Sequence[ir.TableExpr],
+        children: Sequence[ir.Table],
         field_offsets: Sequence[int],
         decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return decompile(msg, children, field_offsets, decompiler)
 
     @staticmethod
     def decompile_enum(
         msg: str,
-        _children: Sequence[ir.TableExpr],
+        _children: Sequence[ir.Table],
         _field_offsets: Sequence[int],
         _decompiler: SubstraitDecompiler,
-    ) -> ir.ValueExpr:
+    ) -> ir.Value:
         return msg
 
 
 @decompile.register
 def _decompile_expression(
     msg: stalg.Expression,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     rex_type_name, rex = which_one_of(msg, "rex_type")
     method = getattr(ExpressionDecompiler, f"decompile_{rex_type_name}", None)
     if method is None:
@@ -857,10 +859,10 @@ def _decompile_expression(
 @decompile.register
 def _decompile_expression_scalar_function(
     msg: stalg.Expression.ScalarFunction,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     extension = decompiler.function_extensions[msg.function_reference]
     function_name = extension.name
     op_type = SUBSTRAIT_IBIS_OP_MAPPING[function_name]
@@ -877,10 +879,10 @@ def _decompile_expression_scalar_function(
 @decompile.register
 def _decompile_expression_sort_field(
     msg: stalg.SortField,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     expr = decompile(msg.expr, children, field_offsets, decompiler)
     sort_field_func = _decompile_sort_field_type(msg.direction)
     return sort_field_func(expr)
@@ -906,10 +908,10 @@ def _decompile_sort_field_type(
 @decompile.register
 def _decompile_expression_if_then(
     msg: stalg.Expression.IfThen,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     ifs, thens = zip(
         *[
             (
@@ -928,12 +930,12 @@ def _decompile_expression_if_then(
 def _decompile_if_then_comparison(
     base_op: ops.Comparison,
     msg: stalg.Expression.IfThen,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-    ifs: Sequence[ir.ValueExpr],
-    thens: Sequence[ir.ValueExpr],
-) -> ir.ValueExpr:
+    ifs: Sequence[ir.Value],
+    thens: Sequence[ir.Value],
+) -> ir.Value:
     if len(ifs) > 1:
         assert all(
             _if.op().left.op().name == base_op.left.op().name for _if in ifs[1:]
@@ -950,12 +952,12 @@ def _decompile_if_then_comparison(
 def _decompile_if_then_stringlike(
     base_op: ops.StringSQLLike,
     msg: stalg.Expression.IfThen,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-    ifs: Sequence[ir.ValueExpr],
-    thens: Sequence[ir.ValueExpr],
-) -> ir.ValueExpr:
+    ifs: Sequence[ir.Value],
+    thens: Sequence[ir.Value],
+) -> ir.Value:
     assert len(thens) == 1, "only one result in a stringlike"
 
     return (
@@ -972,10 +974,10 @@ def _decompile_if_then_stringlike(
 @decompile.register
 def _decompile_expression_singular_or_list(
     msg: stalg.Expression.SingularOrList,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     column = decompile(msg.value, children, field_offsets, decompiler)
     return column.isin(
         [decompile(value, children, field_offsets, decompiler) for value in msg.options]
@@ -985,10 +987,10 @@ def _decompile_expression_singular_or_list(
 @decompile.register
 def _decompile_expression_cast(
     msg: stalg.Expression.Cast,
-    children: Sequence[ir.TableExpr],
+    children: Sequence[ir.Table],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-) -> ir.ValueExpr:
+) -> ir.Value:
     column = decompile(msg.input, children, field_offsets, decompiler)
     return column.cast(_decompile_type(msg.type))
 

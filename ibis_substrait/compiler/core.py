@@ -6,9 +6,11 @@ import itertools
 from typing import Any, Hashable, Iterator
 
 import google.protobuf.message as msg
+import ibis
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
+from packaging.version import parse as vparse
 
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
@@ -53,11 +55,27 @@ class SubstraitCompiler:
 
         self.udf_uri = udf_uri
 
+        # register translator
+        if vparse(ibis.__version__) <= vparse("3.2.0"):
+            from ibis_substrait.compiler.translator.ibis3 import Ibis3Translator
+
+            translator = Ibis3Translator(self)  # type: ignore
+        elif vparse(ibis.__version__) < vparse("5.0.0"):
+            from ibis_substrait.compiler.translator.ibis4 import Ibis4Translator
+
+            translator = Ibis4Translator(self)  # type: ignore
+        else:
+            from ibis_substrait.compiler.translator.ibis5 import Ibis5Translator
+
+            translator = Ibis5Translator(self)  # type: ignore
+
+        self.translator = translator  # type: ignore
+
     def function_id(
         self,
         *,
-        expr: ir.ValueExpr | None = None,
-        op: ops.Value | None = None,
+        expr: ir.Value | None = None,
+        op: ops.Node | None = None,
     ) -> int:
         """Create a function mapping for a given expression.
 
@@ -84,7 +102,9 @@ class SubstraitCompiler:
         except KeyError:
             function_extension = self.function_extensions[
                 op_name
-            ] = self.extension_lookup(op_name, op)
+            ] = self.extension_lookup(
+                op_name, op  # type: ignore
+            )
         return function_extension.function_anchor
 
     def extension_lookup(
@@ -187,15 +207,13 @@ class SubstraitCompiler:
 
         return extension_uri
 
-    def compile(self, expr: ir.TableExpr, **kwargs: Any) -> stp.Plan:
+    def compile(self, expr: ir.Table, **kwargs: Any) -> stp.Plan:
         """Construct a Substrait plan from an ibis table expression."""
-        from .translate import translate
-
         expr_schema = expr.schema()
         rel = stp.PlanRel(
             root=stalg.RelRoot(
-                input=translate(expr.op(), expr=expr, compiler=self, **kwargs),
-                names=translate(expr_schema).names,
+                input=self.translator.translate(expr.op(), compiler=self, **kwargs),
+                names=self.translator.translate(expr_schema).names,
             )
         )
         return stp.Plan(

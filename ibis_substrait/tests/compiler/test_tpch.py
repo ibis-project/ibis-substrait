@@ -703,7 +703,17 @@ TPC_H = [
 
 @pytest.mark.parametrize(
     "query",
-    TPC_H,
+    [
+        *TPC_H,
+        pytest.param(
+            lazy_fixture("tpc_h09"),
+            marks=pytest.mark.xfail(
+                vparse(ibis.__version__) >= vparse("5.0"),
+                raises=AssertionError,
+                reason="ibis op reordering changes output",
+            ),
+        ),
+    ],
 )
 def test_compile(query, compiler, snapshot, request):
     plan = compiler.compile(query)
@@ -714,7 +724,7 @@ def test_compile(query, compiler, snapshot, request):
 
 @pytest.mark.parametrize(
     "query",
-    TPC_H,
+    [*TPC_H, lazy_fixture("tpc_h09")],
 )
 def test_compile_validate(query, compiler):
     plan = compiler.compile(query)

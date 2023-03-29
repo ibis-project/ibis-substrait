@@ -6,6 +6,8 @@ from packaging import version
 from ibis_substrait.compiler.decompile import decompile, decompile_schema
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
+pytest.importorskip("ibis", minversion="4.0.0")
+
 
 @pytest.fixture
 def t():

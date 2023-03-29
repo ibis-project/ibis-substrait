@@ -5,8 +5,8 @@ import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
 from ibis import _
+from packaging import version
 
-from ibis_substrait.compiler.translate import translate
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
@@ -36,7 +36,7 @@ def test_aggregation(t, compiler):
         .aggregate(max_age=t.age.max(), min_age=t.age.min())
         .filter(lambda t: t.name_len > 3)
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
@@ -48,14 +48,14 @@ def test_aggregation_with_sort(t, compiler):
         .sort_by(t.ts)
         .filter(lambda t: t.name_len > 3)
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
 
 def test_aggregation_no_args(t, compiler):
     expr = t.group_by("age").count()
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
@@ -77,28 +77,28 @@ def test_aggregation_window(t, compiler, preceding, following):
             .over(ibis.window(preceding=preceding, following=following, group_by="age"))
         ]
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
 
 def test_array_literal(compiler):
     expr = ibis.literal(["a", "b"])
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
 
 def test_map_literal(compiler):
     expr = ibis.literal(dict(a=[], b=[2]))
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
 
 def test_struct_literal(compiler):
     expr = ibis.literal(OrderedDict(a=1, b=[2.0]))
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     js = to_dict(result)
     assert js
 
@@ -106,7 +106,7 @@ def test_struct_literal(compiler):
 def test_translate_table_expansion(compiler):
     t = ibis.table([("a", "int32"), ("b", "int64")], name="table0")
     expr = t.mutate(c=t.a + t.b)
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     expected = {
         "project": {
             "common": {"emit": {"outputMapping": [2, 3, 4]}},
@@ -184,7 +184,7 @@ def test_translate_table_expansion(compiler):
 def test_emit_mutate_select_all(compiler):
     t = ibis.table([("a", "int64"), ("b", "char"), ("c", "int32")], name="table0")
     expr = t.mutate(d=t.a + 1)
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     expected = {
         "project": {
             "common": {"emit": {"outputMapping": [3, 4, 5, 6]}},
@@ -271,19 +271,19 @@ def test_emit_nested_projection_output_mapping(compiler):
         name="t",
     )
     expr = t["a", "b", "c", "d"]
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     # root table has 4 columns, so output mapping starts at index 4
     # should have 4 entries
     assert result.project.common.emit.output_mapping == [4, 5, 6, 7]
 
     expr = expr["a", "b", "c"]
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     # previous emit has 4 columns, so output mapping starts at index 4
     # should have 3 entries
     assert result.project.common.emit.output_mapping == [4, 5, 6]
 
     expr = expr["a", "b"]
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     # previous emit has 3 columns, so output mapping starts at index 3
     # should have 2 entries
     assert result.project.common.emit.output_mapping == [3, 4]
@@ -305,7 +305,7 @@ def test_aggregate_project_output_mapping(compiler):
         t.group_by(["a", "b"]).aggregate([t.c.sum().name("sum")]).select(["b", "sum"])
     )
 
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result.project.common.emit.output_mapping == [3, 4]
 
     # Select 3 of 5 columns in base table to make sure output mapping reflects
@@ -317,11 +317,11 @@ def test_aggregate_project_output_mapping(compiler):
         .select(["b", "sum"])
     )
 
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result.project.common.emit.output_mapping == [3, 4]
 
 
-def test_ibis_schema_to_substrait_schema():
+def test_ibis_schema_to_substrait_schema(compiler):
     input = ibis.schema(
         [
             (
@@ -389,7 +389,7 @@ def test_ibis_schema_to_substrait_schema():
             nullability=NULLABILITY_REQUIRED,
         ),
     )
-    assert translate(input) == expected
+    assert compiler.translator.translate(input) == expected
 
 
 @pytest.mark.parametrize(("name", "expected_offset"), [("a", 0), ("b", 1), ("c", 2)])
@@ -411,7 +411,7 @@ def test_simple_field_access(compiler, name, expected_offset):
         },
         stalg.Expression(),
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result == expected
 
 
@@ -433,7 +433,7 @@ def test_struct_field_access(compiler, name, expected_offset):
         },
         stalg.Expression(),
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result == expected
 
 
@@ -467,7 +467,7 @@ def test_nested_struct_field_access(compiler):
         },
         stalg.Expression(),
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result == expected
 
 
@@ -475,7 +475,7 @@ def test_function_argument_usage(compiler):
     t = ibis.table([("a", "int64")], name="t")
     expr = t.a.count()
 
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     # Check that there is an `arguments` field
     # and that it has the expected `value`
     expected = json_format.ParseDict(
@@ -493,6 +493,10 @@ def test_function_argument_usage(compiler):
     assert result.arguments[0] == expected
 
 
+@pytest.mark.xfail(
+    version.parse(ibis.__version__) < version.parse("3.2.0"),
+    reason="select doesn't accept varargs before 3.2",
+)
 def test_aggregate_filter_select_output_mapping(compiler):
     t = ibis.table([("a", "int"), ("b", "float"), ("c", "int")], name="t")
 
@@ -514,6 +518,6 @@ def test_aggregate_filter_select_output_mapping(compiler):
     # Filter to put an op between aggregate and select
     # Project out two columns, output_mapping should be 5, 6
     # because 0, 1, 2, 3, 4 correspond to the created aggregate cols.
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
 
     assert result.project.common.emit.output_mapping == [5, 6]
