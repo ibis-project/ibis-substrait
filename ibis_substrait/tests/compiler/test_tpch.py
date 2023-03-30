@@ -2,6 +2,7 @@ from datetime import date
 
 import ibis
 import pytest
+from google.protobuf import json_format
 from pytest_lazyfixture import lazy_fixture
 from substrait_validator import Config, check_plan
 
@@ -646,7 +647,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h02"),
         marks=pytest.mark.xfail(
-            raises=AssertionError, reason="Correlated Subquery issues"
+            raises=(TypeError, AssertionError), reason="Correlated Subquery issues"
         ),
     ),
     lazy_fixture("tpc_h03"),
@@ -676,7 +677,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h15"),
         marks=pytest.mark.xfail(
-            raises=AssertionError, reason="Correlated Subquery issues"
+            raises=(TypeError, AssertionError), reason="Correlated Subquery issues"
         ),
     ),
     pytest.param(
@@ -704,8 +705,11 @@ TPC_H = [
     "query",
     TPC_H,
 )
-def test_compile(query, compiler):
-    _ = compiler.compile(query)
+def test_compile(query, compiler, snapshot, request):
+    plan = compiler.compile(query)
+    snapshot.assert_match(
+        json_format.MessageToJson(plan), f"{request.node.callspec.id}.json"
+    )
 
 
 @pytest.mark.parametrize(
