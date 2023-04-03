@@ -39,6 +39,25 @@ def _nullability(dtype: dt.DataType) -> stt.Type.Nullability.V:
     )
 
 
+_MINUTES_PER_HOUR = _SECONDS_PER_MINUTE = 60
+_MICROSECONDS_PER_SECOND = 1_000_000
+
+
+def _date_to_days(value: datetime.date) -> int:
+    delta = value - datetime.datetime.utcfromtimestamp(0).date()
+    return delta.days
+
+
+def _time_to_micros(value: datetime.time) -> int:
+    """Convert a Python ``datetime.time`` object to microseconds since day-start."""
+    return (
+        value.hour * _MINUTES_PER_HOUR * _SECONDS_PER_MINUTE * _MICROSECONDS_PER_SECOND
+        + value.minute * _SECONDS_PER_MINUTE * _MICROSECONDS_PER_SECOND
+        + value.second * _MICROSECONDS_PER_SECOND
+        + value.microsecond
+    )
+
+
 class IbisTranslator:
     def __init__(self, compiler: SubstraitCompiler) -> None:
         self.compiler = compiler
@@ -1016,38 +1035,17 @@ class IbisTranslator:
     ) -> stalg.Expression.Literal:
         return stalg.Expression.Literal(uuid=uuid.UUID(hex=str(value)).bytes)
 
-    _MINUTES_PER_HOUR = _SECONDS_PER_MINUTE = 60
-    _MICROSECONDS_PER_SECOND = 1_000_000
-
-    @staticmethod
-    def _time_to_micros(value: datetime.time) -> int:
-        """Convert a Python ``datetime.time`` object to microseconds since day-start."""
-        return (
-            value.hour
-            * _MINUTES_PER_HOUR
-            * _SECONDS_PER_MINUTE
-            * _MICROSECONDS_PER_SECOND
-            + value.minute * _SECONDS_PER_MINUTE * _MICROSECONDS_PER_SECOND
-            + value.second * _MICROSECONDS_PER_SECOND
-            + value.microsecond
-        )
-
     @translate_literal.register
     def _literal_time(
         self, time: dt.Time, value: datetime.time
     ) -> stalg.Expression.Literal:
-        return stalg.Expression.Literal(time=self._time_to_micros(value))
-
-    @staticmethod
-    def _date_to_days(value: datetime.date) -> int:
-        delta = value - datetime.datetime.utcfromtimestamp(0).date()
-        return delta.days
+        return stalg.Expression.Literal(time=_time_to_micros(value))
 
     @translate_literal.register
     def _literal_date(
         self, date: dt.Date, value: datetime.date
     ) -> stalg.Expression.Literal:
-        return stalg.Expression.Literal(date=self._date_to_days(value))
+        return stalg.Expression.Literal(date=_date_to_days(value))
 
 
 @functools.singledispatch

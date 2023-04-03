@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Sequence, Union
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
-from ibis.common.graph import toposort
 
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,

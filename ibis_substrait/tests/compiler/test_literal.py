@@ -9,7 +9,7 @@ import pytest
 import pytz
 
 from ibis_substrait.compiler.decompile import decompile
-from ibis_substrait.compiler.translate import _date_to_days, _time_to_micros, translate
+from ibis_substrait.compiler.translator.base import _date_to_days, _time_to_micros
 from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
 from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
@@ -300,7 +300,7 @@ literal_cases = pytest.mark.parametrize(
 
 @literal_cases
 def test_literal(compiler, expr, ir):
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result.SerializeToString() == ir.SerializeToString()
 
 
@@ -319,14 +319,14 @@ def test_decimal_literal(compiler):
             )
         )
     )
-    result = translate(expr, compiler)
+    result = compiler.translator.translate(expr)
     assert result.SerializeToString() == ir.SerializeToString()
 
 
 @pytest.mark.parametrize("value", [ibis.NA, ibis.literal(None)])
 def test_bare_null(compiler, value):
     with pytest.raises(NotImplementedError, match="untyped null literals"):
-        translate(value, compiler)
+        compiler.translator.translate(value)
 
 
 @literal_cases

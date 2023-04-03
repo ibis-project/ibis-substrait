@@ -25,7 +25,7 @@ import toolz
 
 from ibis_substrait.compiler.core import SubstraitDecompiler, _get_fields, which_one_of
 from ibis_substrait.compiler.mapping import SUBSTRAIT_IBIS_OP_MAPPING
-from ibis_substrait.compiler.translate import (
+from ibis_substrait.compiler.translator.base import (
     _MICROSECONDS_PER_SECOND,
     _MINUTES_PER_HOUR,
     _SECONDS_PER_MINUTE,
