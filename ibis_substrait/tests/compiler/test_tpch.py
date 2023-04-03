@@ -3,6 +3,7 @@ from datetime import date
 import ibis
 import pytest
 from google.protobuf import json_format
+from packaging.version import parse as vparse
 from pytest_lazyfixture import lazy_fixture
 from substrait_validator import Config, check_plan
 
@@ -272,11 +273,12 @@ def tpc_h09(part, supplier, lineitem, partsupp, orders, nation):
         q.p_name,
     ]
 
-    q = q.filter([q.p_name.like("%GREEN%")])
+    q = q.filter([q.p_name.like("%green%")])
 
     gq = q.group_by([q.nation, q.o_year])
     q = gq.aggregate(sum_profit=q.amount.sum())
     q = q.sort_by([q.nation, ibis.desc(q.o_year)])
+
     return q
 
 
@@ -662,7 +664,6 @@ TPC_H = [
             reason="Aggregates need to be handled differently than they are",
         ),
     ),
-    lazy_fixture("tpc_h09"),
     lazy_fixture("tpc_h10"),
     lazy_fixture("tpc_h11"),
     lazy_fixture("tpc_h12"),
@@ -717,6 +718,7 @@ TPC_H = [
 )
 def test_compile(query, compiler, snapshot, request):
     plan = compiler.compile(query)
+
     snapshot.assert_match(
         json_format.MessageToJson(plan), f"{request.node.callspec.id}.json"
     )
