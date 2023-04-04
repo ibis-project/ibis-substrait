@@ -553,22 +553,34 @@ class IbisTranslator:
             )
         )
 
+    def _filter_predicates(
+        self,
+        oppredicates: list[Any],
+        table: ops.TableNode | ir.Table | None = None,
+        relation: stalg.Rel | None = None,
+        **kwargs: Any,
+    ) -> stalg.Rel:
+        relation = relation or self.translate(table)
+        tuples = stalg.Rel(
+            filter=stalg.FilterRel(
+                input=relation,
+                condition=self.translate(
+                    functools.reduce(ops.And, oppredicates),  # type: ignore
+                    **kwargs,
+                ),
+            )
+        )
+
+        return tuples
+
     @translate.register
     def _exists_subquery(
         self,
         op: ops.ExistsSubquery,
         **kwargs: Any,
     ) -> stalg.Expression:
-        tuples = stalg.Rel(
-            filter=stalg.FilterRel(
-                input=self.translate(
-                    op.foreign_table,
-                ),
-                condition=self.translate(
-                    functools.reduce(ops.And, op.predicates),  # type: ignore
-                    **kwargs,
-                ),
-            )
+        tuples = self._filter_predicates(
+            op.predicates, table=op.foreign_table, **kwargs
         )
 
         return stalg.Expression(
@@ -586,16 +598,8 @@ class IbisTranslator:
         op: ops.NotExistsSubquery,
         **kwargs: Any,
     ) -> stalg.Expression:
-        tuples = stalg.Rel(
-            filter=stalg.FilterRel(
-                input=self.translate(
-                    op.foreign_table,
-                ),
-                condition=self.translate(
-                    functools.reduce(ops.And, op.predicates),  # type: ignore
-                    **kwargs,
-                ),
-            )
+        tuples = self._filter_predicates(
+            op.predicates, table=op.foreign_table, **kwargs
         )
 
         return stalg.Expression(
@@ -722,6 +726,35 @@ class IbisTranslator:
             return toolz.merge(left_keys, right_keys, dict(zip(root_tables, accum)))
         return {}
 
+    def _mapping_counter(
+        self,
+        op: ops.Selection,
+        rels: list[tuple[str, Any]],
+        selections: Sequence[ir.Column],
+    ) -> itertools.count:
+        for relname, rel in rels:
+            if relname == "aggregate" and rel.measures:
+                mapping_counter = itertools.count(
+                    len(rel.measures) + len(rel.groupings)
+                )
+                break
+            elif output_mapping := rel.common.emit.output_mapping:
+                mapping_counter = itertools.count(len(output_mapping))
+                break
+            elif not isinstance(op.table, ops.Join):
+                # If child table is join, we cannot reliably call schema due to
+                # potentially duplicate column names, so fallback to the orignal
+                # logic.
+                mapping_counter = itertools.count(len(op.table.schema))
+                break
+        else:
+            source_tables = self._find_parent_tables(op)
+            mapping_counter = itertools.count(
+                sum(len(t.schema) for t in source_tables)  # type: ignore
+            )
+
+        return mapping_counter
+
     @translate.register(ops.Selection)
     def selection(
         self,
@@ -741,15 +774,11 @@ class IbisTranslator:
         )
         # filter
         if op.predicates:
-            relation = stalg.Rel(
-                filter=stalg.FilterRel(
-                    input=relation,
-                    condition=self.translate(
-                        functools.reduce(ops.And, op.predicates),  # type: ignore
-                        child_rel_field_offsets=child_rel_field_offsets,
-                        **kwargs,
-                    ),
-                )
+            relation = self._filter_predicates(
+                op.predicates,
+                relation=relation,
+                child_rel_field_offsets=child_rel_field_offsets,
+                **kwargs,
             )
 
         if selections := self._get_selections(op):
@@ -770,26 +799,7 @@ class IbisTranslator:
                     "sort",
                 )
             ]
-            for relname, rel in rels:
-                if relname == "aggregate" and rel.measures:
-                    mapping_counter = itertools.count(
-                        len(rel.measures) + len(rel.groupings)
-                    )
-                    break
-                elif output_mapping := rel.common.emit.output_mapping:
-                    mapping_counter = itertools.count(len(output_mapping))
-                    break
-                elif not isinstance(op.table, ops.Join):
-                    # If child table is join, we cannot reliably call schema due to
-                    # potentially duplicate column names, so fallback to the orignal
-                    # logic.
-                    mapping_counter = itertools.count(len(op.table.schema))
-                    break
-            else:
-                source_tables = self._find_parent_tables(op)
-                mapping_counter = itertools.count(
-                    sum(len(t.schema) for t in source_tables)  # type: ignore
-                )
+            mapping_counter = self._mapping_counter(op, rels, selections)
 
             relation = stalg.Rel(
                 project=stalg.ProjectRel(

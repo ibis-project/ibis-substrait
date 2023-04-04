@@ -5,7 +5,7 @@ from __future__ import annotations
 import functools
 import itertools
 import operator
-from typing import TYPE_CHECKING, Any, Mapping, MutableMapping, Sequence, Union
+from typing import TYPE_CHECKING, Any, MutableMapping, Sequence, Union
 
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
@@ -89,177 +89,55 @@ class Ibis3Translator(IbisTranslator):
             output_type=self.translate(op.output_dtype),
         )
 
-    @translate.register
-    def _exists_subquery(
+    def _filter_predicates(
         self,
-        op: ops.ExistsSubquery,
-        **kwargs: Any,
-    ) -> stalg.Expression:
-        predicates = [pred.op().to_expr() for pred in op.predicates]
-        tuples = stalg.Rel(
-            filter=stalg.FilterRel(
-                input=self.translate(op.foreign_table),
-                condition=self.translate(
-                    functools.reduce(operator.and_, predicates),
-                    **kwargs,
-                ),
-            )
-        )
-
-        return stalg.Expression(
-            subquery=stalg.Expression.Subquery(
-                set_predicate=stalg.Expression.Subquery.SetPredicate(
-                    predicate_op=stalg.Expression.Subquery.SetPredicate.PREDICATE_OP_EXISTS,
-                    tuples=tuples,
-                )
-            )
-        )
-
-    @translate.register
-    def _not_exists_subquery(
-        self,
-        op: ops.NotExistsSubquery,
-        **kwargs: Any,
-    ) -> stalg.Expression:
-        predicates = [pred.op().to_expr() for pred in op.predicates]
-        tuples = stalg.Rel(
-            filter=stalg.FilterRel(
-                input=self.translate(op.foreign_table),
-                condition=self.translate(
-                    functools.reduce(operator.and_, predicates),
-                    **kwargs,
-                ),
-            )
-        )
-
-        return stalg.Expression(
-            scalar_function=stalg.Expression.ScalarFunction(
-                function_reference=self.compiler.function_id(op=ops.Not(op.to_expr())),
-                output_type=self.translate(op.output_dtype),
-                arguments=[
-                    stalg.FunctionArgument(
-                        value=stalg.Expression(
-                            subquery=stalg.Expression.Subquery(
-                                set_predicate=stalg.Expression.Subquery.SetPredicate(
-                                    predicate_op=stalg.Expression.Subquery.SetPredicate.PREDICATE_OP_EXISTS,
-                                    tuples=tuples,
-                                )
-                            )
-                        )
-                    )
-                ],
-            )
-        )
-
-    @translate.register(ops.Selection)
-    def selection(
-        self,
-        op: ops.Selection,
-        *,
-        child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
+        oppredicates: list[Any],
+        table: ops.TableNode | ir.Table | None = None,
+        relation: stalg.Rel | None = None,
         **kwargs: Any,
     ) -> stalg.Rel:
-        assert (
-            not child_rel_field_offsets
-        ), "non-empty child_rel_field_offsets passed in to selection translation rule"
-        # Explicitly v3
-        child_rel_field_offsets = self._get_child_relation_field_offsets(op.table)
-        # source
-        relation = self.translate(
-            op.table,
-            child_rel_field_offsets=child_rel_field_offsets,
-            **kwargs,
+        relation = relation or self.translate(table)
+
+        predicates = [pred.op().to_expr() for pred in oppredicates]
+        tuples = stalg.Rel(
+            filter=stalg.FilterRel(
+                input=relation,
+                condition=self.translate(
+                    functools.reduce(operator.and_, predicates),
+                    **kwargs,
+                ),
+            )
         )
-        # filter
-        if op.predicates:
-            predicates = [pred.op().to_expr() for pred in op.predicates]
-            relation = stalg.Rel(
-                filter=stalg.FilterRel(
-                    input=relation,
-                    condition=self.translate(
-                        # Explicitly v3
-                        functools.reduce(operator.and_, predicates).op(),
-                        child_rel_field_offsets=child_rel_field_offsets,
-                        **kwargs,
-                    ),
-                )
-            )
 
-        if selections := self._get_selections(op):
-            rels = [
-                (attr, getattr(relation, attr))
-                for attr in (
-                    "aggregate",
-                    "cross",
-                    "extension_leaf",
-                    "extension_multi",
-                    "extension_single",
-                    "fetch",
-                    "filter",
-                    "join",
-                    "project",
-                    "read",
-                    "set",
-                    "sort",
-                )
-            ]
-            for relname, rel in rels:
-                if relname == "aggregate" and rel.measures:
-                    mapping_counter = itertools.count(
-                        len(rel.measures) + len(rel.groupings)
-                    )
-                    break
-                elif output_mapping := rel.common.emit.output_mapping:
-                    mapping_counter = itertools.count(len(output_mapping))
-                    break
-                elif not isinstance(op.table.op(), ops.Join):
-                    # If child table is join, we cannot reliably call schema due to
-                    # potentially duplicate column names, so fallback to the orignal
-                    # logic.
-                    mapping_counter = itertools.count(len(op.table.op().schema))
-                    break
-            else:
-                source_tables = self._find_parent_tables(op)
+        return tuples
+
+    def _mapping_counter(
+        self,
+        op: ops.Selection,
+        rels: list[tuple[str, Any]],
+        selections: Sequence[ir.Column],
+    ) -> itertools.count:
+        for relname, rel in rels:
+            if relname == "aggregate" and rel.measures:
                 mapping_counter = itertools.count(
-                    sum(len(t.schema) for t in source_tables)
+                    len(rel.measures) + len(rel.groupings)
                 )
-
-            relation = stalg.Rel(
-                project=stalg.ProjectRel(
-                    input=relation,
-                    common=stalg.RelCommon(
-                        emit=stalg.RelCommon.Emit(
-                            output_mapping=[next(mapping_counter) for _ in selections]
-                        )
-                    ),
-                    expressions=[
-                        self.translate(
-                            selection,
-                            child_rel_field_offsets=child_rel_field_offsets,
-                            **kwargs,
-                        )
-                        for selection in selections
-                    ],
-                )
+                break
+            elif output_mapping := rel.common.emit.output_mapping:
+                mapping_counter = itertools.count(len(output_mapping))
+                break
+            elif not isinstance(table := op.table.op(), ops.Join):
+                # If child table is join, we cannot reliably call schema due to
+                # potentially duplicate column names, so fallback to the orignal logic.
+                mapping_counter = itertools.count(len(table.schema))
+                break
+        else:
+            source_tables = self._find_parent_tables(op)
+            mapping_counter = itertools.count(
+                sum(len(t.schema) for t in source_tables)  # type: ignore
             )
 
-        # order by
-        if op.sort_keys:
-            relation = stalg.Rel(
-                sort=stalg.SortRel(
-                    input=relation,
-                    sorts=[
-                        self.translate(
-                            key,
-                            child_rel_field_offsets=child_rel_field_offsets,
-                            **kwargs,
-                        )
-                        for key in op.sort_keys
-                    ],
-                )
-            )
-
-        return relation
+        return mapping_counter
 
     def _get_child_relation_field_offsets(
         self, table: ir.TableExpr
