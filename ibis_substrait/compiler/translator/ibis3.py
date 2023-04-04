@@ -151,7 +151,7 @@ class Ibis3Translator(IbisTranslator):
             )
         )
 
-    @translate.register
+    @translate.register(ops.Selection)
     def selection(
         self,
         op: ops.Selection,
@@ -415,7 +415,7 @@ class Ibis3Translator(IbisTranslator):
 
         return child
 
-    @translate.register
+    @translate.register(ops.TableColumn)
     def table_column(
         self,
         op: ops.TableColumn,

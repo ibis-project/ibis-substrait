@@ -34,7 +34,7 @@ let
 
         checkPhase = ''
           runHook preCheck
-          pytest ibis_substrait/tests
+          pytest tests
           runHook postCheck
         '';
 

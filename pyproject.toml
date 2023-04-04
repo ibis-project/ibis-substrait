@@ -116,7 +116,6 @@ ignore = [
   "SIM114", # combine `if` branches
   "SIM117", # nested withs
   "SIM118", # remove .keys() calls from dictionaries
-
 ]
 exclude = ["ibis_substrait/proto", "proto_prefix.py"]
 target-version = "py38"

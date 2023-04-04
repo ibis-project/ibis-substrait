@@ -8,14 +8,7 @@ import functools
 import itertools
 import math
 import uuid
-from typing import (
-    Any,
-    Iterable,
-    Mapping,
-    MutableMapping,
-    Sequence,
-    TypeVar,
-)
+from typing import Any, Iterable, MutableMapping, Sequence, TypeVar
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -538,7 +531,7 @@ class IbisTranslator:
             ),
         )
 
-    @translate.register
+    @translate.register(ops.TableColumn)
     def table_column(
         self,
         op: ops.TableColumn,
@@ -729,11 +722,11 @@ class IbisTranslator:
             return toolz.merge(left_keys, right_keys, dict(zip(root_tables, accum)))
         return {}
 
-    @translate.register
+    @translate.register(ops.Selection)
     def selection(
         self,
         op: ops.Selection,
-        child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
+        child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
         **kwargs: Any,
     ) -> stalg.Rel:
         assert (
@@ -1029,7 +1022,7 @@ class IbisTranslator:
             )
         )
 
-    @translate_literal.register
+    @translate_literal.register(dt.UUID)
     def _literal_uuid(
         self, dtype: dt.UUID, value: str | uuid.UUID
     ) -> stalg.Expression.Literal:
