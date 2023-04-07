@@ -92,6 +92,7 @@
 
           inherit (self.checks.${system}.pre-commit-check) shellHook;
           PROTO_DIR = "${pkgs.substrait}/proto";
+          PROTO_HASH = "${pkgs.substrait.rev}";
         };
     in
     rec {

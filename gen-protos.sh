@@ -3,6 +3,7 @@
 set -eo pipefail
 
 substrait_protos="${1:-${PROTO_DIR}}"
+substrait_hash="${2:-${PROTO_HASH}}"
 
 set -u
 
@@ -37,3 +38,7 @@ protol --in-place --create-package --python-out "./ibis_substrait/proto" buf
 rm -rf "$proto_dir"/tmp
 rm -rf "$proto_dir"/substrait
 mv substrait.bak "$proto_dir"/substrait
+
+# Insert current substrait rev into __init__.py
+sed -i '/__substrait_hash__/d' ./ibis_substrait/__init__.py
+echo "__substrait_hash__ = \"$substrait_hash\"" >> ./ibis_substrait/__init__.py
