@@ -9,7 +9,9 @@ import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
+from packaging.version import parse as vparse
 
+from ibis_substrait import __substrait_version__, __substrait_hash__
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
     IBIS_SUBSTRAIT_TYPE_MAPPING,
@@ -198,7 +200,15 @@ class SubstraitCompiler:
                 names=translate(expr_schema).names,
             )
         )
+        ver = vparse(__substrait_version__)
         return stp.Plan(
+            version=stp.Version(
+                major_number=ver.major,
+                minor_number=ver.minor,
+                patch_number=ver.micro,
+                git_hash=__substrait_hash__ if ver.is_devrelease else "",
+                producer="ibis-substrait",
+            ),
             extension_uris=list(self.extension_uris.values()),
             extensions=list(
                 itertools.chain(
