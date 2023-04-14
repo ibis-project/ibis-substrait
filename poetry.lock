@@ -373,7 +373,7 @@ pyflakes = ">=3.0.0,<3.1.0"
 name = "greenlet"
 version = "2.0.1"
 description = "Lightweight in-process concurrent programming"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
 files = [
@@ -1406,7 +1406,7 @@ files = [
 name = "sqlalchemy"
 version = "1.4.46"
 description = "Database Abstraction Library"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
 files = [
@@ -1681,4 +1681,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "3fdfa31480cd2a63eeeab00c24fc9de0f4bfa0f51f3c1157d6f98bb17da07470"
+content-hash = "78f2079eecd16274719fa3ada7605c806d28e872367350c7ebda88c71c122cde"
