@@ -56,6 +56,7 @@ substrait-validator = "^0.0.11"
 packaging = "^23.0"
 pathspec = "0.11.0"
 pyarrow = "^11.0.0"
+pytest-snapshot = "^0.9.0"
 
 [tool.ruff]
 line-length = 88
