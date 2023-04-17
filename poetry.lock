@@ -560,18 +560,6 @@ test = ["pytest (<7.1)", "pytest-asyncio", "testpath"]
 test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.20)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
 
 [[package]]
-name = "jdot"
-version = "0.5"
-description = ""
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "jdot-0.5-py2.py3-none-any.whl", hash = "sha256:ef678e8310bda8a7048ccd3af79c9c17b50b0ef69db71f71b4649d8b7c4dc656"},
-    {file = "jdot-0.5.tar.gz", hash = "sha256:e60bd08559a92246700089a8f1b346885b50c81271c174c553e9a712a5786811"},
-]
-
-[[package]]
 name = "jedi"
 version = "0.18.2"
 description = "An autocompletion tool for Python that can be used for text editors."
@@ -1513,41 +1501,6 @@ pure-eval = "*"
 tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
-name = "substrait-validator"
-version = "0.0.11"
-description = "Validator for Substrait query plans"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "substrait_validator-0.0.11-cp310-cp310-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:b0ba1e323acac17d8b799657a74b0989f39b2039e76c53ad51cbe1c687ef95c9"},
-    {file = "substrait_validator-0.0.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f4dc5947fd283c98898ef046e1d50e8313f2a58e99f8d63b32afe4a408499e3e"},
-    {file = "substrait_validator-0.0.11-cp310-none-win_amd64.whl", hash = "sha256:dea2edbf64d7df1554c1c667bf7ea8d47a10565c7f4519ccfd7be342118be739"},
-    {file = "substrait_validator-0.0.11-cp311-cp311-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:6e4ae977c9d9e430306756feb96e1c8e2d322176c5a1edc8261e6e5b808cca9d"},
-    {file = "substrait_validator-0.0.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:56a7c2e717cf8d0783644e919c24bc9cbd73ad874e94cf9bee46e898cb375654"},
-    {file = "substrait_validator-0.0.11-cp311-none-win_amd64.whl", hash = "sha256:8ea87116f86acf1f6e34bd7df15003437cae3eef25a677f9495980b3a7085156"},
-    {file = "substrait_validator-0.0.11-cp37-cp37m-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:82a401cbb0427c13b5d61517254171439d72148ac16cc519937858dfee8738fd"},
-    {file = "substrait_validator-0.0.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7cd220353117f204b4fdd3a2ea998ad2fe4c83a2c9a090fffbdbfac6a95679dd"},
-    {file = "substrait_validator-0.0.11-cp37-none-win_amd64.whl", hash = "sha256:a7f8acd8043cc984388d267b1759ba9d23dbab6b0c5825b1d4ccda5b62982e0d"},
-    {file = "substrait_validator-0.0.11-cp38-cp38-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:f45a8c44aeedfacf14901d729795cec8c370856558b6102b64639cc18fd38dc5"},
-    {file = "substrait_validator-0.0.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2854f6e361c775e7a9b06255fd887e081fbe21fcf1b5bbcdd65865ba7de17d27"},
-    {file = "substrait_validator-0.0.11-cp38-none-win_amd64.whl", hash = "sha256:4536ad5d16b8deaacf5e38919326172d60bf81a4e372b547a51fd3fad2302679"},
-    {file = "substrait_validator-0.0.11-cp39-cp39-macosx_10_9_x86_64.macosx_10_9_arm64.macosx_10_9_universal2.whl", hash = "sha256:2a7fa7e24f75dd5247f176aa873fa567ee57543466fd085f57f385b867921f2c"},
-    {file = "substrait_validator-0.0.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c35ac35fc637d4e1e01dbfd8a3b866e3605e5ea5ffffa2344c851513b4944361"},
-    {file = "substrait_validator-0.0.11-cp39-none-win_amd64.whl", hash = "sha256:9df9db086a7742172de40c224feee81c4eb4a8584facf073b2c31895c93a8d1a"},
-    {file = "substrait_validator-0.0.11.tar.gz", hash = "sha256:798b0aeb887268aba4a0fecafe4295cada6c586d53b4bc547189dcb53a8119c6"},
-]
-
-[package.dependencies]
-click = ">=8"
-jdot = ">=0.5"
-protobuf = ">3.19.3"
-pyyaml = ">=6"
-
-[package.extras]
-test = ["pytest (<5.0.0)", "toml (>=0.10.2)"]
-
-[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -1681,4 +1634,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "78f2079eecd16274719fa3ada7605c806d28e872367350c7ebda88c71c122cde"
+content-hash = "86d884312a0b59c0bfef676b19114d47950e1c60a9717d5d3d84a649ab63e6f1"

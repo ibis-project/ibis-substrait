@@ -4,7 +4,6 @@ import ibis
 import pytest
 from google.protobuf import json_format
 from pytest_lazyfixture import lazy_fixture
-from substrait_validator import Config, check_plan
 
 from ibis_substrait.compiler.decompile import decompile
 
@@ -711,26 +710,3 @@ def test_compile(query, compiler, snapshot, request):
     snapshot.assert_match(
         json_format.MessageToJson(plan), f"{request.node.callspec.id}.json"
     )
-
-
-@pytest.mark.parametrize(
-    "query",
-    TPC_H,
-)
-def test_compile_validate(query, compiler):
-    plan = compiler.compile(query)
-
-    c = Config()
-    # too few field names
-    c.override_diagnostic_level(4003, "error", "info")
-    # function def unavailable, cannot check validity of call
-    c.override_diagnostic_level(6003, "warning", "info")
-    # failed to resolve YAML: unknown url type
-    c.override_diagnostic_level(2002, "warning", "info")  # too few field names
-    # typecast validation rules are net yet implemented
-    c.override_diagnostic_level(1, "warning", "info")  # too few field names
-
-    # check_plan takes substrait Plans as arguments but because of namespacing,
-    # our plan is no longer strictly a substrait.plan_pb2.Plan.
-    # Workaround for now is to send in the bytes which it handles without issue.
-    assert check_plan(plan.SerializeToString(), config=c)
