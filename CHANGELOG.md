@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.27.0](https://github.com/ibis-project/ibis-substrait/compare/v2.26.1...v2.27.0) (2023-04-18)
+
+
+### Features
+
+* **version:** add version to produced substrait plans ([7f83f52](https://github.com/ibis-project/ibis-substrait/commit/7f83f525991b68b023a41cd2e3d986c50b1183eb))
+
 ## [2.26.1](https://github.com/ibis-project/ibis-substrait/compare/v2.26.0...v2.26.1) (2023-03-24)
 
 
