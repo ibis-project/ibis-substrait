@@ -60,8 +60,23 @@ def test_aggregation_no_args(t, compiler):
     assert js
 
 
-def test_aggregation_window(t, compiler):
-    expr = t.projection([t.full_name.length().mean().over(ibis.window(group_by="age"))])
+@pytest.mark.parametrize(
+    "preceding, following",
+    [
+        ((4, 2), None),
+        (None, (1, 5)),
+        (None, None),
+        (2, 4),
+    ],
+)
+def test_aggregation_window(t, compiler, preceding, following):
+    expr = t.projection(
+        [
+            t.full_name.length()
+            .mean()
+            .over(ibis.window(preceding=preceding, following=following, group_by="age"))
+        ]
+    )
     result = translate(expr, compiler)
     js = to_dict(result)
     assert js
