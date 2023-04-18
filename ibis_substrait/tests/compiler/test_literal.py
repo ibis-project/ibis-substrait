@@ -300,7 +300,7 @@ literal_cases = pytest.mark.parametrize(
 
 @literal_cases
 def test_literal(compiler, expr, ir):
-    result = translate(expr, compiler)
+    result = translate(expr, compiler=compiler)
     assert result.SerializeToString() == ir.SerializeToString()
 
 
@@ -319,14 +319,14 @@ def test_decimal_literal(compiler):
             )
         )
     )
-    result = translate(expr, compiler)
+    result = translate(expr, compiler=compiler)
     assert result.SerializeToString() == ir.SerializeToString()
 
 
 @pytest.mark.parametrize("value", [ibis.NA, ibis.literal(None)])
 def test_bare_null(compiler, value):
     with pytest.raises(NotImplementedError, match="untyped null literals"):
-        translate(value, compiler)
+        translate(value, compiler=compiler)
 
 
 @literal_cases
