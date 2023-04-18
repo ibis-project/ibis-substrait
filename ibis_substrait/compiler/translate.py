@@ -634,6 +634,31 @@ def _count(
     )
 
 
+@translate.register(ops.StandardDev)
+@translate.register(ops.Variance)
+def _variance_base(
+    op: ops.StandardDev | ops.Variance,
+    expr: ir.ValueExpr | None = None,
+    *,
+    compiler: SubstraitCompiler | None = None,
+    **kwargs: Any,
+) -> stalg.AggregateFunction:
+    if compiler is None:
+        raise ValueError
+    if op.how == "pop":
+        raise NotImplementedError("`how='pop'` not yet implemented")
+    translated_arg = stalg.FunctionArgument(
+        value=translate(op.arg.op(), compiler=compiler, **kwargs)
+    )
+    return stalg.AggregateFunction(
+        function_reference=compiler.function_id(op=op),
+        arguments=[translated_arg],
+        sorts=[],  # TODO: ibis doesn't support this yet
+        phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
+        output_type=translate(op.output_dtype),
+    )
+
+
 @translate.register(ops.SortKey)
 def sort_key(
     op: ops.SortKey,
