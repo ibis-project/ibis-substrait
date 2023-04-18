@@ -57,18 +57,14 @@ class SubstraitCompiler:
 
     def function_id(
         self,
-        *,
-        expr: ir.ValueExpr | None = None,
-        op: ops.Value | None = None,
+        op: ops.Value,
     ) -> int:
         """Create a function mapping for a given expression.
 
         Parameters
         ----------
-        expr
-            An ibis expression that produces a value.
         op
-            Passthrough op to directly specify desired substrait scalar function
+            Ibis operation to use to lookup desired substrait scalar function
 
         Returns
         -------
@@ -76,8 +72,6 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
-        if op is None:
-            op = expr.op() if expr is not None else None
         op_type = type(op)
         op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
 
@@ -196,7 +190,7 @@ class SubstraitCompiler:
         expr_schema = expr.schema()
         rel = stp.PlanRel(
             root=stalg.RelRoot(
-                input=translate(expr.op(), expr=expr, compiler=self, **kwargs),
+                input=translate(expr.op(), compiler=self, **kwargs),
                 names=translate(expr_schema).names,
             )
         )

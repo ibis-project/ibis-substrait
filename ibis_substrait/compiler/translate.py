@@ -241,16 +241,16 @@ def _schema(schema: sch.Schema) -> stt.NamedStruct:
 @translate.register(ir.Expr)
 def _expr(
     expr: ir.Expr,
-    compiler: SubstraitCompiler,
+    *,
+    compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    return translate(expr.op(), expr, compiler=compiler, **kwargs)
+    return translate(expr.op(), compiler=compiler, **kwargs)
 
 
 @translate.register(ops.Literal)
 def _literal(
     op: ops.Literal,
-    expr: ir.ScalarExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -508,20 +508,17 @@ def _translate_window_bounds(
 @translate.register(ops.Alias)
 def alias_op(
     op: ops.Alias,
-    expr: ir.ValueExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    alias_op = op.arg.op()
     # For an alias, dispatch on the underlying argument
-    return translate(op.arg.op(), alias_op.to_expr(), compiler=compiler, **kwargs)
+    return translate(op.arg.op(), compiler=compiler, **kwargs)
 
 
 @translate.register(ops.ValueOp)
 def value_op(
     op: ops.ValueOp,
-    expr: ir.ValueExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -534,7 +531,7 @@ def value_op(
     # given the details of `op` -> function id
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(op=op),
+            function_reference=compiler.function_id(op),
             output_type=translate(op.output_dtype),
             arguments=[
                 stalg.FunctionArgument(
@@ -550,27 +547,25 @@ def value_op(
 @translate.register(ops.WindowOp)
 def window_op(
     op: ops.WindowOp,
-    expr: ir.ValueExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
     if compiler is None:
         raise ValueError
-    expr = expr if expr is not None else op.to_expr()
     lower_bound, upper_bound = _translate_window_bounds(
         op.window.preceding, op.window.following
     )
     return stalg.Expression(
         window_function=stalg.Expression.WindowFunction(
-            function_reference=compiler.function_id(expr=op.expr),
+            function_reference=compiler.function_id(op.expr.op()),
             partitions=[
                 translate(gb, compiler=compiler, **kwargs) for gb in op.window._group_by
             ],
             sorts=[
                 translate(ob, compiler=compiler, **kwargs) for ob in op.window._order_by
             ],
-            output_type=translate(expr.type()),
+            output_type=translate(op.output_dtype),
             phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
             arguments=[
                 stalg.FunctionArgument(
@@ -588,22 +583,20 @@ def window_op(
 @translate.register(ops.Reduction)
 def _reduction(
     op: ops.Reduction,
-    expr: ir.ScalarExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
     if compiler is None:
         raise ValueError
-    expr = expr if expr is not None else op.to_expr()
     return stalg.AggregateFunction(
-        function_reference=compiler.function_id(expr=expr),
+        function_reference=compiler.function_id(op),
         arguments=[
             stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
         ],
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
-        output_type=translate(expr.type()),
+        output_type=translate(op.output_dtype),
     )
 
 
@@ -611,7 +604,6 @@ def _reduction(
 @translate.register(ops.CountStar)
 def _count(
     op: ops.Count,
-    expr: ir.ScalarExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -619,18 +611,18 @@ def _count(
     if compiler is None:
         raise ValueError
     translated_args = []
+    # TODO: remove this expr
     arg = op.arg.op().to_expr()
-    expr = expr if expr is not None else op.to_expr()
     if not isinstance(arg, (ir.TableExpr, ops.PhysicalTable)):
         translated_args.append(
             stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         )
     return stalg.AggregateFunction(
-        function_reference=compiler.function_id(expr=expr),
+        function_reference=compiler.function_id(op),
         arguments=translated_args,
         sorts=[],  # TODO: ibis doesn't support this yet
         phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
-        output_type=translate(expr.type()),
+        output_type=translate(op.output_dtype),
     )
 
 
@@ -638,7 +630,6 @@ def _count(
 @translate.register(ops.Variance)
 def _variance_base(
     op: ops.StandardDev | ops.Variance,
-    expr: ir.ValueExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -664,7 +655,6 @@ def _variance_base(
 @translate.register(ops.SortKey)
 def sort_key(
     op: ops.SortKey,
-    expr: ir.SortExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -682,7 +672,6 @@ def sort_key(
 @translate.register(ops.TableColumn)
 def table_column(
     op: ops.TableColumn,
-    expr: ir.ColumnExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
@@ -707,7 +696,6 @@ def table_column(
 @translate.register(ops.StructField)
 def struct_field(
     op: ops.StructField,
-    _: ir.ColumnExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -739,7 +727,6 @@ def struct_field(
 @translate.register(ops.UnboundTable)
 def unbound_table(
     op: ops.UnboundTable,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -790,7 +777,6 @@ def _get_child_relation_field_offsets(table: ir.TableExpr) -> dict[ops.TableNode
 @translate.register(ops.Selection)
 def selection(
     op: ops.Selection,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     child_rel_field_offsets: Mapping[ops.TableNode, int] | None = None,
@@ -981,15 +967,13 @@ def _translate_anti_join(_: ops.LeftAntiJoin) -> stalg.JoinRel.JoinType.V:
 @translate.register(ops.Join)
 def join(
     op: ops.Join,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
 ) -> stalg.Rel:
-    expr = expr if expr is not None else op.to_expr()
     child_rel_field_offsets = kwargs.pop("child_rel_field_offsets", None)
     child_rel_field_offsets = (
-        child_rel_field_offsets or _get_child_relation_field_offsets(expr)
+        child_rel_field_offsets or _get_child_relation_field_offsets(op.to_expr())
     )
     predicates = [pred.op().to_expr() for pred in op.predicates]
     return stalg.Rel(
@@ -1010,7 +994,6 @@ def join(
 @translate.register(ops.Limit)
 def limit(
     op: ops.Limit,
-    expr: ir.Expr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1051,7 +1034,6 @@ def set_op_type_difference(op: ops.Difference) -> stalg.SetRel.SetOp.V:
 @translate.register(ops.SetOp)
 def set_op(
     op: ops.SetOp,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1070,7 +1052,6 @@ def set_op(
 @translate.register(ops.Aggregation)
 def aggregation(
     op: ops.Aggregation,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1119,7 +1100,6 @@ def aggregation(
 @translate.register(ops.SearchedCase)
 def _simple_searched_case(
     op: ops.SimpleCase | ops.SearchedCase,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1143,7 +1123,6 @@ def _simple_searched_case(
 @translate.register(ops.Where)
 def _where(
     op: ops.Where,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1164,7 +1143,6 @@ def _where(
 @translate.register(ops.Contains)
 def _contains(
     op: ops.Contains,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1187,7 +1165,6 @@ def _contains(
 @translate.register(ops.Cast)
 def _cast(
     op: ops.Cast,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1204,7 +1181,6 @@ def _cast(
 @translate.register(ops.ExtractDateField)
 def _extractdatefield(
     op: ops.ExtractDateField,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1219,11 +1195,9 @@ def _extractdatefield(
     if compiler is None:
         raise ValueError
 
-    expr = expr if expr is not None else op.to_expr()
-
     scalar_func = stalg.Expression.ScalarFunction(
-        function_reference=compiler.function_id(expr=expr),
-        output_type=translate(expr.type()),
+        function_reference=compiler.function_id(op),
+        output_type=translate(op.output_dtype),
     )
     scalar_func.arguments.add(enum=span)
     scalar_func.arguments.extend(arguments)
@@ -1233,7 +1207,6 @@ def _extractdatefield(
 @translate.register(ops.Log)
 def _log(
     op: ops.Log,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1241,7 +1214,6 @@ def _log(
     if compiler is None:
         raise ValueError
 
-    expr = expr if expr is not None else op.to_expr()
     arg = stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
     base = stalg.FunctionArgument(
         value=translate(
@@ -1252,8 +1224,8 @@ def _log(
     )
 
     scalar_func = stalg.Expression.ScalarFunction(
-        function_reference=compiler.function_id(expr=expr),
-        output_type=translate(expr.type()),
+        function_reference=compiler.function_id(op),
+        output_type=translate(op.output_dtype),
         arguments=[arg, base],
     )
     return stalg.Expression(scalar_function=scalar_func)
@@ -1262,7 +1234,6 @@ def _log(
 @translate.register(ops.FloorDivide)
 def _floordivide(
     op: ops.FloorDivide,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1274,7 +1245,6 @@ def _floordivide(
 @translate.register(ops.Clip)
 def _clip(
     op: ops.Clip,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1305,7 +1275,6 @@ def _clip(
 @translate.register(ops.TableArrayView)
 def _table_array_view(
     op: ops.TableArrayView,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1316,7 +1285,6 @@ def _table_array_view(
 @translate.register(ops.SelfReference)
 def _self_reference(
     op: ops.SelfReference,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1327,7 +1295,6 @@ def _self_reference(
 @translate.register(ops.ExistsSubquery)
 def _exists_subquery(
     op: ops.ExistsSubquery,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1338,7 +1305,7 @@ def _exists_subquery(
             input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
                 functools.reduce(operator.and_, predicates),
-                compiler,
+                compiler=compiler,
                 **kwargs,
             ),
         )
@@ -1357,7 +1324,6 @@ def _exists_subquery(
 @translate.register(ops.NotExistsSubquery)
 def _not_exists_subquery(
     op: ops.NotExistsSubquery,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1377,7 +1343,7 @@ def _not_exists_subquery(
 
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(op=ops.Not(op.to_expr())),
+            function_reference=compiler.function_id(ops.Not(op.to_expr())),
             output_type=translate(op.output_dtype),
             arguments=[
                 stalg.FunctionArgument(
@@ -1399,7 +1365,6 @@ def _not_exists_subquery(
 @translate.register(ops.Ceil)
 def _floor_ceil_cast(
     op: ops.Floor,
-    expr: ir.Column | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
@@ -1409,9 +1374,7 @@ def _floor_ceil_cast(
     output_type = translate(op.output_dtype)
     input = stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(
-                expr=expr if expr is not None else op.to_expr()
-            ),
+            function_reference=compiler.function_id(op),
             output_type=output_type,
             arguments=[
                 stalg.FunctionArgument(
@@ -1434,7 +1397,6 @@ def _floor_ceil_cast(
 @translate.register(ops.ElementWiseVectorizedUDF)
 def _elementwise_udf(
     op: ops.ElementWiseVectorizedUDF,
-    expr: ir.TableExpr | None = None,
     *,
     compiler: SubstraitCompiler | None = None,
     **kwargs: Any,
