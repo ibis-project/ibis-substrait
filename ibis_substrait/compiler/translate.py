@@ -480,7 +480,7 @@ def _translate_window_bounds(
     following = [None] if follows is None else following
 
     if len(preceding) == 2:
-        if following:
+        if following and following != [None]:
             raise ValueError(
                 "`following` not allowed when window bounds are both preceding"
             )
@@ -492,7 +492,7 @@ def _translate_window_bounds(
         raise ValueError(f"preceding must be length 1 or 2 got: {len(preceding)}")
 
     if len(following) == 2:
-        if preceding:
+        if preceding and preceding != [None]:
             raise ValueError(
                 "`preceding` not allowed when window bounds are both following"
             )
