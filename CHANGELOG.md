@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.28.1](https://github.com/ibis-project/ibis-substrait/compare/v2.28.0...v2.28.1) (2023-04-19)
+
+
+### Bug Fixes
+
+* **window functions:** handle window function ranges correctly ([1352183](https://github.com/ibis-project/ibis-substrait/commit/1352183598234ea27f11f47d95bd67342806207c))
+
 ## [2.28.0](https://github.com/ibis-project/ibis-substrait/compare/v2.27.0...v2.28.0) (2023-04-19)
 
 
