@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.28.0](https://github.com/ibis-project/ibis-substrait/compare/v2.27.0...v2.28.0) (2023-04-19)
+
+
+### Features
+
+* add support for std_dev and variance ([#583](https://github.com/ibis-project/ibis-substrait/issues/583)) ([e6cfb6c](https://github.com/ibis-project/ibis-substrait/commit/e6cfb6cf5c87e1ce1dc31e8a280a963e46b11870))
+
 ## [2.27.0](https://github.com/ibis-project/ibis-substrait/compare/v2.26.1...v2.27.0) (2023-04-18)
 
 
