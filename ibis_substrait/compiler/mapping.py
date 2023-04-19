@@ -74,6 +74,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Sign": "sign",
     "Sin": "sin",
     "Sqrt": "sqrt",
+    "StandardDev": "std_dev",
     "StartsWith": "starts_with",
     "StringFind": "strpos",
     "StringConcat": "concat",
@@ -89,6 +90,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Sum": "sum",
     "Tan": "tan",
     "Uppercase": "upper",
+    "Variance": "variance",
     "Xor": "xor",
 }
 
