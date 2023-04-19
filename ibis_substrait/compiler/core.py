@@ -115,7 +115,7 @@ class SubstraitCompiler:
                 [
                     IBIS_SUBSTRAIT_TYPE_MAPPING[arg.op().output_dtype.name]
                     for arg in op.args
-                    if arg is not None and isinstance(arg, ops.Node)
+                    if arg is not None and isinstance(arg, (ir.Expr, ops.Node))
                 ]
             )
             function_extension = _extension_mapping[op_name].get(sigkey)
