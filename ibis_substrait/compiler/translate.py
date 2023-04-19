@@ -649,8 +649,7 @@ def _variance_base(
         value=translate(op.arg.op(), compiler=compiler, **kwargs)
     )
     translated_how = stalg.FunctionOption(
-        name="distribution",
-        preference=["POPULATION" if op.how == "pop" else "SAMPLE"]
+        name="distribution", preference=["POPULATION" if op.how == "pop" else "SAMPLE"]
     )
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(op=op),
