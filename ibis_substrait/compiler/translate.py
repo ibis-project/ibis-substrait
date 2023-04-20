@@ -603,9 +603,8 @@ def _count(
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
     translated_args = []
-    # TODO: remove this expr
-    arg = op.arg.op().to_expr()
-    if not isinstance(arg, (ir.TableExpr, ops.PhysicalTable)):
+    arg = op.arg.op()
+    if not isinstance(arg, ops.TableNode):
         translated_args.append(
             stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         )
@@ -785,12 +784,12 @@ def selection(
     )
     # filter
     if op.predicates:
-        predicates = [pred.op().to_expr() for pred in op.predicates]
+        reduced_predicates = _reduce_predicates(op)
         relation = stalg.Rel(
             filter=stalg.FilterRel(
                 input=relation,
                 condition=translate(
-                    functools.reduce(operator.and_, predicates),
+                    reduced_predicates,
                     compiler=compiler,
                     child_rel_field_offsets=child_rel_field_offsets,
                     **kwargs,
@@ -919,6 +918,14 @@ def _find_parent_tables(op: ops.Selection) -> set[ir.Table]:
     return source_tables
 
 
+def _reduce_predicates(op: ops.Selection) -> ops.Value:
+    if IBIS_4:
+        return functools.reduce(ops.And, op.predicates)
+    else:
+        predicates = [pred.op().to_expr() for pred in op.predicates]
+        return functools.reduce(operator.and_, predicates).op()
+
+
 @functools.singledispatch
 def _translate_join_type(op: ops.Join) -> stalg.JoinRel.JoinType.V:
     raise NotImplementedError(f"join type `{type(op).__name__}` not implemented")
@@ -965,13 +972,13 @@ def join(
     child_rel_field_offsets = (
         child_rel_field_offsets or _get_child_relation_field_offsets(op.to_expr())
     )
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    reduced_predicates = _reduce_predicates(op)
     return stalg.Rel(
         join=stalg.JoinRel(
             left=translate(op.left, compiler=compiler, **kwargs),
             right=translate(op.right, compiler=compiler, **kwargs),
             expression=translate(
-                functools.reduce(operator.and_, predicates),
+                reduced_predicates,
                 compiler=compiler,
                 child_rel_field_offsets=child_rel_field_offsets,
                 **kwargs,
@@ -1039,6 +1046,12 @@ def set_op(
     )
 
 
+def _filter_predicates(op):
+    table = op.table.op().to_expr()
+    predicates = [pred.op().to_expr() for pred in op.predicates]
+    return table.filter(predicates) if predicates else table
+
+
 @translate.register(ops.Aggregation)
 def aggregation(
     op: ops.Aggregation,
@@ -1049,10 +1062,9 @@ def aggregation(
     if op.having:
         raise NotImplementedError("`having` not yet implemented")
 
-    table = op.table.op().to_expr()
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    filtered_predicates = _filter_predicates(op)
     input = translate(
-        table.filter(predicates) if predicates else table,
+        filtered_predicates,
         compiler=compiler,
         **kwargs,
     )
@@ -1283,12 +1295,12 @@ def _exists_subquery(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    reduced_predicates = _reduce_predicates(op)
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
             input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
-                functools.reduce(operator.and_, predicates),
+                reduced_predicates,
                 compiler=compiler,
                 **kwargs,
             ),
@@ -1313,12 +1325,12 @@ def _not_exists_subquery(
     **kwargs: Any,
 ) -> stalg.Expression:
     assert compiler is not None
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    reduced_predicates = _reduce_predicates(op)
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
             input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
-                functools.reduce(operator.and_, predicates),
+                reduced_predicates,
                 compiler=compiler,
                 **kwargs,
             ),
