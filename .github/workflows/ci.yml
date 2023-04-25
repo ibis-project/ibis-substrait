@@ -65,7 +65,7 @@ jobs:
           - "311"
         include:
          - os: macos-latest
-           python-version: "3.10"
+           python-version: "310"
     steps:
       - uses: actions/checkout@v3
 
@@ -82,7 +82,9 @@ jobs:
           extraPullNames: nix-community,poetry2nix,ibis
 
       - name: build package and run tests
-        run: nix build --keep-going --print-build-logs --file . --argstr python ${{ matrix.python-version }}
+        run: |
+          version='${{ matrix.python-version }}'
+          nix build ".#ibisSubstrait${version//./}" --fallback --keep-going --print-build-logs
   poetry_ibis:
     runs-on: ${{ matrix.os }}
     strategy:
