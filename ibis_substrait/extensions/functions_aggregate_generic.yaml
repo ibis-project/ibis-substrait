@@ -35,3 +35,25 @@ aggregate_functions:
             value: any
         nullability: DECLARED_OUTPUT
         return: any?
+  - name: "first"
+    description: >
+      Selects the first value from a group of values.
+
+      If the input is empty, the function returns null.
+    impls:
+      - args:
+          - name: x
+            value: any
+        nullability: DECLARED_OUTPUT
+        return: any?
+  - name: "last"
+    description: >
+      Selects the last value from a group of values.
+
+      If the input is empty, the function returns null.
+    impls:
+      - args:
+          - name: x
+            value: any
+        nullability: DECLARED_OUTPUT
+        return: any?
