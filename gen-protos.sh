@@ -7,6 +7,10 @@ substrait_hash="${2:-${PROTO_HASH}}"
 
 set -u
 
+# Using Substrait requires protobuf >= 3.20.1
+# Generating the Python pb2 files requires protobuf == 3.20.1
+python -c "import google.protobuf; assert google.protobuf.__version__ == '3.20.1'"
+
 proto_dir=./proto
 extension_dir=./ibis_substrait/extensions
 

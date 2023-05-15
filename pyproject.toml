@@ -22,9 +22,12 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4"
 ibis-framework = ">=3"
-protobuf = "3.20.1" # protobuf==3.20 C extensions aren't compatible with 3.19.4
 packaging = ">=21.3"
 pyyaml = ">=5"
+# protobuf==3.20 C extensions aren't compatible with 3.19.4
+# protobuf >= 3.20.1 required for using ibis-substrait
+# protobuf == 3.20.1 required for regenerating Python Substrait pb2 files
+protobuf = ">=3.20.1" 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.0.0"
@@ -32,6 +35,7 @@ duckdb = ">=0.4.0"
 duckdb-engine = ">=0.5"
 flake8 = "^6.0.0"
 ipython = "^8.2.0"
+protobuf = "3.20.1" 
 protoletariat = "^2.0.0"
 ruff = "^0.0.252"
 setuptools = "^67.0.0"
