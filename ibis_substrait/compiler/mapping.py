@@ -180,8 +180,23 @@ def _parse_func(entry: Mapping[str, Any]) -> Iterator[FunctionEntry]:
         yield sf
 
 
-def register_extension_yaml(fname: str | Path, prefix: str | None = None) -> None:
-    """Add a substrait extension YAML file to the ibis substrait compiler."""
+def register_extension_yaml(
+    fname: str | Path, prefix: str | None = None, uri: str | None = None
+) -> None:
+    """Add a substrait extension YAML file to the ibis substrait compiler.
+
+    Parameters
+    ----------
+    fname
+        The filename of the extension yaml to register.
+    prefix
+        Custom prefix to use when constructing Substrait extension URI
+    uri
+        A custom URI to use for all functions defined within `fname`.
+        If passed, this value overrides `prefix`.
+
+
+    """
     fname = Path(fname)
     with open(fname) as f:  # type: ignore
         extension_definitions = yaml.safe_load(f)
@@ -195,7 +210,7 @@ def register_extension_yaml(fname: str | Path, prefix: str | None = None) -> Non
     for named_functions in extension_definitions.values():
         for function in named_functions:
             for func in _parse_func(function):
-                func.uri = f"{prefix}/{fname.name}"
+                func.uri = uri or f"{prefix}/{fname.name}"
                 _extension_mapping[function["name"]][tuple(func.inputs)] = func
 
 

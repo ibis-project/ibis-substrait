@@ -287,3 +287,33 @@ def test_extension_udf_compile(compiler):
     assert len(plan.extensions) == 2
     assert plan.extensions[0].extension_function.name == "add1"
     assert plan.extensions[1].extension_function.name == "sub1"
+
+
+def test_extension_register_uri_override(tmp_path):
+    from ibis_substrait.compiler.mapping import (
+        _extension_mapping,
+        register_extension_yaml,
+    )
+
+    sample_yaml = """scalar_functions:
+  -
+    name: "anotheradd"
+    impls:
+      - args:
+          - name: x
+            value: a
+          - name: y
+            value: b
+        return: c"""
+
+    yaml_file = tmp_path / "foo.yaml"
+    yaml_file.write_text(sample_yaml)
+
+    register_extension_yaml(yaml_file, uri="orkbork")
+
+    assert _extension_mapping["anotheradd"]
+    assert _extension_mapping["anotheradd"][("a", "b")].uri == "orkbork"
+
+    register_extension_yaml(yaml_file, prefix="orkbork")
+    assert _extension_mapping["anotheradd"]
+    assert _extension_mapping["anotheradd"][("a", "b")].uri == "orkbork/foo.yaml"
