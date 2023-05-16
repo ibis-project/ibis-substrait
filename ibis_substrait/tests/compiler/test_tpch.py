@@ -3,9 +3,21 @@ from datetime import date
 import ibis
 import pytest
 from google.protobuf import json_format
+from packaging import version
 from pytest_lazyfixture import lazy_fixture
 
 from ibis_substrait.compiler.decompile import decompile
+
+# changes in ops have led to one of the tpc queries ending up constructed
+# in a different order, so we snapshot query 9 with two versions of Ibis.
+ibis5 = pytest.mark.skipif(
+    version.parse(ibis.__version__) >= version.parse("5.0.0"),
+    reason="Not extending decompiler support further",
+)
+ibis4 = pytest.mark.skipif(
+    version.parse(ibis.__version__) < version.parse("5.0.0"),
+    reason="Not extending decompiler support further",
+)
 
 
 @pytest.fixture
@@ -661,7 +673,8 @@ TPC_H = [
             reason="Aggregates need to be handled differently than they are",
         ),
     ),
-    lazy_fixture("tpc_h09"),
+    pytest.param(lazy_fixture("tpc_h09"), marks=ibis5),
+    pytest.param(lazy_fixture("tpc_h09"), marks=ibis4),
     lazy_fixture("tpc_h10"),
     lazy_fixture("tpc_h11"),
     lazy_fixture("tpc_h12"),
