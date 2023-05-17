@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [2.29.0](https://github.com/ibis-project/ibis-substrait/compare/v2.28.2...v2.29.0) (2023-05-17)
+
+
+### Features
+
+* add support for ibis 5.x ([22c56b6](https://github.com/ibis-project/ibis-substrait/commit/22c56b604d5e96c4a3eae060f5c82d1f1afe0ab3))
+
 ## [2.28.2](https://github.com/ibis-project/ibis-substrait/compare/v2.28.1...v2.28.2) (2023-05-17)
 
 
