@@ -1,6 +1,20 @@
 Release Notes
 ---
 
+## [2.28.2](https://github.com/ibis-project/ibis-substrait/compare/v2.28.1...v2.28.2) (2023-05-17)
+
+
+### Bug Fixes
+
+* **uri:** allow overriding extension uri when registering extension file ([59d5b29](https://github.com/ibis-project/ibis-substrait/commit/59d5b29944e60f8dc1939d130b0e33996568a1fc))
+
+
+### Refactors
+
+* change compiler to required keyword arg ([15737f3](https://github.com/ibis-project/ibis-substrait/commit/15737f3a8a0323cb6c4296ba725f4f7e274bf32e))
+* **deps:** loosen user-facing protobuf dependency ([88723a1](https://github.com/ibis-project/ibis-substrait/commit/88723a19b82a91ef04e3c148f9329ec4458b4ecc))
+* remove expr arguments in translate ([99649dc](https://github.com/ibis-project/ibis-substrait/commit/99649dc2d71ee801b984965610ad3e44cf47475e))
+
 ## [2.28.1](https://github.com/ibis-project/ibis-substrait/compare/v2.28.0...v2.28.1) (2023-04-19)
 
 
