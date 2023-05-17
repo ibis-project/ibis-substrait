@@ -37,7 +37,7 @@ flake8 = "^6.0.0"
 ipython = "^8.2.0"
 protobuf = "3.20.1" 
 protoletariat = "^2.0.0"
-ruff = "^0.0.252"
+ruff = "^0.0.267"
 setuptools = "^67.0.0"
 
 [tool.poetry.group.types.dependencies]
