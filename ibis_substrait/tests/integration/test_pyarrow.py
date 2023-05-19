@@ -37,7 +37,9 @@ def to_ibis_table(arrow_table, table_name="t1"):
 def run_query(plan, tbl):
     query_bytes = plan.SerializeToString()
     result = pa_substrait.run_query(
-        pa.py_buffer(query_bytes), table_provider=get_table_provider(tbl)
+        # PyArrow wants its bytes in a very specific byte-string
+        pa.py_buffer(query_bytes),
+        table_provider=get_table_provider(tbl),
     )
 
     results = result.read_all()
@@ -96,6 +98,9 @@ def test_pyarrow_can_consume_basic_operations(compiler, arrow_table):
 @arrow12
 def test_extension_udf():
     def register_pyarrow_udf(udf, registry=None):
+        """
+        Boilerplate that is needed for the udfs to execute in PyArrow. Nothing to do with ibis.
+        """
         import inspect
 
         from ibis.backends.pyarrow.datatypes import to_pyarrow_type
@@ -127,22 +132,31 @@ def test_extension_udf():
                 out_type,
             )
 
+    # type-specifications are for ibis' type-checking
+    # part of ibis' lazy evaluation
     @elementwise(input_type=["int64"], output_type="int64")
     def add1(col: pa.Int64Scalar, ctx=None) -> pa.Int64Scalar:
         return pc.call_function("add", [col, 1], memory_pool=ctx.memory_pool)
 
+    # @elementwise defines a UDF that operates element-wise
     @elementwise(input_type=["int64"], output_type="int64")
     def sub1(col: pa.Int64Scalar, ctx=None) -> pa.Int64Scalar:
+        # PyArrow.compute code
         return pc.call_function("subtract", [col, 1], memory_pool=ctx.memory_pool)
 
+    # registers the UDF on the execution side with PyArrow.
     registry = pc.function_registry()
     register_pyarrow_udf(add1, registry)
     register_pyarrow_udf(sub1, registry)
 
+    # setting up the ibis table
     t = ibis.table([("a", "int")], name="t")
+    # the ibis-substrait compiler requires an ibis' table expression
     query = t.mutate(b=add1(t.a), c=sub1(t.a))
 
     compiler = SubstraitCompiler(
+        # UDF uri for the sake of PyArrow
+        # so that it knows where to look to find the UDF
         udf_uri="urn:arrow:substrait_simple_extension_function"
     )
 
