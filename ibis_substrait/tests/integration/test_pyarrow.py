@@ -7,7 +7,7 @@ from ibis_substrait.compiler.core import SubstraitCompiler
 
 pa = pytest.importorskip("pyarrow")
 pc = pytest.importorskip("pyarrow.compute")
-substrait = pytest.importorskip("pyarrow.substrait")
+pa_substrait = pytest.importorskip("pyarrow.substrait")
 
 
 arrow12 = pytest.mark.skipif(
@@ -36,7 +36,7 @@ def to_ibis_table(arrow_table, table_name="t1"):
 
 def run_query(plan, tbl):
     query_bytes = plan.SerializeToString()
-    result = substrait.run_query(
+    result = pa_substrait.run_query(
         pa.py_buffer(query_bytes), table_provider=get_table_provider(tbl)
     )
 
