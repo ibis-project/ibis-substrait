@@ -115,7 +115,8 @@ ignore = [
   "SIM114", # combine `if` branches
   "SIM117", # nested withs
   "SIM118", # remove .keys() calls from dictionaries
-
+  # TODO(gil): re-enable after we drop 3.8
+  "UP006", # use collections.deque instead of Deque for type annotation
 ]
 exclude = ["ibis_substrait/proto", "proto_prefix.py"]
 target-version = "py38"
