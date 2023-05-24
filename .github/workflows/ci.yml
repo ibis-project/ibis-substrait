@@ -112,10 +112,19 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: pip3 install 'poetry<1.4'
-      - run: poetry install --sync
-      - run: poetry run pip install 'ibis-framework==${{ matrix.ibis-version }}'
-      - run: poetry run pytest
+      - name: install poetry
+        run: pip3 install 'poetry<1.4'
+      - name: poetry sync
+        run: poetry install --sync
+
+      - name: install Ibis version
+        run: poetry run pip install 'ibis-framework==${{ matrix.ibis-version }}'
+
+      - name: show installed deps
+        run: poetry run pip list
+
+      - name: run pytest
+        run: poetry run pytest
   poetry_ibis_pyarrow_nightly:
     runs-on: ${{ matrix.os }}
     strategy:
