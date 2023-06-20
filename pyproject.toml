@@ -1,7 +1,6 @@
 [tool.poetry]
 name = "ibis-substrait"
-version = "2.29.1"
-build = "build.py"
+version = "2.29.0"
 packages = [{ include = "ibis_substrait" }]
 homepage = "https://github.com/ibis-project/ibis-substrait"
 repository = "https://github.com/ibis-project/ibis-substrait"
@@ -24,18 +23,13 @@ python = ">=3.8.1,<4"
 ibis-framework = ">=3"
 packaging = ">=21.3"
 pyyaml = ">=5"
-# protobuf==3.20 C extensions aren't compatible with 3.19.4
-# protobuf >= 3.20.1 required for using ibis-substrait
-# protobuf == 3.20.1 required for regenerating Python Substrait pb2 files
-protobuf = ">=3.20.1" 
+substrait = ">=0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=23.0.0"
 duckdb = ">=0.4.0"
 duckdb-engine = ">=0.5"
 ipython = ">=8.2.0"
-protobuf = "3.20.1" 
-protoletariat = ">=2.0.0"
 ruff = ">=0.0.252"
 setuptools = ">=67.0.0"
 
@@ -118,7 +112,6 @@ ignore = [
   # TODO(gil): re-enable after we drop 3.8
   "UP006", # use collections.deque instead of Deque for type annotation
 ]
-exclude = ["ibis_substrait/proto", "proto_prefix.py"]
 target-version = "py38"
 
 [tool.ruff.per-file-ignores]
@@ -159,11 +152,9 @@ norecursedirs = ["site-packages", "dist-packages", ".direnv"]
 
 [tool.black]
 line_length = 88
-exclude = "ibis_substrait/proto"
 
 [tool.isort]
 profile = "black"
-skip_glob = ["ibis_substrait/proto/**/*.py"]
 
 [tool.mypy]
 exclude = '((tests|docs)/.+|build)\.py'
