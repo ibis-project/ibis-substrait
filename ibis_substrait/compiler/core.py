@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import itertools
-from typing import Any, Hashable, Iterator
+from typing import TYPE_CHECKING, Any, Hashable, Iterator
 
-import google.protobuf.message as msg
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
 from packaging.version import parse as vparse
+from substrait.gen.proto import algebra_pb2 as stalg
+from substrait.gen.proto import plan_pb2 as stp
+from substrait.gen.proto.extensions import extensions_pb2 as ste
 
 from ibis_substrait import __substrait_hash__, __substrait_version__
 from ibis_substrait.compiler.mapping import (
@@ -17,9 +19,9 @@ from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_TYPE_MAPPING,
     _extension_mapping,
 )
-from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
-from ibis_substrait.proto.substrait.ibis import plan_pb2 as stp
-from ibis_substrait.proto.substrait.ibis.extensions import extensions_pb2 as ste
+
+if TYPE_CHECKING:
+    import google.protobuf.message as msg
 
 
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
