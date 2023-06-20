@@ -47,14 +47,6 @@
       };
       inherit (pkgs) lib;
 
-      genProtos = pkgs.writeShellApplication {
-        name = "gen-protos";
-        runtimeInputs = [ pkgs.buf ];
-        text = ''
-          ${./gen-protos.sh} "${pkgs.substrait}/proto"
-        '';
-      };
-
       preCommitDeps = with pkgs; [
         actionlint
         git
@@ -76,23 +68,15 @@
 
           name = "ibis-substrait-${pythonVersion}";
           nativeBuildInputs = (with pkgs; [
-            buf
             cacert
             cachix
-            genProtos
-            jq
             nixpkgs-fmt
             poetry
-            protobuf3_20
-            sd
-            yj
           ])
           ++ [ pkgs."ibisSubstraitDevEnv${shortPythonVersion}" ]
           ++ preCommitDeps;
 
           inherit (self.checks.${system}.pre-commit-check) shellHook;
-          PROTO_DIR = "${pkgs.substrait}/proto";
-          PROTO_HASH = "${pkgs.substrait.rev}";
         };
     in
     rec {
