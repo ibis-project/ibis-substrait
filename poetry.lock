@@ -31,22 +31,6 @@ six = "*"
 test = ["astroid", "pytest"]
 
 [[package]]
-name = "astunparse"
-version = "1.6.3"
-description = "An AST unparser for Python"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "astunparse-1.6.3-py2.py3-none-any.whl", hash = "sha256:c2652417f2c8b5bb325c885ae329bdf3f86424075c4fd1a128674bc6fba4b8e8"},
-    {file = "astunparse-1.6.3.tar.gz", hash = "sha256:5ad93a8456f0d084c3456d059fd9a92cce667963232cbf763eac3bc5b7940872"},
-]
-
-[package.dependencies]
-six = ">=1.6.1,<2.0"
-wheel = ">=0.23.0,<1.0"
-
-[[package]]
 name = "atpublic"
 version = "3.1.1"
 description = "Keep all y'all's __all__'s in sync"
@@ -949,23 +933,6 @@ files = [
 ]
 
 [[package]]
-name = "protoletariat"
-version = "2.0.0"
-description = "Python protocol buffers for the rest of us"
-category = "dev"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "protoletariat-2.0.0-py3-none-any.whl", hash = "sha256:918ee5218824bcbfd89b1d6e4d27ff59b26a7d58b566324e711ee01b7554d94b"},
-    {file = "protoletariat-2.0.0.tar.gz", hash = "sha256:da4563d356c3bc9f9018dc639ea13abaf04e226874cd3ed94928db5ddf84feac"},
-]
-
-[package.dependencies]
-astunparse = {version = ">=1.6.3,<2", markers = "python_version < \"3.9\""}
-click = ">=8,<9"
-protobuf = ">=3.19.1,<5"
-
-[[package]]
 name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
@@ -1432,14 +1399,14 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "substrait"
-version = "0.2.0"
+version = "0.2.1"
 description = "A python package for Substrait."
 category = "main"
 optional = false
 python-versions = ">=3.8.1"
 files = [
-    {file = "substrait-0.2.0-py3-none-any.whl", hash = "sha256:43e3ff61c1ef612108e2fe0f1d4d3a2b1cf4dead28057549b995449b491f8c80"},
-    {file = "substrait-0.2.0.tar.gz", hash = "sha256:f2bbcf780bd0e37b07ad35ccfc0ff8893b8eb2db36d7cd286acfd288000e124f"},
+    {file = "substrait-0.2.1-py3-none-any.whl", hash = "sha256:fe721349caf3dd2f6ab281f55d1c6f9fbb809eb227c8d08fbd6e4c967982eb2e"},
+    {file = "substrait-0.2.1.tar.gz", hash = "sha256:ff2c1ecfdd2af897170a8405ae1108eb0e98db000cda779568400fba4bbd6ece"},
 ]
 
 [package.dependencies]
@@ -1550,21 +1517,6 @@ files = [
 ]
 
 [[package]]
-name = "wheel"
-version = "0.38.4"
-description = "A built-package format for Python"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "wheel-0.38.4-py3-none-any.whl", hash = "sha256:b60533f3f5d530e971d6737ca6d58681ee434818fab630c83a734bb10c083ce8"},
-    {file = "wheel-0.38.4.tar.gz", hash = "sha256:965f5259b566725405b05e7cf774052044b1ed30119b5d586b2703aafe8719ac"},
-]
-
-[package.extras]
-test = ["pytest (>=3.0.0)"]
-
-[[package]]
 name = "zipp"
 version = "3.11.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -1583,4 +1535,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "2cacc134100343793842c2576f4b8b71973273076ca06f80571bc651c7a8bbc0"
+content-hash = "6ca98d8ae10e0c3871cb0840bff12289ef3c8d32d04ac26e0a313036977f3086"
