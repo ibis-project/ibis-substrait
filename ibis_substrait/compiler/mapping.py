@@ -231,7 +231,7 @@ def _populate_default_extensions() -> None:
     ]
 
     for yaml_file in EXTENSION_YAMLS:
-        with importlib.resources.path("ibis_substrait.extensions", yaml_file) as fpath:
+        with importlib.resources.path("substrait.extensions", yaml_file) as fpath:
             register_extension_yaml(fpath)
 
 

@@ -1,3 +1,6 @@
 __version__ = "2.29.0"
-__substrait_version__ = "0.24.0"
-__substrait_hash__ = "335a4dc74ccb3ef88769878d36c35e511e47ef70"
+
+import substrait
+
+__substrait_version__ = substrait.__substrait_version__
+__substrait_hash__ = substrait.__substrait_hash__

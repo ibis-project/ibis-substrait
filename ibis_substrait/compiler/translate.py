@@ -24,14 +24,14 @@ import ibis.expr.types as ir
 import toolz
 from ibis import util
 from packaging import version
+from substrait.gen.proto import algebra_pb2 as stalg
+from substrait.gen.proto import type_pb2 as stt
 
 from ibis_substrait.compiler.core import SubstraitCompiler, _get_fields
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
     _extension_mapping,
 )
-from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
-from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 try:
     from typing import TypeAlias

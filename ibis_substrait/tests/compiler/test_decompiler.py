@@ -2,9 +2,9 @@ import ibis
 import ibis.expr.datatypes as dt
 import pytest
 from packaging import version
+from substrait.gen.proto import type_pb2 as stt
 
 from ibis_substrait.compiler.decompile import decompile, decompile_schema
-from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 ibis5 = pytest.mark.skipif(
     version.parse(ibis.__version__) >= version.parse("5.0.0"),

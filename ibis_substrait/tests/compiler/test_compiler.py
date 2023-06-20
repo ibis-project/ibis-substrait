@@ -5,10 +5,10 @@ import ibis.expr.datatypes as dt
 import pytest
 from google.protobuf import json_format
 from ibis import _
+from substrait.gen.proto import algebra_pb2 as stalg
+from substrait.gen.proto import type_pb2 as stt
 
 from ibis_substrait.compiler.translate import translate
-from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
-from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
 NULLABILITY_REQUIRED = stt.Type.Nullability.NULLABILITY_REQUIRED

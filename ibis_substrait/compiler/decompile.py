@@ -20,6 +20,9 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import pytz
 import toolz
+from substrait.gen.proto import algebra_pb2 as stalg
+from substrait.gen.proto import plan_pb2 as stp
+from substrait.gen.proto import type_pb2 as stt
 
 from ibis_substrait.compiler.core import SubstraitDecompiler, _get_fields, which_one_of
 from ibis_substrait.compiler.mapping import SUBSTRAIT_IBIS_OP_MAPPING
@@ -28,9 +31,6 @@ from ibis_substrait.compiler.translate import (
     _MINUTES_PER_HOUR,
     _SECONDS_PER_MINUTE,
 )
-from ibis_substrait.proto.substrait.ibis import algebra_pb2 as stalg
-from ibis_substrait.proto.substrait.ibis import plan_pb2 as stp
-from ibis_substrait.proto.substrait.ibis import type_pb2 as stt
 
 try:
     from ibis.expr.operations import CountStar
