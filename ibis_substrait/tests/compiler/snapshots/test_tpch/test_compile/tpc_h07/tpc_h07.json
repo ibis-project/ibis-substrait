@@ -1242,7 +1242,7 @@
     }
   ],
   "version": {
-    "minorNumber": 24,
+    "minorNumber": 30,
     "producer": "ibis-substrait"
   }
 }
