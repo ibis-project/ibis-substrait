@@ -63,9 +63,6 @@ jobs:
           - "39"
           - "310"
           - "311"
-        include:
-         - os: macos-latest
-           python-version: "310"
     steps:
       - uses: actions/checkout@v3
 
