@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4"
+python = ">=3.9,<4"
 ibis-framework = ">=3"
 packaging = ">=21.3"
 pyyaml = ">=5"
@@ -109,10 +109,9 @@ ignore = [
   "SIM114", # combine `if` branches
   "SIM117", # nested withs
   "SIM118", # remove .keys() calls from dictionaries
-  # TODO(gil): re-enable after we drop 3.8
   "UP006", # use collections.deque instead of Deque for type annotation
 ]
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.per-file-ignores]
 "*test*.py" = ["D"] # ignore all docstring lints in tests
