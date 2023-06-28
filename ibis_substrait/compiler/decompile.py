@@ -11,7 +11,8 @@ import datetime
 import functools
 import operator
 import uuid
-from typing import Any, Callable, Deque, Hashable, Sequence, TypeVar
+from collections.abc import Hashable, Sequence
+from typing import Any, Callable, TypeVar
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -181,14 +182,16 @@ def _decompile_type_map(typ: stt.Type.Map, nullable: bool) -> dt.DataType:
 
 
 @functools.singledispatch
-def _decompile_field(typ: Any, names: Deque[str], *args: Any) -> dt.DataType:
+def _decompile_field(
+    typ: Any, names: collections.deque[str], *args: Any
+) -> dt.DataType:
     raise NotImplementedError(f"unknown field type when decompiling: {type(typ)}")
 
 
 @_decompile_field.register
 def _decompile_field_generic(
     typ: stt.Type,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> dt.DataType:
     _, kind = which_one_of(typ, "kind")
     return _decompile_field(kind, names, _decompile_nullability(kind))
@@ -210,14 +213,16 @@ def _decompile_field_generic(
 @_decompile_field.register(stt.Type.Time)
 @_decompile_field.register(stt.Type.UUID)
 @_decompile_field.register(stt.Type.Decimal)
-def _decompile_field_primitive(typ: Any, _: Deque[str], nullable: bool) -> dt.DataType:
+def _decompile_field_primitive(
+    typ: Any, _: collections.deque[str], nullable: bool
+) -> dt.DataType:
     return _decompile_type(typ, nullable)
 
 
 @_decompile_field.register
 def _decompile_field_array(
     typ: stt.Type.List,
-    names: Deque[str],
+    names: collections.deque[str],
     nullable: bool,
 ) -> dt.DataType:
     return dt.Array(
@@ -229,7 +234,7 @@ def _decompile_field_array(
 @_decompile_field.register
 def _decompile_field_map(
     typ: stt.Type.Map,
-    names: Deque[str],
+    names: collections.deque[str],
     nullable: bool,
 ) -> dt.DataType:
     return dt.Map(
@@ -241,7 +246,7 @@ def _decompile_field_map(
 
 def _decompile_struct_fields(
     typ: stt.Type.Struct,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> list[tuple[str, dt.DataType]]:
     fields = []
 
@@ -256,7 +261,7 @@ def _decompile_struct_fields(
 @_decompile_field.register
 def _st_to_ibis_struct(
     typ: stt.Type.Struct,
-    names: Deque[str],
+    names: collections.deque[str],
     nullable: bool,
 ) -> dt.DataType:
     fields = _decompile_struct_fields(typ, names)
@@ -345,7 +350,7 @@ def _decompile_rel_root(
 def _decompile_rel(
     rel: stalg.Rel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     _, rel_variant = which_one_of(rel, "rel_type")
     return decompile(rel_variant, decompiler, names)
@@ -355,7 +360,7 @@ def _decompile_rel(
 def _decompile_read_rel(
     read_rel: stalg.ReadRel,
     decompiler: SubstraitDecompiler,
-    _names: Deque[str],
+    _names: collections.deque[str],
 ) -> ir.TableExpr:
     _, read_rel_variant = which_one_of(read_rel, "read_type")
     schema = decompile_schema(read_rel)
@@ -393,7 +398,7 @@ def _get_child_tables_and_field_offsets(
 def _decompile_filter_rel(
     filter_rel: stalg.FilterRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     child = decompile(filter_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
@@ -405,7 +410,7 @@ def _decompile_filter_rel(
 def _decompile_fetch_rel(
     fetch_rel: stalg.FetchRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     child = decompile(fetch_rel.input, decompiler, names)
     return child.limit(fetch_rel.count, offset=fetch_rel.offset)
@@ -425,7 +430,7 @@ _JOIN_METHOD_TABLE = {
 def _decompile_join_rel(
     join_rel: stalg.JoinRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     left_child = decompile(join_rel.left, decompiler, names)
     right_child = decompile(join_rel.right, decompiler, names)
@@ -445,7 +450,7 @@ def _decompile_join_rel(
 def _decompile_sort_rel(
     sort_rel: stalg.SortRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     child = decompile(sort_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
@@ -455,7 +460,7 @@ def _decompile_sort_rel(
     return child.sort_by(sorts)
 
 
-def _remove_names_below(names: Deque[str], dtype: dt.DataType) -> None:
+def _remove_names_below(names: collections.deque[str], dtype: dt.DataType) -> None:
     """Remove all levels of `names` below the names in `dtype`.
 
     Examples
@@ -500,7 +505,7 @@ def _decompile_with_name(
     children: Sequence[ir.TableExpr],
     field_offsets: Sequence[int],
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.ValueExpr:
     expr_name = names.popleft()
     ibis_expr = decompile(expr, children, field_offsets, decompiler).name(expr_name)
@@ -515,7 +520,7 @@ def _decompile_with_name(
 def _decompile_project_rel(
     project_rel: stalg.ProjectRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     child = decompile(project_rel.input, decompiler, names)
     children, field_offsets = _get_child_tables_and_field_offsets(child)
@@ -531,7 +536,7 @@ def _decompile_project_rel(
 def _decompile_aggregate_rel(
     aggregate_rel: stalg.AggregateRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     # TODO: aggregate_rel.phase is ignored, do we need to preserve it?
     child = decompile(aggregate_rel.input, decompiler, names)
@@ -636,7 +641,7 @@ def _decompile_set_op(
     *,
     op: stalg.SetRel.SetOp.V,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     left_expr = decompile(left, decompiler, names)
     right_expr = decompile(right, decompiler, names)
@@ -651,7 +656,7 @@ def _decompile_set_op(
 def _decompile_set_op_rel(
     set_rel: stalg.SetRel,
     decompiler: SubstraitDecompiler,
-    names: Deque[str],
+    names: collections.deque[str],
 ) -> ir.TableExpr:
     return functools.reduce(
         functools.partial(
