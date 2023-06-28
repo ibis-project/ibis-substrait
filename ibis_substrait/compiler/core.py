@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING, Any, Hashable, Iterator
+from collections.abc import Hashable, Iterator
+from typing import TYPE_CHECKING, Any
 
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops

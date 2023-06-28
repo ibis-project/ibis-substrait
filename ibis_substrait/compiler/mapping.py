@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import importlib.resources
 from collections import defaultdict
+from collections.abc import Iterator, Mapping
 from pathlib import Path
-from typing import Any, Iterator, Mapping
+from typing import Any
 
 import ibis.expr.operations as ops
 import yaml
@@ -215,24 +216,10 @@ def register_extension_yaml(
 
 
 def _populate_default_extensions() -> None:
-    # TODO: we should load all the yaml files and not maintain this list
-    EXTENSION_YAMLS = [
-        "functions_aggregate_approx.yaml",
-        "functions_aggregate_generic.yaml",
-        "functions_arithmetic.yaml",
-        "functions_arithmetic_decimal.yaml",
-        "functions_boolean.yaml",
-        "functions_comparison.yaml",
-        "functions_datetime.yaml",
-        "functions_logarithmic.yaml",
-        "functions_rounding.yaml",
-        "functions_set.yaml",
-        "functions_string.yaml",
-    ]
-
-    for yaml_file in EXTENSION_YAMLS:
-        with importlib.resources.path("substrait.extensions", yaml_file) as fpath:
-            register_extension_yaml(fpath)
+    for fpath in importlib.resources.files("substrait.extensions").glob(  # type: ignore
+        "functions*.yaml"
+    ):
+        register_extension_yaml(fpath)
 
 
 _populate_default_extensions()
