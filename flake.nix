@@ -81,7 +81,7 @@
     in
     rec {
       packages = {
-        inherit (pkgs) ibisSubstrait38 ibisSubstrait39 ibisSubstrait310 ibisSubstrait311;
+        inherit (pkgs) ibisSubstrait39 ibisSubstrait310 ibisSubstrait311;
 
         default = pkgs.ibisSubstrait311;
       };
@@ -90,7 +90,6 @@
       nixpkgs = pkgs;
 
       devShells = rec {
-        ibisSubstrait38 = mkDevShell pkgs.ibisSubstraitDevEnv38;
         ibisSubstrait39 = mkDevShell pkgs.ibisSubstraitDevEnv39;
         ibisSubstrait310 = mkDevShell pkgs.ibisSubstraitDevEnv310;
         ibisSubstrait311 = mkDevShell pkgs.ibisSubstraitDevEnv311;
