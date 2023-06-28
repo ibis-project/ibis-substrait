@@ -1226,7 +1226,6 @@ files = [
 [package.dependencies]
 markdown-it-py = ">=2.1.0,<3.0.0"
 pygments = ">=2.6.0,<3.0.0"
-typing-extensions = {version = ">=4.0.0,<5.0", markers = "python_version < \"3.9\""}
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
@@ -1534,5 +1533,5 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.8.1,<4"
-content-hash = "2cacc134100343793842c2576f4b8b71973273076ca06f80571bc651c7a8bbc0"
+python-versions = ">=3.9,<4"
+content-hash = "cdf62466879cff2b8aedf559248fcc23c71acdc77ba259f83ad96fb24aebfd11"
