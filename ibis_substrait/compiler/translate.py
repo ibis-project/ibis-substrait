@@ -14,7 +14,8 @@ import itertools
 import math
 import operator
 import uuid
-from typing import Any, Iterable, Mapping, MutableMapping, Sequence, TypeVar, Union
+from collections.abc import Iterable, Mapping, MutableMapping, Sequence
+from typing import Any, TypeVar, Union
 
 import ibis
 import ibis.expr.datatypes as dt
