@@ -1,6 +1,23 @@
 Release Notes
 ---
 
+## [2.29.1](https://github.com/ibis-project/ibis-substrait/compare/v2.29.0...v2.29.1) (2023-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency packaging to v23.1 ([82d38a5](https://github.com/ibis-project/ibis-substrait/commit/82d38a53ed6dc58c0f854d57c281ed5ca816341f))
+
+
+### Documentation
+
+* add documentation to test_pyarrow::test_extension_udf ([d024b08](https://github.com/ibis-project/ibis-substrait/commit/d024b082078d08060d4c349844e640429cc0450a))
+
+
+### Refactors
+
+* uses clearer import name for pyarrow.substrait ([65ba567](https://github.com/ibis-project/ibis-substrait/commit/65ba567e1200d7951ae6f6849b1e0b6eefa34889))
+
 ## [2.29.0](https://github.com/ibis-project/ibis-substrait/compare/v2.28.2...v2.29.0) (2023-05-17)
 
 
