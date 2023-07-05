@@ -42,6 +42,7 @@ except ImportError:
 
 IBIS_GTE_4 = version.parse(ibis.__version__) >= version.parse("4.0.0")
 IBIS_GTE_5 = version.parse(ibis.__version__) >= version.parse("5.0.0")
+IBIS_GTE_6 = version.parse(ibis.__version__) >= version.parse("6.0.0")
 
 
 if IBIS_GTE_4:
@@ -159,21 +160,49 @@ def _timestamp(dtype: dt.Timestamp) -> stt.Type:
     return stt.Type(timestamp=stt.Type.Timestamp(nullability=nullability))
 
 
-@translate.register
-def _interval(dtype: dt.Interval) -> stt.Type:
-    unit = dtype.unit
-    nullability = _nullability(dtype)
+if IBIS_GTE_6:
 
-    if unit == "Y":
-        return stt.Type(interval_year=stt.Type.IntervalYear(nullability=nullability))
-    elif unit == "M":
-        return stt.Type(interval_year=stt.Type.IntervalYear(nullability=nullability))
-    elif unit == "D":
-        return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
-    elif unit == "s":
-        return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
+    @translate.register
+    def _interval(dtype: dt.Interval) -> stt.Type:
+        unit = dtype.unit.name
+        nullability = _nullability(dtype)
 
-    raise ValueError(f"unsupported substrait unit: {unit!r}")
+        if unit == "YEAR":
+            return stt.Type(
+                interval_year=stt.Type.IntervalYear(nullability=nullability)
+            )
+        elif unit == "MONTH":
+            return stt.Type(
+                interval_year=stt.Type.IntervalYear(nullability=nullability)
+            )
+        elif unit == "DAY":
+            return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
+        elif unit == "SECOND":
+            return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
+
+        raise ValueError(f"unsupported substrait unit: {unit!r}")
+
+else:
+
+    @translate.register
+    def _interval(dtype: dt.Interval) -> stt.Type:
+        unit = dtype.unit
+        nullability = _nullability(dtype)
+
+        if unit == "Y":
+            return stt.Type(
+                interval_year=stt.Type.IntervalYear(nullability=nullability)
+            )
+        elif unit == "M":
+            return stt.Type(
+                interval_year=stt.Type.IntervalYear(nullability=nullability)
+            )
+        elif unit == "D":
+            return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
+        elif unit == "s":
+            return stt.Type(interval_day=stt.Type.IntervalDay(nullability=nullability))
+
+        raise ValueError(f"unsupported substrait unit: {unit!r}")
 
 
 @translate.register

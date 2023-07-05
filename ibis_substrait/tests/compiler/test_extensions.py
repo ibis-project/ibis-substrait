@@ -260,7 +260,10 @@ def test_extension_boolean(compiler, left, right, bin_op, exp_func, exp_uri):
 
 
 def test_extension_udf_compile(compiler):
-    from ibis.udf.vectorized import elementwise
+    try:
+        from ibis.udf.vectorized import elementwise
+    except ImportError:
+        from ibis.legacy.udf.vectorized import elementwise
 
     pc = None
 
