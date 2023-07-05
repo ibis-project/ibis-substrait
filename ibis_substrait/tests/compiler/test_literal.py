@@ -10,7 +10,6 @@ import pytz
 from substrait.gen.proto import algebra_pb2 as stalg
 from substrait.gen.proto import type_pb2 as stt
 
-from ibis_substrait.compiler.decompile import decompile
 from ibis_substrait.compiler.translate import _date_to_days, _time_to_micros, translate
 
 NULLABILITY_NULLABLE = stt.Type.Nullability.NULLABILITY_NULLABLE
@@ -327,10 +326,3 @@ def test_decimal_literal(compiler):
 def test_bare_null(compiler, value):
     with pytest.raises(NotImplementedError, match="untyped null literals"):
         translate(value, compiler=compiler)
-
-
-@literal_cases
-def test_decompile(expr, ir):
-    value, dtype = decompile(ir.literal)
-    result = ibis.literal(value, type=dtype)
-    assert result.equals(expr)
