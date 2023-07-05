@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-ibis-framework = ">=3"
+ibis-framework = ">=4"
 packaging = ">=21.3"
 pyyaml = ">=5"
 substrait = ">=0.2.1"
@@ -132,12 +132,6 @@ filterwarnings = [
   "ignore:`parse_type` is deprecated:FutureWarning",
   # ibis on postgres + windows
   "ignore:locale specific date formats:UserWarning",
-  # ignore op deprecation warning while we still support 3.x
-  "ignore:`Node.op` is deprecated:FutureWarning",
-  # ignore sort_by deprecation while we still support 3.x
-  "ignore:`Table.sort_by` is deprecated:FutureWarning",
-  # ignore groupby deprecation while we still support 3.x
-  "ignore:`Table.groupby` is deprecated:FutureWarning",
   # ignore sqlalchemy 2.0 warnings (they're upstream in ibis)
   "ignore: Deprecated API features detected:sqlalchemy.exc.RemovedIn20Warning",
   # ignore struct pairs deprecation while we still support 3.x

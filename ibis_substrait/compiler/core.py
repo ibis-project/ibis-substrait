@@ -110,7 +110,7 @@ class SubstraitCompiler:
         if function_extension is None:
             sigkey = tuple(
                 [
-                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.op().output_dtype.name]  # type: ignore
+                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.output_dtype.name]  # type: ignore
                     for arg in op.args
                     if arg is not None and isinstance(arg, (ir.Expr, ops.Node))
                 ]
