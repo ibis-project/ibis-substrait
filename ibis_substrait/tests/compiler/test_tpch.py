@@ -6,17 +6,15 @@ from google.protobuf import json_format
 from packaging import version
 from pytest_lazyfixture import lazy_fixture
 
-from ibis_substrait.compiler.decompile import decompile
-
 # changes in ops have led to one of the tpc queries ending up constructed
 # in a different order, so we snapshot query 9 with two versions of Ibis.
 ibis5 = pytest.mark.skipif(
     version.parse(ibis.__version__) >= version.parse("5.0.0"),
-    reason="Not extending decompiler support further",
+    reason="Field ordering difference btwn 4.x and 5.x",
 )
 ibis4 = pytest.mark.skipif(
     version.parse(ibis.__version__) < version.parse("5.0.0"),
-    reason="Not extending decompiler support further",
+    reason="Field ordering difference btwn 4.x and 5.x",
 )
 
 
@@ -623,34 +621,7 @@ def tpc_h22(customer, orders):
     gq = custsale.group_by(custsale.cntrycode)
     outerq = gq.aggregate(numcust=custsale.count(), totacctbal=custsale.c_acctbal.sum())
 
-    return outerq.sort_by(outerq.cntrycode)
-
-
-def test_tpch1(tpc_h01, lineitem, compiler):
-    plan = compiler.compile(tpc_h01)
-    assert plan.SerializeToString()
-
-    (result,) = decompile(plan)
-    expected = (
-        lineitem.filter(lambda t: t.l_shipdate <= date(year=1998, month=9, day=2))
-        .group_by(["l_returnflag", "l_linestatus"])
-        .aggregate(
-            sum_qty=lambda t: t.l_quantity.sum(),
-            sum_base_price=lambda t: t.l_extendedprice.sum(),
-            sum_disc_price=lambda t: (t.l_extendedprice * (1 - t.l_discount)).sum(),
-            sum_charge=lambda t: (
-                t.l_extendedprice * (1 - t.l_discount) * (1 + t.l_tax)
-            ).sum(),
-            avg_qty=lambda t: t.l_quantity.mean(),
-            avg_price=lambda t: t.l_extendedprice.mean(),
-            avg_disc=lambda t: t.l_discount.mean(),
-            count_order=lambda t: t.count(),
-        )
-        .sort_by(["l_returnflag", "l_linestatus"])
-    )
-
-    assert set(result.columns).difference(expected.columns) == set()
-    assert result.schema() == expected.schema()
+    return outerq.order_by(outerq.cntrycode)
 
 
 TPC_H = [
