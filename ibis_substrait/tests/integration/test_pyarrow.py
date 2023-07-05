@@ -1,6 +1,5 @@
 import ibis
 import pytest
-from ibis.udf.vectorized import elementwise
 from packaging.version import parse as vparse
 
 from ibis_substrait.compiler.core import SubstraitCompiler
@@ -8,6 +7,11 @@ from ibis_substrait.compiler.core import SubstraitCompiler
 pa = pytest.importorskip("pyarrow")
 pc = pytest.importorskip("pyarrow.compute")
 pa_substrait = pytest.importorskip("pyarrow.substrait")
+
+try:
+    from ibis.udf.vectorized import elementwise
+except ImportError:
+    from ibis.legacy.udf.vectorized import elementwise
 
 
 arrow12 = pytest.mark.skipif(
@@ -103,7 +107,7 @@ def test_extension_udf():
         """
         import inspect
 
-        from ibis.backends.pyarrow.datatypes import to_pyarrow_type
+        from ibis.formats.pyarrow import PyArrowType
 
         if registry is None:
             registry = pc.function_registry()
@@ -115,10 +119,10 @@ def test_extension_udf():
         in_types = dict(
             zip(
                 inspect.getfullargspec(udf.func).args,
-                map(to_pyarrow_type, udf.input_type),
+                map(PyArrowType.from_ibis, udf.input_type),
             )
         )
-        out_type = to_pyarrow_type(udf.output_type)
+        out_type = PyArrowType.from_ibis(udf.output_type)
 
         if udf.func.__name__ not in set(registry.list_functions()):
             pc.register_scalar_function(

@@ -94,14 +94,11 @@ jobs:
         ibis-version:
           - "4.1"
           - "5.1"
+          - "6.0"
         include:
          - os: windows-latest
            python-version: "3.11"
-           ibis-version: "5.1"
-         - os: ubuntu-latest
-           python-version: "3.10"
-           ibis-version: "3.2"
-
+           ibis-version: "6.0"
 
     steps:
       - uses: actions/checkout@v3
@@ -136,10 +133,7 @@ jobs:
         ibis-version:
           - "4.1"
           - "5.1"
-        include:
-          - os: ubuntu-latest
-            python-version: "3.10"
-            ibis-version: "3.2"
+          - "6.0"
 
     steps:
       - uses: actions/checkout@v3
