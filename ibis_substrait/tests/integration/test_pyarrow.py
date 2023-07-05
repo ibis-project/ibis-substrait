@@ -1,6 +1,5 @@
 import ibis
 import pytest
-from ibis.udf.vectorized import elementwise
 from packaging.version import parse as vparse
 
 from ibis_substrait.compiler.core import SubstraitCompiler
@@ -8,6 +7,11 @@ from ibis_substrait.compiler.core import SubstraitCompiler
 pa = pytest.importorskip("pyarrow")
 pc = pytest.importorskip("pyarrow.compute")
 pa_substrait = pytest.importorskip("pyarrow.substrait")
+
+try:
+    from ibis.udf.vectorized import elementwise
+except ImportError:
+    from ibis.legacy.udf.vectorized import elementwise
 
 
 arrow12 = pytest.mark.skipif(
@@ -103,7 +107,14 @@ def test_extension_udf():
         """
         import inspect
 
-        from ibis.backends.pyarrow.datatypes import to_pyarrow_type
+        try:
+            # Ibis 6.x
+            from ibis.formats.pyarrow import PyArrowType
+
+            to_pyarrow_type = PyArrowType.from_ibis
+        except ImportError:
+            # Ibis 4.x, 5.x
+            from ibis.backends.pyarrow.datatypes import to_pyarrow_type
 
         if registry is None:
             registry = pc.function_registry()
