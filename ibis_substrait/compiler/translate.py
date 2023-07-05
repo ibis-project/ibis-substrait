@@ -24,6 +24,7 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import toolz
 from ibis import util
+from ibis.common.graph import toposort
 from packaging import version
 from substrait.gen.proto import algebra_pb2 as stalg
 from substrait.gen.proto import type_pb2 as stt
@@ -34,40 +35,14 @@ from ibis_substrait.compiler.mapping import (
     _extension_mapping,
 )
 
+IBIS_GTE_5 = version.parse(ibis.__version__) >= version.parse("5.0.0")
+IBIS_GTE_6 = version.parse(ibis.__version__) >= version.parse("6.0.0")
+
 try:
     from typing import TypeAlias
 except ImportError:
-    # Python <=3.9
+    # Python <= 3.9
     from typing_extensions import TypeAlias
-
-IBIS_GTE_4 = version.parse(ibis.__version__) >= version.parse("4.0.0")
-IBIS_GTE_5 = version.parse(ibis.__version__) >= version.parse("5.0.0")
-
-
-if IBIS_GTE_4:
-    import warnings
-
-    from ibis.common.graph import toposort
-
-    warnings.filterwarnings(
-        "ignore",
-        message="`Node.op` is deprecated",
-        category=FutureWarning,
-    )
-else:
-    from ibis.util import to_op_dag  # type: ignore
-
-    # There is no ops.CountStar in Ibis 3.x but to register it for 4.x below, it
-    # can't be undefined here.
-    # We remap it to ops.Count just to avoid an attribute error, it will never
-    # be used to route in Ibis 3.x because it doesn't exist.
-    ops.CountStar = ops.Count  # type: ignore
-    # ops.ValueOp renamed to ops.Value in Ibix 3.2
-    # We manually add ops.Value here for Ibis 3.0 compatibility
-    if hasattr(ops, "ValueOp"):
-        ops.Value = ops.ValueOp  # type: ignore
-    if hasattr(ops, "BinaryOp"):
-        ops.Binary = ops.BinaryOp  # type: ignore
 
 T = TypeVar("T")
 
@@ -525,7 +500,7 @@ def alias_op(
     **kwargs: Any,
 ) -> stalg.Expression:
     # For an alias, dispatch on the underlying argument
-    return translate(op.arg.op(), compiler=compiler, **kwargs)
+    return translate(op.arg, compiler=compiler, **kwargs)
 
 
 @translate.register(ops.ValueOp)  # type: ignore
@@ -548,7 +523,7 @@ def value_op(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
                 for arg in op.args
-                if isinstance(arg, (ir.Expr, ops.Value))
+                if isinstance(arg, ops.Value)
             ],
         )
     )
@@ -574,8 +549,8 @@ def window_op(
         window_ob = op.window._order_by
         start = op.window.preceding
         end = op.window.following
-        func = op.expr.op()
-        func_args = op.expr.op().args
+        func = op.expr
+        func_args = op.expr.args
 
     lower_bound, upper_bound = _translate_window_bounds(start, end)
 
@@ -591,7 +566,7 @@ def window_op(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
                 for arg in func_args
-                if isinstance(arg, (ir.Expr, ops.Value))
+                if isinstance(arg, ops.Value)
             ],
             lower_bound=lower_bound,
             upper_bound=upper_bound,
@@ -626,11 +601,9 @@ def _count(
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
     translated_args: list[stalg.FunctionArgument] = []
-    # TODO: remove this expr
-    arg = op.arg.op().to_expr()
-    if not isinstance(arg, (ir.TableExpr, ops.PhysicalTable)):  # type: ignore
+    if not isinstance(op.arg, ops.TableNode):
         translated_args.append(
-            stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
+            stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
         )
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(op),
@@ -650,7 +623,7 @@ def _variance_base(
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
     translated_arg = stalg.FunctionArgument(
-        value=translate(op.arg.op(), compiler=compiler, **kwargs)
+        value=translate(op.arg, compiler=compiler, **kwargs)
     )
     translated_how = stalg.FunctionOption(
         name="distribution", preference=["POPULATION" if op.how == "pop" else "SAMPLE"]
@@ -690,9 +663,9 @@ def table_column(
     child_rel_field_offsets: MutableMapping[ops.TableNode, int] | None = None,
     **kwargs: Any,
 ) -> stalg.Expression:
-    schema = op.table.op().schema
+    schema = op.table.schema
     relative_offset = schema._name_locs[op.name]
-    base_offset = (child_rel_field_offsets or {}).get(op.table.op(), 0)
+    base_offset = (child_rel_field_offsets or {}).get(op.table, 0)
     absolute_offset = base_offset + relative_offset
     return stalg.Expression(
         selection=stalg.Expression.FieldReference(
@@ -717,7 +690,7 @@ def struct_field(
     field_name = op.field
     # TODO: store names/types inverse mapping on datatypes.Struct for O(1)
     # access to field index
-    field_index = op.arg.op().output_dtype.names.index(field_name)
+    field_index = op.arg.output_dtype.names.index(field_name)
 
     struct_field = child.selection.direct_reference.struct_field
 
@@ -755,7 +728,7 @@ def unbound_table(
     )
 
 
-def _get_child_relation_field_offsets(table: ir.Table) -> dict[ops.TableNode, int]:
+def _get_child_relation_field_offsets(table: ops.TableNode) -> dict[ops.TableNode, int]:
     """Return the offset of each of table's fields.
 
     This function calculates the starting index of a relations fields, as if
@@ -770,18 +743,17 @@ def _get_child_relation_field_offsets(table: ir.Table) -> dict[ops.TableNode, in
     ... )
     >>> t2 = ibis.table([("d", "string"), ("e", "map<string, float64>")], name="t2")
     >>> expr = t1.join(t2, t1.b == t2.d)
-    >>> mapping = _get_child_relation_field_offsets(expr)
+    >>> mapping = _get_child_relation_field_offsets(expr.op())
     >>> mapping[t1.op()]  # the first relation is always zero
     0
     >>> mapping[t2.op()]  # first relation has 3 fields, so the second starts at 3
     3
     """
-    table_op = table.op()
-    if isinstance(table_op, ops.Join):
+    if isinstance(table, ops.Join):
         # Descend into the left and right tables to grab offsets from nested joins
-        left_keys = _get_child_relation_field_offsets(table_op.left)
-        right_keys = _get_child_relation_field_offsets(table_op.right)
-        root_tables = [table_op.left.op(), table_op.right.op()]
+        left_keys = _get_child_relation_field_offsets(table.left)
+        right_keys = _get_child_relation_field_offsets(table.right)
+        root_tables = [table.left, table.right]
         accum = [0, len(root_tables[0].schema)]
         return toolz.merge(left_keys, right_keys, dict(zip(root_tables, accum)))
     return {}
@@ -808,7 +780,7 @@ def selection(
     )
     # filter
     if op.predicates:
-        predicates = [pred.op().to_expr() for pred in op.predicates]
+        predicates = [pred.to_expr() for pred in op.predicates]
         relation = stalg.Rel(
             filter=stalg.FilterRel(
                 input=relation,
@@ -848,11 +820,11 @@ def selection(
             elif output_mapping := rel.common.emit.output_mapping:
                 mapping_counter = itertools.count(len(output_mapping))
                 break
-            elif not isinstance(op.table.op(), ops.Join):
+            elif not isinstance(op.table, ops.Join):
                 # If child table is join, we cannot reliably call schema due to
                 # potentially duplicate column names, so fallback to the orignal
                 # logic.
-                mapping_counter = itertools.count(len(op.table.op().schema))
+                mapping_counter = itertools.count(len(op.table.schema))
                 break
         else:
             source_tables = _find_parent_tables(op)
@@ -899,26 +871,16 @@ def selection(
 
 
 def _get_selections(op: ops.Selection) -> Sequence[ir.Column]:
-    if IBIS_GTE_4:
-        # projection / emit
-        selections = [
-            col
-            for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
-            for col in (
-                map(sel.__getitem__, sel.columns)
-                if isinstance(sel, ir.TableExpr)  # type: ignore
-                else [sel]
-            )
-        ]
-    else:
-        # projection / emit
-        selections = [
-            col
-            for sel in op.selections
-            for col in (
-                sel.get_columns(sel.columns) if isinstance(sel, ir.TableExpr) else [sel]  # type: ignore
-            )
-        ]
+    # projection / emit
+    selections = [
+        col
+        for sel in (x.to_expr() for x in op.selections)  # map ops to exprs
+        for col in (
+            map(sel.__getitem__, sel.columns)
+            if isinstance(sel, ir.TableExpr)  # type: ignore
+            else [sel]
+        )
+    ]
 
     return selections
 
@@ -926,18 +888,11 @@ def _get_selections(op: ops.Selection) -> Sequence[ir.Column]:
 def _find_parent_tables(op: ops.Selection) -> set[ops.PhysicalTable]:
     # TODO: settle on a better source table definition than "PhysicalTable with
     # a schema"
-    if IBIS_GTE_4:
-        source_tables = {
-            t
-            for t in toposort(op).keys()
-            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
-        }
-    else:
-        source_tables = {
-            t
-            for t in to_op_dag(op.to_expr()).keys()  # type: ignore
-            if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
-        }
+    source_tables = {
+        t
+        for t in toposort(op).keys()
+        if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
+    }
 
     return source_tables
 
@@ -985,11 +940,10 @@ def join(
     **kwargs: Any,
 ) -> stalg.Rel:
     child_rel_field_offsets = kwargs.pop("child_rel_field_offsets", None)
-    expr = op.to_expr()  # type: ignore
     child_rel_field_offsets = (
-        child_rel_field_offsets or _get_child_relation_field_offsets(expr)
+        child_rel_field_offsets or _get_child_relation_field_offsets(op)
     )
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    predicates = [pred.to_expr() for pred in op.predicates]
     return stalg.Rel(
         join=stalg.JoinRel(
             left=translate(op.left, compiler=compiler, **kwargs),
@@ -1073,8 +1027,8 @@ def aggregation(
     if op.having:
         raise NotImplementedError("`having` not yet implemented")
 
-    table = op.table.op().to_expr()
-    predicates = [pred.op().to_expr() for pred in op.predicates]
+    table = op.table.to_expr()
+    predicates = [pred.to_expr() for pred in op.predicates]
     input = translate(
         table.filter(predicates) if predicates else table,
         compiler=compiler,
@@ -1122,7 +1076,7 @@ def _simple_searched_case(
     # to pass those args in as a dictionary to not run afoul of SyntaxErrors`
     _ifs = []
     for case, result in zip(op.cases, op.results):
-        if_expr = case if not hasattr(op, "base") else op.base.op().to_expr() == case
+        if_expr = case if not hasattr(op, "base") else op.base.to_expr() == case
         _if = {
             "if": translate(if_expr, compiler=compiler, **kwargs),
             "then": translate(result, compiler=compiler, **kwargs),
@@ -1204,7 +1158,7 @@ def _extractdatefield(
     arguments = (
         stalg.FunctionArgument(value=translate(arg, compiler=compiler, **kwargs))
         for arg in op.args
-        if isinstance(arg, (ir.Expr, ops.Value))
+        if isinstance(arg, ops.Value)
     )
     scalar_func = stalg.Expression.ScalarFunction(
         function_reference=compiler.function_id(op),
@@ -1307,12 +1261,11 @@ def _exists_subquery(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
-    predicates = [pred.op().to_expr() for pred in op.predicates]
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
             input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
-                functools.reduce(operator.and_, predicates),
+                functools.reduce(ops.And, op.predicates),  # type: ignore
                 compiler=compiler,
                 **kwargs,
             ),
@@ -1337,12 +1290,11 @@ def _not_exists_subquery(
     **kwargs: Any,
 ) -> stalg.Expression:
     assert compiler is not None
-    predicates = [pred.op().to_expr() for pred in op.predicates]
     tuples = stalg.Rel(
         filter=stalg.FilterRel(
             input=translate(op.foreign_table, compiler=compiler),
             condition=translate(
-                functools.reduce(operator.and_, predicates),
+                functools.reduce(ops.And, op.predicates),  # type: ignore
                 compiler=compiler,
                 **kwargs,
             ),
@@ -1351,7 +1303,7 @@ def _not_exists_subquery(
 
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(ops.Not(op.to_expr())),  # type: ignore
+            function_reference=compiler.function_id(ops.Not(op)),  # type: ignore
             output_type=translate(op.output_dtype),
             arguments=[
                 stalg.FunctionArgument(
@@ -1387,7 +1339,7 @@ def _floor_ceil_cast(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
                 for arg in op.func_args  # type: ignore
-                if isinstance(arg, (ir.Expr, ops.Value))
+                if isinstance(arg, ops.Value)
             ],
         )
     )
@@ -1439,7 +1391,7 @@ compiler has a `udf_uri` attached.
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
                 for arg in op.func_args
-                if isinstance(arg, (ir.Expr, ops.Value))
+                if isinstance(arg, ops.Value)
             ],
         )
     )
@@ -1468,20 +1420,14 @@ def _upcast(op: ops.Node) -> Any:
 
 @_upcast.register(ops.Binary)
 def _upcast_bin_op(op: ops.Binary) -> ops.Binary:
-    left, right = op.left.op().output_dtype, op.right.op().output_dtype
+    left, right = op.left.output_dtype, op.right.output_dtype
 
     if left == right:
         return op
     elif dt.castable(left, right, upcast=True):
-        if IBIS_GTE_4:
-            return type(op)(ops.Cast(op.left, to=right), op.right)  # type: ignore
-        else:
-            return type(op)(op.left.cast(right), op.right)  # type: ignore
+        return type(op)(ops.Cast(op.left, to=right), op.right)  # type: ignore
     elif dt.castable(right, left, upcast=True):
-        if IBIS_GTE_4:
-            return type(op)(op.left, ops.Cast(op.right, to=left))  # type: ignore
-        else:
-            return type(op)(op.left, op.right.cast(left))  # type: ignore
+        return type(op)(op.left, ops.Cast(op.right, to=left))  # type: ignore
     else:
         raise TypeError(
             f"binop {type(op).__name__} called with incompatible types {left=} {right=}"
@@ -1501,19 +1447,10 @@ string_op: TypeAlias = Union[
 @_upcast.register(ops.RPad)
 def _upcast_string_op(op: string_op) -> string_op:
     # Substrait wants Int32 for all numeric args to string functions
-    if IBIS_GTE_4:
-        casted_args = [
-            ops.Cast(newop, to=dt.Int32())  # type: ignore
-            if isinstance(newop.output_dtype, dt.SignedInteger)
-            else newop
-            for newop in op.args
-        ]
-    else:
-        casted_args = [
-            newop.cast(dt.Int32())
-            if isinstance(newop.type(), dt.SignedInteger)
-            else newop
-            for newop in op.args
-        ]
-
+    casted_args = [
+        ops.Cast(newop, to=dt.Int32())  # type: ignore
+        if isinstance(newop.output_dtype, dt.SignedInteger)
+        else newop
+        for newop in op.args
+    ]
     return type(op)(*casted_args)

@@ -35,7 +35,7 @@ def tpc_h01(lineitem):
             avg_disc=lambda t: t.l_discount.mean(),
             count_order=lambda t: t.count(),
         )
-        .sort_by(["l_returnflag", "l_linestatus"])
+        .order_by(["l_returnflag", "l_linestatus"])
     )
 
 
@@ -83,7 +83,7 @@ def tpc_h02(
         ]
     )
 
-    return q.sort_by(
+    return q.order_by(
         [
             ibis.desc(q.s_acctbal),
             q.n_name,
@@ -107,7 +107,7 @@ def tpc_h03(
     )
     qg = q.group_by([q.l_orderkey, q.o_orderdate, q.o_shippriority])
     q = qg.aggregate(revenue=(q.l_extendedprice * (1 - q.l_discount)).sum())
-    q = q.sort_by([ibis.desc(q.revenue), q.o_orderdate])
+    q = q.order_by([ibis.desc(q.revenue), q.o_orderdate])
     q = q.limit(10)
 
     return q
@@ -127,7 +127,7 @@ def tpc_h04(orders, lineitem):
     )
     q = q.group_by([orders.o_orderpriority])
     q = q.aggregate(order_count=orders.count())
-    q = q.sort_by([orders.o_orderpriority])
+    q = q.order_by([orders.o_orderpriority])
     return q
 
 
@@ -154,7 +154,7 @@ def tpc_h05(customer, orders, lineitem, supplier, nation, region):
     revexpr = q.l_extendedprice * (1 - q.l_discount)
     gq = q.group_by([q.n_name])
     q = gq.aggregate(revenue=revexpr.sum())
-    q = q.sort_by([ibis.desc(q.revenue)])
+    q = q.order_by([ibis.desc(q.revenue)])
     return q
 
 
@@ -206,7 +206,7 @@ def tpc_h07(supplier, lineitem, orders, customer, nation):
 
     gq = q.group_by(["supp_nation", "cust_nation", "l_year"])
     q = gq.aggregate(revenue=q.volume.sum())
-    q = q.sort_by(["supp_nation", "cust_nation", "l_year"])
+    q = q.order_by(["supp_nation", "cust_nation", "l_year"])
 
     return q
 
@@ -255,7 +255,7 @@ def tpc_h08(
     )
     gq = q.group_by([q.o_year])
     q = gq.aggregate(mkt_share=q.nation_volume.sum() / q.volume.sum())
-    q = q.sort_by([q.o_year])
+    q = q.order_by([q.o_year])
     return q
 
 
@@ -285,7 +285,7 @@ def tpc_h09(part, supplier, lineitem, partsupp, orders, nation):
 
     gq = q.group_by([q.nation, q.o_year])
     q = gq.aggregate(sum_profit=q.amount.sum())
-    q = q.sort_by([q.nation, ibis.desc(q.o_year)])
+    q = q.order_by([q.nation, ibis.desc(q.o_year)])
     return q
 
 
@@ -316,7 +316,7 @@ def tpc_h10(customer, orders, lineitem, nation):
     )
     q = gq.aggregate(revenue=(q.l_extendedprice * (1 - q.l_discount)).sum())
 
-    q = q.sort_by(ibis.desc(q.revenue))
+    q = q.order_by(ibis.desc(q.revenue))
     return q.limit(20)
 
 
@@ -337,7 +337,7 @@ def tpc_h11(partsupp, supplier, nation):
     gq = q.group_by([q.ps_partkey])
     q = gq.aggregate(value=(q.ps_supplycost * q.ps_availqty).sum())
     q = q.filter([q.value > innerq.total * 0.0001])
-    q = q.sort_by(ibis.desc(q.value))
+    q = q.order_by(ibis.desc(q.value))
     return q
 
 
@@ -373,7 +373,7 @@ def tpc_h12(orders, lineitem):
             .end()
         ).sum(),
     )
-    q = q.sort_by(q.l_shipmode)
+    q = q.order_by(q.l_shipmode)
 
     return q
 
@@ -392,7 +392,7 @@ def tpc_h13(customer, orders):
     gq = innerq.group_by([innerq.c_count])
     q = gq.aggregate(custdist=innerq.count())
 
-    q = q.sort_by([ibis.desc(q.custdist), ibis.desc(q.c_count)])
+    q = q.order_by([ibis.desc(q.custdist), ibis.desc(q.c_count)])
     return q
 
 
@@ -423,7 +423,7 @@ def tpc_h15(lineitem, supplier):
 
     q = supplier.join(qrev, supplier.s_suppkey == qrev.l_suppkey)
     q = q.filter([q.total_revenue == qrev.total_revenue.max()])
-    q = q.sort_by([q.s_suppkey])
+    q = q.order_by([q.s_suppkey])
     q = q[q.s_suppkey, q.s_name, q.s_address, q.s_phone, q.total_revenue]
     return q
 
@@ -443,9 +443,9 @@ def tpc_h16(partsupp, part, supplier):
             ),
         ]
     )
-    gq = q.groupby([q.p_brand, q.p_type, q.p_size])
+    gq = q.group_by([q.p_brand, q.p_type, q.p_size])
     q = gq.aggregate(supplier_cnt=q.ps_suppkey.nunique())
-    q = q.sort_by([ibis.desc(q.supplier_cnt), q.p_brand, q.p_type, q.p_size])
+    q = q.order_by([ibis.desc(q.supplier_cnt), q.p_brand, q.p_type, q.p_size])
     return q
 
 
@@ -469,7 +469,7 @@ def tpc_h17(lineitem, part):
 
 @pytest.fixture
 def tpc_h18(customer, orders, lineitem):
-    subgq = lineitem.groupby([lineitem.l_orderkey])
+    subgq = lineitem.group_by([lineitem.l_orderkey])
     subq = subgq.aggregate(qty_sum=lineitem.l_quantity.sum())
     subq = subq.filter([subq.qty_sum > 300])
 
@@ -478,9 +478,11 @@ def tpc_h18(customer, orders, lineitem):
     q = q.join(lineitem, orders.o_orderkey == lineitem.l_orderkey)
     q = q.filter([q.o_orderkey.isin(subq.l_orderkey)])
 
-    gq = q.groupby([q.c_name, q.c_custkey, q.o_orderkey, q.o_orderdate, q.o_totalprice])
+    gq = q.group_by(
+        [q.c_name, q.c_custkey, q.o_orderkey, q.o_orderdate, q.o_totalprice]
+    )
     q = gq.aggregate(sum_qty=q.l_quantity.sum())
-    q = q.sort_by([ibis.desc(q.o_totalprice), q.o_orderdate])
+    q = q.order_by([ibis.desc(q.o_totalprice), q.o_orderdate])
     return q.limit(100)
 
 
@@ -550,7 +552,7 @@ def tpc_h20(supplier, nation, partsupp, part, lineitem):
 
     q1 = q1[q1.s_name, q1.s_address]
 
-    return q1.sort_by(q1.s_name)
+    return q1.order_by(q1.s_name)
 
 
 @pytest.fixture
@@ -589,7 +591,7 @@ def tpc_h21(supplier, lineitem, orders, nation):
 
     gq = q.group_by([q.s_name])
     q = gq.aggregate(numwait=q.count())
-    q = q.sort_by([ibis.desc(q.numwait), q.s_name])
+    q = q.order_by([ibis.desc(q.numwait), q.s_name])
     return q.limit(100)
 
 
