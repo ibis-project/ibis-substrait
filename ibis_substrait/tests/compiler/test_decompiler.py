@@ -238,7 +238,7 @@ def test_nested_struct_field_access(compiler):
     reason="We look forwards, not backwards",
 )
 def test_decompile_if_then(t, compiler):
-    expr = t.groupby(t.a).aggregate(
+    expr = getattr(t, "group_by", "groupby")(t.a).aggregate(
         val=t.d.case().when(3, 1).when(2, 1).else_(0).end().sum()
     )
     plan = compiler.compile(expr)
