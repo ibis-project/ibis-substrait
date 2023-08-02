@@ -1,4 +1,4 @@
-__version__ = "2.29.0"
+__version__ = "3.0.0"
 
 import substrait
 

@@ -1,6 +1,42 @@
 Release Notes
 ---
 
+## [3.0.0](https://github.com/ibis-project/ibis-substrait/compare/v2.29.1...v3.0.0) (2023-08-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* The minimum supported version of Ibis is 4.0.
+Deprecated methods `sort_by` and `groupby` have been removed in Ibis
+6.x, so it is not possible to support 3.x through 6.x.
+* **decompile:** decompiler is no longer supported and has been removed.
+* **substrait-python:** We now rely on the upstream `substrait`
+package (https://github.com/substrait-io/substrait-python) for the
+generated substrait code. You will need to install `substrait` from pypi
+or conda-forge if you have not already done so.
+
+All tests are passing -- this also accompanies a bump of the Substrait
+version to v0.30.0 (because this is what is available in the upstream).
+
+### Features
+
+* add support for Ibis 6.x ([fcfc595](https://github.com/ibis-project/ibis-substrait/commit/fcfc595ca20ff49b41fd100a44a848d63a256f1e))
+* **substrait-python:** use upstream substrait python package ([4b38bae](https://github.com/ibis-project/ibis-substrait/commit/4b38bae5ff8f58ac9fcddeb306ed252f5bfbeb3b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency pyyaml to v6.0.1 ([77f8b40](https://github.com/ibis-project/ibis-substrait/commit/77f8b40f4e8deef40a552c06cc975586f0f5e9af))
+* **release:** use `@google/semantic-release-replace-plugin@1.2.0` to avoid module loading bug ([5c6f4fa](https://github.com/ibis-project/ibis-substrait/commit/5c6f4fa40009e7dccf54a49a379c67dc600f40a8))
+
+
+### Refactors
+
+* **decompile:** remove decompiler ([401bb60](https://github.com/ibis-project/ibis-substrait/commit/401bb607847fa240a50adfbfd7d76a8347e04efc))
+* drop support for Ibis 3.x ([9ffaf99](https://github.com/ibis-project/ibis-substrait/commit/9ffaf994fd9b20a46279ad4c23cea1b2ce264155))
+* drop support for Python 3.8 ([023351b](https://github.com/ibis-project/ibis-substrait/commit/023351b2c8fcd4848cc4f6fa6515e5761f519b49))
+* remove deprecated importlib.resources.path call ([e20542b](https://github.com/ibis-project/ibis-substrait/commit/e20542b1583783620bdf56a8d959061990bb7d7c))
+
 ## [2.29.1](https://github.com/ibis-project/ibis-substrait/compare/v2.29.0...v2.29.1) (2023-06-30)
 
 
