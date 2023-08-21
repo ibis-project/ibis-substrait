@@ -26,49 +26,49 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "and"
+        "name": "and:bool_bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 3,
-        "name": "subtract"
+        "name": "subtract:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 4,
-        "name": "multiply"
+        "name": "multiply:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 4,
         "functionAnchor": 5,
-        "name": "extract"
+        "name": "extract:date"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 5,
         "functionAnchor": 6,
-        "name": "like"
+        "name": "like:str_str"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 7,
-        "name": "sum"
+        "name": "sum:dec"
       }
     }
   ],

@@ -18,49 +18,49 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "lte"
+        "name": "lte:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "sum"
+        "name": "sum:dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 3,
-        "name": "multiply"
+        "name": "multiply:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 4,
-        "name": "subtract"
+        "name": "subtract:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 5,
-        "name": "add"
+        "name": "add:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 6,
-        "name": "avg"
+        "name": "avg:dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 7,
-        "name": "count"
+        "name": "count:any"
       }
     }
   ],

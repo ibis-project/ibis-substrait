@@ -18,35 +18,35 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "and"
+        "name": "and:bool_bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 3,
-        "name": "lt"
+        "name": "lt:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 4,
-        "name": "gte"
+        "name": "gte:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 5,
-        "name": "sum"
+        "name": "sum:i8"
       }
     }
   ],

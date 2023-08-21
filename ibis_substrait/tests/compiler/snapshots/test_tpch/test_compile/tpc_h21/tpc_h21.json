@@ -18,42 +18,42 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "and"
+        "name": "and:bool_bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 3,
-        "name": "gt"
+        "name": "gt:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 4,
-        "name": "not_equal"
+        "name": "not_equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 5,
-        "name": "not"
+        "name": "not:bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 6,
-        "name": "count"
+        "name": "count:any"
       }
     }
   ],

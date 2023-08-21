@@ -111,28 +111,28 @@ IBIS_SUBSTRAIT_TYPE_MAPPING = {
     "Int64": "i64",
     "Float32": "fp32",
     "Float64": "fp64",
-    "String": "varchar",
-    "string": "string",
-    "Boolean": "boolean",
+    "String": "str",
+    "string": "str",
+    "Boolean": "bool",
     "Date": "date",
-    "Decimal": "decimal",
+    "Decimal": "dec",
 }
 
 _normalized_key_names = {
     # decimal precision and scale aren't part of the
     # extension signature they're passed in separately
-    "decimal<p, s>": "decimal",
-    "decimal<p,s>": "decimal",
-    "decimal<p1,s1>": "decimal",
-    "decimal<p2,s2>": "decimal",
+    "decimal<p, s>": "dec",
+    "decimal<p,s>": "dec",
+    "decimal<p1,s1>": "dec",
+    "decimal<p2,s2>": "dec",
     # we don't care about string length
-    "fixedchar<l1>": "fixedchar",
-    "fixedchar<l2>": "fixedchar",
-    "varchar<l1>": "varchar",
-    "varchar<l2>": "varchar",
-    "varchar<l3>": "varchar",
+    "fixedchar<l1>": "str",
+    "fixedchar<l2>": "str",
+    "varchar<l1>": "str",
+    "varchar<l2>": "str",
+    "varchar<l3>": "str",
     # for now ignore nullability marker
-    "boolean?": "boolean",
+    "boolean?": "bool",
     # why is there a 1?
     "any1": "any",
     "Date": "date",
