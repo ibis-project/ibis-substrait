@@ -97,6 +97,7 @@ class SubstraitCompiler:
             )
 
         anykey = ("any",) * len([arg for arg in op.args if arg is not None])
+        sigkey = anykey
 
         # First check if `any` is an option
         # This function will take arguments of any type
@@ -136,7 +137,12 @@ class SubstraitCompiler:
 
         extension_uri = self.register_extension_uri(function_extension.uri)
 
-        extension_function = self.create_extension_function(extension_uri, op_name)
+        # format signature key for extension name
+        extension_type_signature = "_".join(sigkey)
+
+        extension_function = self.create_extension_function(
+            extension_uri, f"{op_name}:{extension_type_signature}"
+        )
 
         return extension_function
 

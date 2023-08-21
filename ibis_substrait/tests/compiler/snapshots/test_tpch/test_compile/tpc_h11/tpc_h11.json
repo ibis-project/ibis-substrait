@@ -14,28 +14,28 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "sum"
+        "name": "sum:dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 3,
-        "name": "multiply"
+        "name": "multiply:dec_dec"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 4,
-        "name": "gt"
+        "name": "gt:any_any"
       }
     }
   ],

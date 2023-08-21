@@ -28,8 +28,8 @@ def test_extension_substring(compiler, two, three):
 
     uris = [ext.uri for ext in plan.extension_uris]
 
-    assert "equal" in scalar_func_names
-    assert "substring" in scalar_func_names
+    assert "equal:any_any" in scalar_func_names
+    assert "substring:str_i32_i32" in scalar_func_names
 
     assert f"{DEFAULT_PREFIX}/functions_comparison.yaml" in uris
     assert f"{DEFAULT_PREFIX}/functions_string.yaml" in uris
@@ -38,12 +38,12 @@ def test_extension_substring(compiler, two, three):
 @pytest.mark.parametrize(
     "left, right, bin_op, exp_func",
     [
-        ("int32", "int32", operator.gt, "gt"),
-        ("int32", "int64", operator.lt, "lt"),
-        ("int16", "int8", operator.ge, "gte"),
-        ("float64", "int8", operator.le, "lte"),
-        ("float64", "float32", operator.eq, "equal"),
-        ("int8", "float64", operator.ne, "not_equal"),
+        ("int32", "int32", operator.gt, "gt:any_any"),
+        ("int32", "int64", operator.lt, "lt:any_any"),
+        ("int16", "int8", operator.ge, "gte:any_any"),
+        ("float64", "int8", operator.le, "lte:any_any"),
+        ("float64", "float32", operator.eq, "equal:any_any"),
+        ("int8", "float64", operator.ne, "not_equal:any_any"),
     ],
 )
 def test_extension_binop_comparison(compiler, left, right, bin_op, exp_func):
@@ -84,7 +84,7 @@ def test_extension_unaryop_comparison(compiler, left, unary_op, exp_func):
 
     uris = [ext.uri for ext in plan.extension_uris]
 
-    assert exp_func in scalar_func_names
+    assert any(exp_func in func_name for func_name in scalar_func_names)
 
     assert f"{DEFAULT_PREFIX}/functions_comparison.yaml" in uris
 
@@ -96,112 +96,127 @@ def test_extension_unaryop_comparison(compiler, left, unary_op, exp_func):
             "decimal(15, 3)",
             "decimal(15, 3)",
             operator.add,
-            "add",
+            "add:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "decimal(15, 3)",
             "decimal(15, 3)",
             operator.sub,
-            "subtract",
+            "subtract:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "decimal(15, 3)",
             "decimal(15, 3)",
             operator.mul,
-            "multiply",
+            "multiply:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "decimal(15, 3)",
             "decimal(15, 3)",
             operator.truediv,
-            "divide",
+            "divide:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "decimal(15, 3)",
             "int",
             operator.add,
-            "add",
+            # should promote to dec_dec from dec_int
+            "add:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "float64",
             "decimal(15, 3)",
             operator.sub,
-            "subtract",
+            # should promote to dec_dec from fp32_dec
+            "subtract:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "decimal(15, 3)",
             "int32",
             operator.mul,
-            "multiply",
+            # should promote to dec_dec from dec_int
+            "multiply:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "float32",
             "decimal(15, 3)",
             operator.truediv,
-            "divide",
+            # should promote to dec_dec from fp32_dec
+            "divide:dec_dec",
             f"{DEFAULT_PREFIX}/functions_arithmetic_decimal.yaml",
         ),
         (
             "int",
             "int8",
             operator.add,
-            "add",
+            # int is shorthand for i64, should promote to i64_i64
+            "add:i64_i64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "int32",
             "int",
             operator.sub,
-            "subtract",
+            # int is shorthand for i64, should promote to i64_i64
+            "subtract:i64_i64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "int64",
             "int",
             operator.mul,
-            "multiply",
+            # int is shorthand for i64, should promote to i64_i64
+            "multiply:i64_i64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "int",
             "int",
             operator.truediv,
-            "divide",
+            "divide:i64_i64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "float64",
             "float",
             operator.add,
-            "add",
+            "add:fp64_fp64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "float",
             "float32",
             operator.sub,
-            "subtract",
+            # float is shorthand for fp64, should promote to fp64_fp64
+            "subtract:fp64_fp64",
+            f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
+        ),
+        (
+            "float32",
+            "float32",
+            operator.sub,
+            "subtract:fp32_fp32",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "float64",
             "float64",
             operator.mul,
-            "multiply",
+            "multiply:fp64_fp64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
         (
             "float",
             "float",
             operator.truediv,
-            "divide",
+            "divide:fp64_fp64",
             f"{DEFAULT_PREFIX}/functions_arithmetic.yaml",
         ),
     ],
@@ -230,14 +245,14 @@ def test_extension_arithmetic(compiler, left, right, bin_op, exp_func, exp_uri):
             "bool",
             "bool",
             operator.and_,
-            "and",
+            "and:bool_bool",
             f"{DEFAULT_PREFIX}/functions_boolean.yaml",
         ),
         (
             "bool",
             "bool",
             operator.or_,
-            "or",
+            "or:bool_bool",
             f"{DEFAULT_PREFIX}/functions_boolean.yaml",
         ),
     ],

@@ -26,49 +26,49 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "and"
+        "name": "and:bool_bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "substring"
+        "name": "substring:str_i32_i32"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 3,
-        "name": "gt"
+        "name": "gt:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 4,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 5,
-        "name": "not"
+        "name": "not:bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 4,
         "functionAnchor": 6,
-        "name": "count"
+        "name": "count:any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 5,
         "functionAnchor": 7,
-        "name": "sum"
+        "name": "sum:dec"
       }
     }
   ],

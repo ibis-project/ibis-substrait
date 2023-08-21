@@ -22,35 +22,35 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "and"
+        "name": "and:bool_bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "equal"
+        "name": "equal:any_any"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 3,
-        "name": "not"
+        "name": "not:bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 4,
-        "name": "like"
+        "name": "like:str_str"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 4,
         "functionAnchor": 5,
-        "name": "count"
+        "name": "count:any"
       }
     }
   ],
