@@ -1,6 +1,18 @@
 Release Notes
 ---
 
+## [3.1.0](https://github.com/ibis-project/ibis-substrait/compare/v3.0.0...v3.1.0) (2023-08-30)
+
+
+### Features
+
+* add type signature to scalar function name definitions ([fe19d3c](https://github.com/ibis-project/ibis-substrait/commit/fe19d3caa0447e5669323cfd74fc7621a1b9ec6b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency ibis-framework to v6.1.0 ([721d574](https://github.com/ibis-project/ibis-substrait/commit/721d574f05ed43910f231b917a7586e10ef43a27))
+
 ## [3.0.0](https://github.com/ibis-project/ibis-substrait/compare/v2.29.1...v3.0.0) (2023-08-02)
 
 
