@@ -245,14 +245,16 @@ def test_extension_arithmetic(compiler, left, right, bin_op, exp_func, exp_uri):
             "bool",
             "bool",
             operator.and_,
-            "and:bool_bool",
+            "and:bool",  # `and` is variadic with minimum 0 args so
+            # expected signature is a single `bool`
             f"{DEFAULT_PREFIX}/functions_boolean.yaml",
         ),
         (
             "bool",
             "bool",
             operator.or_,
-            "or:bool_bool",
+            "or:bool",  # `or` is variadic with minimum 0 args so
+            # expected signature is a single `bool`
             f"{DEFAULT_PREFIX}/functions_boolean.yaml",
         ),
     ],
@@ -335,3 +337,24 @@ def test_extension_register_uri_override(tmp_path):
     register_extension_yaml(yaml_file, prefix="orkbork")
     assert _extension_mapping["anotheradd"]
     assert _extension_mapping["anotheradd"][("a", "b")].uri == "orkbork/foo.yaml"
+
+
+def test_extension_arithmetic_multiple_signatures(compiler):
+    t = ibis.table([("left", "int64"), ("right", "float32")], name="t")
+
+    query = t.mutate(
+        intadd=t.left + t.left,
+        floatadd=t.right + t.right,
+        intsub=t.left - t.left,
+        floatsub=t.right - t.right,
+    )
+    plan = compiler.compile(query)
+
+    scalar_func_names = [
+        extension.extension_function.name for extension in plan.extensions
+    ]
+
+    assert "add:i64_i64" in scalar_func_names
+    assert "add:fp32_fp32" in scalar_func_names
+    assert "subtract:i64_i64" in scalar_func_names
+    assert "subtract:fp32_fp32" in scalar_func_names
