@@ -50,14 +50,14 @@
       "extensionFunction": {
         "extensionUriReference": 4,
         "functionAnchor": 5,
-        "name": "and:bool_bool"
+        "name": "and:bool"
       }
     },
     {
       "extensionFunction": {
         "extensionUriReference": 4,
         "functionAnchor": 6,
-        "name": "or:bool_bool"
+        "name": "or:bool"
       }
     },
     {

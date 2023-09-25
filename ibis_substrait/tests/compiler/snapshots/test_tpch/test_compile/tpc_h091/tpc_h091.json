@@ -33,7 +33,7 @@
       "extensionFunction": {
         "extensionUriReference": 2,
         "functionAnchor": 2,
-        "name": "and:bool_bool"
+        "name": "and:bool"
       }
     },
     {
