@@ -22,7 +22,7 @@
       "extensionFunction": {
         "extensionUriReference": 1,
         "functionAnchor": 1,
-        "name": "and:bool_bool"
+        "name": "and:bool"
       }
     },
     {
