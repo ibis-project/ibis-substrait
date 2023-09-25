@@ -75,22 +75,25 @@ class SubstraitCompiler:
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
         """
-        op_type = type(op)
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[op_type.__name__]
+
+        op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+        sig_key = self.get_signature(op)
+
+        extension_signature = f"{op_name}:{'_'.join(sig_key)}"
 
         try:
-            function_extension = self.function_extensions[op_name]
+            function_extension = self.function_extensions[extension_signature]
         except KeyError:
             function_extension = self.function_extensions[
-                op_name
-            ] = self.extension_lookup(op_name, op)
+                extension_signature
+            ] = self.create_extension(op_name, sig_key)
         return function_extension.function_anchor
 
-    def extension_lookup(
-        self,
-        op_name: str,
-        op: ops.Node,
-    ) -> ste.SimpleExtensionDeclaration.ExtensionFunction:
+    def get_signature(self, op: ops.Node) -> tuple[str, ...]:
+        """Validate and upcast (if necessary) scalar function extension signature."""
+
+        op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+
         if not _extension_mapping.get(op_name, False):
             raise ValueError(
                 f"No available extension defined for function name {op_name}"
@@ -128,6 +131,12 @@ class SubstraitCompiler:
             function_extension = _extension_mapping[op_name].get((sigkey[0],))
             if function_extension is not None:
                 assert function_extension.variadic
+                # Function signature for a variadic should contain the type of
+                # the argument(s) at _least_ once but ideally should contain
+                # types == the minimum number of variadic args allowed (but keep
+                # it nonzero)
+                arg_count_min = max(function_extension.variadic.get("min", 0), 1)
+                sigkey = (sigkey[0],) * arg_count_min
 
         # If it's still None then we're borked.
         if function_extension is None:
@@ -135,13 +144,20 @@ class SubstraitCompiler:
                 f"No matching extension type found for function {op_name} with input types {sigkey}"
             )
 
+        return sigkey
+
+    def create_extension(
+        self,
+        op_name: str,
+        sigkey: tuple[str, ...],
+    ) -> ste.SimpleExtensionDeclaration.ExtensionFunction:
+        """Register extension uri and create extension function."""
+
+        function_extension = _extension_mapping[op_name][sigkey]
         extension_uri = self.register_extension_uri(function_extension.uri)
 
-        # format signature key for extension name
-        extension_type_signature = "_".join(sigkey)
-
         extension_function = self.create_extension_function(
-            extension_uri, f"{op_name}:{extension_type_signature}"
+            extension_uri, f"{op_name}:{'_'.join(sigkey)}"
         )
 
         return extension_function
