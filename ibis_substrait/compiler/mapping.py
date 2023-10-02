@@ -174,7 +174,7 @@ class FunctionEntry:
 
 
 def _parse_func(entry: Mapping[str, Any]) -> Iterator[FunctionEntry]:
-    for impl in entry["impls"]:
+    for impl in entry.get("impls", []):
         sf = FunctionEntry(entry["name"])
         sf.parse(impl)
 
