@@ -174,11 +174,12 @@ class FunctionEntry:
 
 
 def _parse_func(entry: Mapping[str, Any]) -> Iterator[FunctionEntry]:
-    for impl in entry["impls"]:
-        sf = FunctionEntry(entry["name"])
-        sf.parse(impl)
+    if "impls" in entry.keys():
+        for impl in entry["impls"]:
+            sf = FunctionEntry(entry["name"])
+            sf.parse(impl)
 
-        yield sf
+            yield sf
 
 
 def register_extension_yaml(
