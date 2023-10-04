@@ -1495,13 +1495,13 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "substrait"
-version = "0.2.1"
+version = "0.5.0"
 description = "A python package for Substrait."
 optional = false
 python-versions = ">=3.8.1"
 files = [
-    {file = "substrait-0.2.1-py3-none-any.whl", hash = "sha256:fe721349caf3dd2f6ab281f55d1c6f9fbb809eb227c8d08fbd6e4c967982eb2e"},
-    {file = "substrait-0.2.1.tar.gz", hash = "sha256:ff2c1ecfdd2af897170a8405ae1108eb0e98db000cda779568400fba4bbd6ece"},
+    {file = "substrait-0.5.0-py3-none-any.whl", hash = "sha256:ec4d5ccf06571088a2df9f5dcc22ef801430070adf279fc6fc7efdc3314516ad"},
+    {file = "substrait-0.5.0.tar.gz", hash = "sha256:20b2aa6c1c8ce773e0f41ab8088e5b9ea6e85f00af7dd3d337efb62132a598d5"},
 ]
 
 [package.dependencies]
