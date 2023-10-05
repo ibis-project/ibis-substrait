@@ -1,6 +1,14 @@
 Release Notes
 ---
 
+## [3.1.1](https://github.com/ibis-project/ibis-substrait/compare/v3.1.0...v3.1.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* **extensions:** pass over extension top-matter ([c7f3e34](https://github.com/ibis-project/ibis-substrait/commit/c7f3e34b7741b3f8541b7c1fb837db5eeadbbe47))
+* **extensions:** use compound signature when creating new URI ([d0ee145](https://github.com/ibis-project/ibis-substrait/commit/d0ee1457c095a29af1632f637060c22671f1f501))
+
 ## [3.1.0](https://github.com/ibis-project/ibis-substrait/compare/v3.0.0...v3.1.0) (2023-08-30)
 
 
