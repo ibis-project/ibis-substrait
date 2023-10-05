@@ -3,6 +3,6 @@
   "lockFileMaintenance": { "enabled": true },
   "automerge": true,
   "labels": ["dependencies"],
-  "ignoreDeps": ["protobuf"],
+  "ignoreDeps": ["protobuf", "substrait"],
   "schedule": ["after 5pm on friday"]
 }
