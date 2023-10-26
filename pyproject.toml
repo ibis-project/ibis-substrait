@@ -133,8 +133,6 @@ filterwarnings = [
   "ignore:`parse_type` is deprecated:FutureWarning",
   # ibis on postgres + windows
   "ignore:locale specific date formats:UserWarning",
-  # ignore sqlalchemy 2.0 warnings (they're upstream in ibis)
-  "ignore: Deprecated API features detected:sqlalchemy.exc.RemovedIn20Warning",
   # ignore struct pairs deprecation while we still support 4.0
   "ignore: `Struct.pairs` is deprecated:FutureWarning",
   # ignore output_dtype deprecation until version 7.0 is minimum supported
