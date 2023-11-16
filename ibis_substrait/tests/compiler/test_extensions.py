@@ -358,3 +358,30 @@ def test_extension_arithmetic_multiple_signatures(compiler):
     assert "add:fp32_fp32" in scalar_func_names
     assert "subtract:i64_i64" in scalar_func_names
     assert "subtract:fp32_fp32" in scalar_func_names
+
+
+_TYPE_MAPPING = {
+    "int8": "i8",
+    "int16": "i16",
+    "int32": "i32",
+    "int64": "i64",
+    "float32": "fp32",
+    "float64": "fp64",
+}
+
+
+@pytest.mark.parametrize(
+    "col_dtype", ["float32", "float64", "int8", "int16", "int32", "int64"]
+)
+@pytest.mark.parametrize("digits_dtype", ["int8", "int16", "int32", "int64"])
+def test_extension_round_upcast(compiler, col_dtype, digits_dtype):
+    t = ibis.table([("col", col_dtype)], name="t")
+
+    query = t.mutate(col=t.col.round(ibis.literal(8, type=digits_dtype)))
+    plan = compiler.compile(query)
+
+    scalar_func_names = [
+        extension.extension_function.name for extension in plan.extensions
+    ]
+
+    assert f"round:{_TYPE_MAPPING[col_dtype]}_i32" in scalar_func_names
