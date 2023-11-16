@@ -1502,3 +1502,17 @@ def _upcast_string_op(op: string_op) -> string_op:
         for newop in op.args
     ]
     return type(op)(*casted_args)
+
+
+@_upcast.register(ops.Round)
+def _upcast_round_digits(op: ops.Round) -> ops.Round:
+    # Substrait wants Int32 for decimal place argument to round
+    if op.digits is None:
+        raise ValueError(
+            "Substrait requires that a rounding operation specify the number of digits to round to"
+        )
+    elif not isinstance(op.digits.dtype, dt.Int32):
+        return ops.Round(
+            op.arg, op.digits.copy(dtype=dt.Int32(nullable=op.digits.dtype.nullable))
+        )
+    return op
