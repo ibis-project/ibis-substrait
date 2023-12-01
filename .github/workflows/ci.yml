@@ -26,7 +26,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cachix/cachix-action@v12
+      - uses: cachix/cachix-action@v13
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
@@ -44,7 +44,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cachix/cachix-action@v12
+      - uses: cachix/cachix-action@v13
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -71,7 +71,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cachix/cachix-action@v12
+      - uses: cachix/cachix-action@v13
         with:
           name: ibis-substrait
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -158,7 +158,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cachix/cachix-action@v12
+      - uses: cachix/cachix-action@v13
         with:
           name: ibis-substrait
           extraPullNames: nix-community,poetry2nix,ibis
