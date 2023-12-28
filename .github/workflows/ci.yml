@@ -94,6 +94,8 @@ jobs:
         ibis-version:
           - "4.1"
           - "7.0"
+          - "7.1"
+          - "7.2"
         include:
          - os: windows-latest
            python-version: "3.11"
