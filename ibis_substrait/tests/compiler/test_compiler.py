@@ -517,3 +517,11 @@ def test_aggregate_filter_select_output_mapping(compiler):
     result = translate(expr, compiler=compiler)
 
     assert result.project.common.emit.output_mapping == [5, 6]
+
+
+@pytest.mark.xfail(
+    raises=NotImplementedError, reason="Scalar subqueries are unsupported"
+)
+def test_filter_over_subquery(compiler):
+    t = ibis.table([("a", "int")], name="t").filter(_.a > _.a.mean())
+    translate(t, compiler=compiler)

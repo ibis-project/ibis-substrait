@@ -24,7 +24,7 @@ import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import toolz
 from ibis import util
-from ibis.common.graph import toposort
+from ibis.common.graph import Graph
 from packaging import version
 from substrait.gen.proto import algebra_pb2 as stalg
 from substrait.gen.proto import type_pb2 as stt
@@ -38,6 +38,7 @@ from ibis_substrait.compiler.mapping import (
 IBIS_GTE_5 = version.parse(ibis.__version__) >= version.parse("5.0.0")
 IBIS_GTE_6 = version.parse(ibis.__version__) >= version.parse("6.0.0")
 IBIS_GTE_7 = version.parse(ibis.__version__) >= version.parse("7.0.0")
+IBIS_GTE_71 = version.parse(ibis.__version__) >= version.parse("7.1.0")
 
 
 # When an op gets renamed between major versions, we can assign the old name to this
@@ -932,7 +933,7 @@ def _find_parent_tables(op: ops.Selection) -> set[ops.PhysicalTable]:
     # a schema"
     source_tables = {
         t
-        for t in toposort(op).keys()
+        for t in Graph(op).toposort().keys()  # type: ignore[no-untyped-call]
         if isinstance(t, ops.PhysicalTable) and hasattr(t, "schema")
     }
 
@@ -1174,8 +1175,8 @@ def _contains(
 
 if IBIS_GTE_7:
     # Contains was decomposed into two separate ops in Ibis 7.x
-    translate.register(ops.InColumn)(_contains)
-    translate.register(ops.InValues)(_contains)
+    translate.register(ops.InColumn)(_contains)  # type: ignore[no-untyped-call]
+    translate.register(ops.InValues)(_contains)  # type: ignore[no-untyped-call]
 
 
 @translate.register(ops.Cast)
@@ -1330,7 +1331,6 @@ def _exists_subquery(
     )
 
 
-@translate.register(ops.NotExistsSubquery)
 def _not_exists_subquery(
     op: ops.NotExistsSubquery,
     *,
@@ -1367,6 +1367,11 @@ def _not_exists_subquery(
             ],
         )
     )
+
+
+if not IBIS_GTE_71:
+    # NotExistsSubquery was removed in Ibis 7.1
+    translate.register(ops.NotExistsSubquery)(_not_exists_subquery)  # type: ignore[no-untyped-call]
 
 
 @translate.register(ops.Floor)
@@ -1448,6 +1453,9 @@ compiler has a `udf_uri` attached.
 def _check_and_upcast(op: ops.Node) -> ops.Node:
     """Check that arguments to extension functions have consistent types."""
     op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
+
+    if any(isinstance(arg, ops.TableArrayView) for arg in op.args):
+        raise NotImplementedError("Subqueries are unsupported as function inputs")
 
     anykey = ("any",) * len([arg for arg in op.args if arg is not None])
 

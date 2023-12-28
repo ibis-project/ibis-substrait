@@ -4,18 +4,16 @@ import ibis
 import pytest
 from google.protobuf import json_format
 from packaging import version
+from packaging.specifiers import SpecifierSet
 from pytest_lazyfixture import lazy_fixture
 
-# changes in ops have led to one of the tpc queries ending up constructed
-# in a different order, so we snapshot query 9 with two versions of Ibis.
-ibis5 = pytest.mark.skipif(
-    version.parse(ibis.__version__) >= version.parse("5.0.0"),
-    reason="Field ordering difference btwn 4.x and 5.x",
-)
-ibis4 = pytest.mark.skipif(
-    version.parse(ibis.__version__) < version.parse("5.0.0"),
-    reason="Field ordering difference btwn 4.x and 5.x",
-)
+
+def ibis_version(constraint: str, reason: str):
+    """Run the test iff the Ibis version matches the constraint."""
+    return pytest.mark.skipif(
+        version.parse(ibis.__version__) not in SpecifierSet(constraint),
+        reason=f"{reason} - ibis version: {ibis.__version__}, test versions: {constraint}",
+    )
 
 
 @pytest.fixture
@@ -631,7 +629,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h02"),
         marks=pytest.mark.xfail(
-            raises=AssertionError, reason="Correlated Subquery issues"
+            raises=NotImplementedError, reason="Correlated Subquery issues"
         ),
     ),
     lazy_fixture("tpc_h03"),
@@ -646,10 +644,27 @@ TPC_H = [
             reason="Aggregates need to be handled differently than they are",
         ),
     ),
-    pytest.param(lazy_fixture("tpc_h09"), marks=ibis5),
-    pytest.param(lazy_fixture("tpc_h09"), marks=ibis4),
+    pytest.param(
+        lazy_fixture("tpc_h09"),
+        marks=ibis_version("<7.0,~=7.1.0", "Field ordering difference"),
+    ),
+    pytest.param(
+        lazy_fixture("tpc_h09"),
+        marks=ibis_version("~=7.0.0", "Field ordering difference"),
+    ),
+    pytest.param(
+        lazy_fixture("tpc_h09"),
+        marks=ibis_version(">=7.2", "7.2 adds a cast to int and dec multiplication"),
+    ),
     lazy_fixture("tpc_h10"),
-    lazy_fixture("tpc_h11"),
+    pytest.param(
+        lazy_fixture("tpc_h11"),
+        marks=ibis_version("<7.2", "7.2 makes join output columns nullable"),
+    ),
+    pytest.param(
+        lazy_fixture("tpc_h11"),
+        marks=ibis_version(">=7.2", "7.2 makes join output columns nullable"),
+    ),
     lazy_fixture("tpc_h12"),
     lazy_fixture("tpc_h13"),
     pytest.param(
@@ -662,7 +677,7 @@ TPC_H = [
     pytest.param(
         lazy_fixture("tpc_h15"),
         marks=pytest.mark.xfail(
-            raises=AssertionError, reason="Correlated Subquery issues"
+            raises=NotImplementedError, reason="Correlated Subquery issues"
         ),
     ),
     pytest.param(
@@ -673,16 +688,36 @@ TPC_H = [
     ),
     pytest.param(
         lazy_fixture("tpc_h17"),
-        marks=pytest.mark.xfail(
-            raises=NotImplementedError,
-            reason="ibis.expr.operations.relations.Aggregation",
+        marks=(
+            pytest.mark.xfail(
+                raises=NotImplementedError,
+                reason="ibis.expr.operations.relations.Aggregation",
+            ),
+            ibis_version("<7.1", "Aggregation not implemented before 7.1"),
+        ),
+    ),
+    pytest.param(
+        lazy_fixture("tpc_h17"),
+        marks=(
+            pytest.mark.xfail(
+                raises=NotImplementedError,
+                reason="Filters on subqueries are unsupported",
+            ),
+            ibis_version(">=7.1", "Aggregation not implemented before 7.1"),
         ),
     ),
     lazy_fixture("tpc_h18"),
     lazy_fixture("tpc_h19"),
     lazy_fixture("tpc_h20"),
     lazy_fixture("tpc_h21"),
-    lazy_fixture("tpc_h22"),
+    pytest.param(
+        lazy_fixture("tpc_h22"),
+        marks=ibis_version("<7.1", "7.1 changes function order"),
+    ),
+    pytest.param(
+        lazy_fixture("tpc_h22"),
+        marks=ibis_version(">=7.1", "7.1 changes function order"),
+    ),
 ]
 
 
