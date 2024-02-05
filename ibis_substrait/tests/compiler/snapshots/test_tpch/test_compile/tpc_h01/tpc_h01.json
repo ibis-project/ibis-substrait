@@ -243,11 +243,7 @@
                           },
                           "rootReference": {}
                         }
-                      }
-                    ]
-                  },
-                  {
-                    "groupingExpressions": [
+                      },
                       {
                         "selection": {
                           "directReference": {

@@ -525,3 +525,13 @@ def test_aggregate_filter_select_output_mapping(compiler):
 def test_filter_over_subquery(compiler):
     t = ibis.table([("a", "int")], name="t").filter(_.a > _.a.mean())
     translate(t, compiler=compiler)
+
+
+def test_groupby_multiple_keys(compiler):
+    t = ibis.table(name="t", schema=(("a", "int"), ("b", "int")))
+    expr = t.group_by(["a", "b"]).agg()
+    plan = translate(expr, compiler=compiler)
+
+    # There should be one grouping with two separate expressions inside
+    assert len(plan.aggregate.groupings) == 1
+    assert len(plan.aggregate.groupings[0].grouping_expressions) == 2

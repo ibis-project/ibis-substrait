@@ -1025,11 +1025,7 @@
                           },
                           "rootReference": {}
                         }
-                      }
-                    ]
-                  },
-                  {
-                    "groupingExpressions": [
+                      },
                       {
                         "selection": {
                           "directReference": {

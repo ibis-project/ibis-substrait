@@ -1128,11 +1128,7 @@
                           },
                           "rootReference": {}
                         }
-                      }
-                    ]
-                  },
-                  {
-                    "groupingExpressions": [
+                      },
                       {
                         "selection": {
                           "directReference": {
@@ -1142,11 +1138,7 @@
                           },
                           "rootReference": {}
                         }
-                      }
-                    ]
-                  },
-                  {
-                    "groupingExpressions": [
+                      },
                       {
                         "selection": {
                           "directReference": {
