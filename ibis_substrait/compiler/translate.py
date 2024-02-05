@@ -856,7 +856,27 @@ def selection(
         for relname, rel in rels:
             if relname == "aggregate" and rel.measures:
                 mapping_counter = itertools.count(
-                    len(rel.measures) + len(rel.groupings)
+                    len(rel.measures)
+                    # Individual groups can have multiple grouping expressions
+                    # and we need to count all of these to properly index projections
+                    # e.g. for the following query
+                    # SELECT
+                    #   t0.b,
+                    #   t0.sum
+                    # FROM (
+                    #   SELECT
+                    #     t1.a AS a,
+                    #     t1.b AS b,
+                    #     SUM(t1.c) AS sum
+                    #   FROM t AS t1
+                    #   GROUP BY
+                    #     t1.a,
+                    #     t1.b
+                    # ) AS t0
+                    #
+                    # the two grouping keys (t1.a, t1.b) will be grouping
+                    # expressions in the first (and only) group.
+                    + sum(len(group.grouping_expressions) for group in rel.groupings)
                 )
                 break
             elif output_mapping := rel.common.emit.output_mapping:
@@ -1092,9 +1112,10 @@ def aggregation(
         input=input,
         groupings=[
             stalg.AggregateRel.Grouping(
-                grouping_expressions=[translate(by, compiler=compiler, **kwargs)]
+                grouping_expressions=[
+                    translate(by, compiler=compiler, **kwargs) for by in op.by
+                ]
             )
-            for by in op.by
         ],
         measures=[
             stalg.AggregateRel.Measure(
