@@ -1,6 +1,21 @@
 Release Notes
 ---
 
+## [3.2.0](https://github.com/ibis-project/ibis-substrait/compare/v3.1.1...v3.2.0) (2024-02-06)
+
+
+### Features
+
+* **autocast:** add autocast for digits argument to ops.Round ([f0d4940](https://github.com/ibis-project/ibis-substrait/commit/f0d49403fd2185571b5e170919ce04ebd0bea4d7))
+* support ibis 7.2 ([5976b9f](https://github.com/ibis-project/ibis-substrait/commit/5976b9f15e7eea8187ec4dbf70535029472fffb8))
+
+
+### Bug Fixes
+
+* **deps:** update dependency ibis-framework to v7.1.0 [security] ([bdb5906](https://github.com/ibis-project/ibis-substrait/commit/bdb590613266321c24369b84f31c4c1e8ba68533))
+* **deps:** update dependency packaging to v23.2 ([82d9a9b](https://github.com/ibis-project/ibis-substrait/commit/82d9a9b13fdf30c80b5c0a66c6fae358b07b80dd))
+* **grouping:** collect multiple grouping keys in single "groupings" ([30d35e3](https://github.com/ibis-project/ibis-substrait/commit/30d35e3c47baf2e4ddd2811940bae7524c8a37a8))
+
 ## [3.1.1](https://github.com/ibis-project/ibis-substrait/compare/v3.1.0...v3.1.1) (2023-10-05)
 
 
