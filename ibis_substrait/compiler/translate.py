@@ -790,6 +790,7 @@ def _get_child_relation_field_offsets(table: ops.TableNode) -> dict[ops.TableNod
     0
     >>> mapping[t2.op()]  # first relation has 3 fields, so the second starts at 3
     3
+
     """
     if isinstance(table, ops.Join):
         # Descend into the left and right tables to grab offsets from nested joins

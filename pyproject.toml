@@ -56,6 +56,10 @@ pytest-snapshot = "^0.9.0"
 
 [tool.ruff]
 line-length = 88
+respect-gitignore = true
+target-version = "py39"
+
+[tool.ruff.lint]
 select = [
   "B", # flake8-bugbear
   "BLE", # flake8-blind-except
@@ -79,9 +83,7 @@ select = [
   "UP", # pyupgrade
   "W", # pycodestyle
   "YTT", # flake8-2020
-
 ]
-respect-gitignore = true
 ignore = [
   "B904", # raise from e or raise from None in exception handlers
   "C408", # dict(...) as literal
@@ -99,6 +101,7 @@ ignore = [
   "D402", # First line should not be the function's signature
   "E501",
   "E731",
+  "ISC001",
   "PGH003",
   "RET504",
   "RET505",
@@ -112,9 +115,8 @@ ignore = [
   "SIM118", # remove .keys() calls from dictionaries
   "UP006", # use collections.deque instead of Deque for type annotation
 ]
-target-version = "py39"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "*test*.py" = ["D"] # ignore all docstring lints in tests
 
 [tool.pytest.ini_options]

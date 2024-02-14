@@ -39,6 +39,7 @@ class SubstraitCompiler:
         udf_uri
             The extension URI to use for looking up registered UDFs, if any.
             This is highly backend dependent.
+
         """
         self.extension_uris: dict[str, ste.SimpleExtensionURI] = {}
         self.function_extensions: dict[
@@ -74,6 +75,7 @@ class SubstraitCompiler:
         ste.ExtensionsFunctionId
             This is a unique identifier for a given operation type, *argument
             types N-tuple.
+
         """
 
         op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
@@ -178,6 +180,7 @@ class SubstraitCompiler:
         Returns
         -------
         ste.SimpleExtensionDeclaration.ExtensionFunction
+
         """
         return ste.SimpleExtensionDeclaration.ExtensionFunction(
             extension_uri_reference=extension_uri.extension_uri_anchor,
@@ -196,6 +199,7 @@ class SubstraitCompiler:
         Returns
         -------
         ste.SimpleExtensionURI
+
         """
         try:
             extension_uri = self.extension_uris[uri]
@@ -289,6 +293,7 @@ def _get_fields(dtype: dt.DataType) -> Iterator[tuple[str | None, dt.DataType]]:
     >>> struct_type = dt.parse("struct<a: int64, b: map<int64, float64>>")
     >>> list(_get_fields(struct_type))  # doctest: +SKIP
     [('b', Map(key_type=int64, value_type=float64, nullable=True)), ('a', int64)]
+
     """
     if isinstance(dtype, dt.Array):
         yield None, dtype.value_type
