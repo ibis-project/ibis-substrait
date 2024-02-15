@@ -5,7 +5,6 @@ import pytest
 from google.protobuf import json_format
 from packaging import version
 from packaging.specifiers import SpecifierSet
-from pytest_lazyfixture import lazy_fixture
 
 
 def ibis_version(constraint: str, reason: str):
@@ -625,69 +624,69 @@ def tpc_h22(customer, orders):
 
 
 TPC_H = [
-    lazy_fixture("tpc_h01"),
+    "tpc_h01",
     pytest.param(
-        lazy_fixture("tpc_h02"),
+        "tpc_h02",
         marks=pytest.mark.xfail(
             raises=NotImplementedError, reason="Correlated Subquery issues"
         ),
     ),
-    lazy_fixture("tpc_h03"),
-    lazy_fixture("tpc_h04"),
-    lazy_fixture("tpc_h05"),
-    lazy_fixture("tpc_h06"),
-    lazy_fixture("tpc_h07"),
+    "tpc_h03",
+    "tpc_h04",
+    "tpc_h05",
+    "tpc_h06",
+    "tpc_h07",
     pytest.param(
-        lazy_fixture("tpc_h08"),
+        "tpc_h08",
         marks=pytest.mark.xfail(
             raises=TypeError,
             reason="Aggregates need to be handled differently than they are",
         ),
     ),
     pytest.param(
-        lazy_fixture("tpc_h09"),
+        "tpc_h09",
         marks=ibis_version("<7.0,~=7.1.0", "Field ordering difference"),
     ),
     pytest.param(
-        lazy_fixture("tpc_h09"),
+        "tpc_h09",
         marks=ibis_version("~=7.0.0", "Field ordering difference"),
     ),
     pytest.param(
-        lazy_fixture("tpc_h09"),
+        "tpc_h09",
         marks=ibis_version(">=7.2", "7.2 adds a cast to int and dec multiplication"),
     ),
-    lazy_fixture("tpc_h10"),
+    "tpc_h10",
     pytest.param(
-        lazy_fixture("tpc_h11"),
+        "tpc_h11",
         marks=ibis_version("<7.2", "7.2 makes join output columns nullable"),
     ),
     pytest.param(
-        lazy_fixture("tpc_h11"),
+        "tpc_h11",
         marks=ibis_version(">=7.2", "7.2 makes join output columns nullable"),
     ),
-    lazy_fixture("tpc_h12"),
-    lazy_fixture("tpc_h13"),
+    "tpc_h12",
+    "tpc_h13",
     pytest.param(
-        lazy_fixture("tpc_h14"),
+        "tpc_h14",
         marks=pytest.mark.xfail(
             raises=TypeError,
             reason="protobuf error resulting subquery (cannot merge Expression and AggregateFunction)",
         ),
     ),
     pytest.param(
-        lazy_fixture("tpc_h15"),
+        "tpc_h15",
         marks=pytest.mark.xfail(
             raises=NotImplementedError, reason="Correlated Subquery issues"
         ),
     ),
     pytest.param(
-        lazy_fixture("tpc_h16"),
+        "tpc_h16",
         marks=pytest.mark.xfail(
             raises=ValueError, reason="countdistinct not handled correctly"
         ),
     ),
     pytest.param(
-        lazy_fixture("tpc_h17"),
+        "tpc_h17",
         marks=(
             pytest.mark.xfail(
                 raises=NotImplementedError,
@@ -697,7 +696,7 @@ TPC_H = [
         ),
     ),
     pytest.param(
-        lazy_fixture("tpc_h17"),
+        "tpc_h17",
         marks=(
             pytest.mark.xfail(
                 raises=NotImplementedError,
@@ -706,26 +705,27 @@ TPC_H = [
             ibis_version(">=7.1", "Aggregation not implemented before 7.1"),
         ),
     ),
-    lazy_fixture("tpc_h18"),
-    lazy_fixture("tpc_h19"),
-    lazy_fixture("tpc_h20"),
-    lazy_fixture("tpc_h21"),
+    "tpc_h18",
+    "tpc_h19",
+    "tpc_h20",
+    "tpc_h21",
     pytest.param(
-        lazy_fixture("tpc_h22"),
+        "tpc_h22",
         marks=ibis_version("<7.1", "7.1 changes function order"),
     ),
     pytest.param(
-        lazy_fixture("tpc_h22"),
+        "tpc_h22",
         marks=ibis_version(">=7.1", "7.1 changes function order"),
     ),
 ]
 
 
 @pytest.mark.parametrize(
-    "query",
+    "fixture_name",
     TPC_H,
 )
-def test_compile(query, compiler, snapshot, request):
+def test_compile(fixture_name, compiler, snapshot, request):
+    query = request.getfixturevalue(fixture_name)
     plan = compiler.compile(query)
 
     snapshot.assert_match(
