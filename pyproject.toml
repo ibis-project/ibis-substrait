@@ -42,7 +42,7 @@ types-pyyaml = ">=6.0.12.8"
 typing-extensions = ">=4"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.0.0"
+pytest = "^8.0.0"
 pytest-clarity = "^1.0.1"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.6.1"
