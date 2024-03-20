@@ -843,7 +843,7 @@
     }
   ],
   "version": {
-    "minorNumber": 35,
+    "minorNumber": 44,
     "producer": "ibis-substrait"
   }
 }
