@@ -1453,9 +1453,9 @@ compiler has a `udf_uri` attached.
     try:
         func_ext = compiler.function_extensions[udf_key]
     except KeyError:
-        func_ext = compiler.function_extensions[
-            udf_key
-        ] = compiler.create_extension_function(extension_uri, op.func.__name__)
+        func_ext = compiler.function_extensions[udf_key] = (
+            compiler.create_extension_function(extension_uri, op.func.__name__)
+        )
 
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
@@ -1526,9 +1526,11 @@ string_op: TypeAlias = Union[
 def _upcast_string_op(op: string_op) -> string_op:
     # Substrait wants Int32 for all numeric args to string functions
     casted_args = [
-        ops.Cast(newop, to=dt.Int32())  # type: ignore
-        if isinstance(newop.output_dtype, dt.SignedInteger)
-        else newop
+        (
+            ops.Cast(newop, to=dt.Int32())  # type: ignore
+            if isinstance(newop.output_dtype, dt.SignedInteger)
+            else newop
+        )
         for newop in op.args
     ]
     return type(op)(*casted_args)

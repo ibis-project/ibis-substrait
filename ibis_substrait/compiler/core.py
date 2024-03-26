@@ -86,9 +86,9 @@ class SubstraitCompiler:
         try:
             function_extension = self.function_extensions[extension_signature]
         except KeyError:
-            function_extension = self.function_extensions[
-                extension_signature
-            ] = self.create_extension(op_name, sig_key)
+            function_extension = self.function_extensions[extension_signature] = (
+                self.create_extension(op_name, sig_key)
+            )
         return function_extension.function_anchor
 
     def get_signature(self, op: ops.Node) -> tuple[str, ...]:
