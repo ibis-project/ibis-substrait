@@ -44,7 +44,7 @@ typing-extensions = ">=4"
 [tool.poetry.group.test.dependencies]
 pytest = "^8.0.0"
 pytest-clarity = "^1.0.1"
-pytest-cov = "^4.0.0"
+pytest-cov = "^5.0.0"
 pytest-mock = "^3.6.1"
 pytest-randomly = "^3.10.1"
 pytz = "^2022.1"
