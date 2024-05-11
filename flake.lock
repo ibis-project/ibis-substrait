@@ -157,11 +157,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1715017507,
-        "narHash": "sha256-RN2Vsba56PfX02DunWcZYkMLsipp928h+LVAWMYmbZg=",
+        "lastModified": 1715251496,
+        "narHash": "sha256-vRBfJCKvJtu5sYev56XStirA3lAOPv0EkoEV2Nfc+tc=",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "e6b36523407ae6a7a4dfe29770c30b3a3563b43a",
+        "rev": "291a863e866972f356967d0a270b259f46bf987f",
         "type": "github"
       },
       "original": {
