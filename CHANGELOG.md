@@ -1,6 +1,13 @@
 Release Notes
 ---
 
+## [3.2.1](https://github.com/ibis-project/ibis-substrait/compare/v3.2.0...v3.2.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* **deps:** pin ibis-framework to less than 9 ([f671438](https://github.com/ibis-project/ibis-substrait/commit/f6714386f961a0b987b79358e339b78e352044eb))
+
 ## [3.2.0](https://github.com/ibis-project/ibis-substrait/compare/v3.1.1...v3.2.0) (2024-02-06)
 
 
