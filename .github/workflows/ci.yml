@@ -92,11 +92,11 @@ jobs:
           - "3.9"
           - "3.11"
         ibis-version:
-          - "9.1"
+          - "9.0"
         include:
          - os: windows-latest
            python-version: "3.11"
-           ibis-version: "9.1"
+           ibis-version: "9.0"
 
     steps:
       - uses: actions/checkout@v4
@@ -129,7 +129,7 @@ jobs:
           - "3.9"
           - "3.11"
         ibis-version:
-          - "9.1"
+          - "9.0"
 
     steps:
       - uses: actions/checkout@v4

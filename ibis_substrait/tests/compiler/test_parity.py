@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import ibis
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -36,25 +39,28 @@ def run_query_acero(plan, datasets, compiler):
 
 
 def run_query_duckdb(query, datasets):
-    con = ibis.duckdb.connect()
-    for table_name, pa_table in datasets.items():
-        con.create_table(name=table_name, obj=ibis.memtable(pa_table))
-    return con.to_pyarrow(query)
+    with tempfile.TemporaryDirectory() as tempdir:
+        con = ibis.duckdb.connect(os.path.join(tempdir, "temp.db"))
+        for table_name, pa_table in datasets.items():
+            con.create_table(name=table_name, obj=ibis.memtable(pa_table))
+        return con.to_pyarrow(query)
 
 
 def run_query_duckdb_substrait(expr, datasets, compiler):
     import duckdb
 
-    con = duckdb.connect()
-    con.install_extension("substrait")
-    con.load_extension("substrait")
+    with tempfile.TemporaryDirectory() as tempdir:
+        con = duckdb.connect(database=os.path.join(tempdir, "temp.db"))
+        con.sql(f"SET home_directory='{tempdir}'")
+        con.install_extension("substrait")
+        con.load_extension("substrait")
 
-    for k, v in datasets.items():  # noqa: B007
-        con.sql(f"CREATE TABLE {k} AS SELECT * FROM v")
+        for k, v in datasets.items():  # noqa: B007
+            con.sql(f"CREATE TABLE {k} AS SELECT * FROM v")
 
-    plan = compiler.compile(expr)
-    result = con.from_substrait(plan.SerializeToString())
-    return result.fetch_arrow_table()
+        plan = compiler.compile(expr)
+        result = con.from_substrait(plan.SerializeToString())
+        return result.fetch_arrow_table()
 
 
 def run_parity_tests(expr, datasets, compiler, engines=None):
