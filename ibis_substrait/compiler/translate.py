@@ -15,7 +15,7 @@ import math
 import operator
 import uuid
 from collections.abc import Iterable, Mapping, MutableMapping, Sequence
-from typing import Any, TypeAlias, TypeVar, Union
+from typing import Any, TypeVar, Union
 
 import ibis
 import ibis.expr.datatypes as dt
@@ -31,6 +31,12 @@ from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
     _extension_mapping,
 )
+
+try:
+    from typing import TypeAlias
+except ImportError:
+    # Python <= 3.9
+    from typing_extensions import TypeAlias
 
 # When an op gets renamed between major versions, we can assign the old name to this
 # DummyOp so that we don't get Attribute errors when the new version goes looking for it
