@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-ibis-framework = ">=4,<9"
+ibis-framework = ">=9,<10"
 packaging = ">=21.3"
 pyyaml = ">=5"
 substrait = ">=0.2.1"
@@ -138,7 +138,8 @@ filterwarnings = [
   "ignore: `Struct.pairs` is deprecated:FutureWarning",
   # ignore output_dtype deprecation until version 7.0 is minimum supported
   "ignore:`Value.output_dtype` is deprecated:FutureWarning",
-
+  # ignore elementwise deprecation warnings to keep testing them until it's removed
+  "ignore:`elementwise` is deprecated as of v9.0; use the ibis.udf.* api",
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]

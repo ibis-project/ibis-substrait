@@ -1332,7 +1332,7 @@
                   "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
                   "outputType": {
                     "decimal": {
-                      "scale": 4,
+                      "scale": 2,
                       "precision": 38,
                       "nullability": "NULLABILITY_NULLABLE"
                     }
@@ -1344,8 +1344,8 @@
                           "functionReference": 8,
                           "outputType": {
                             "decimal": {
-                              "scale": 4,
-                              "precision": 30,
+                              "scale": 2,
+                              "precision": 15,
                               "nullability": "NULLABILITY_NULLABLE"
                             }
                           },
@@ -1369,7 +1369,7 @@
                                   "outputType": {
                                     "decimal": {
                                       "scale": 2,
-                                      "precision": 16,
+                                      "precision": 15,
                                       "nullability": "NULLABILITY_NULLABLE"
                                     }
                                   },
@@ -1426,7 +1426,7 @@
     }
   ],
   "version": {
-    "minorNumber": 44,
+    "minorNumber": 49,
     "producer": "ibis-substrait"
   }
 }

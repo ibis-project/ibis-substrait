@@ -112,6 +112,8 @@ def tpc_h03(
 
 @pytest.fixture
 def tpc_h04(orders, lineitem):
+    from ibis import _
+
     cond = (lineitem.l_orderkey == orders.o_orderkey) & (
         lineitem.l_commitdate < lineitem.l_receiptdate
     )
@@ -122,9 +124,9 @@ def tpc_h04(orders, lineitem):
             orders.o_orderdate < "1993-10-01",
         ]
     )
-    q = q.group_by([orders.o_orderpriority])
-    q = q.aggregate(order_count=orders.count())
-    q = q.order_by([orders.o_orderpriority])
+    q = q.group_by([_.o_orderpriority])
+    q = q.aggregate(order_count=_.count())
+    q = q.order_by([_.o_orderpriority])
     return q
 
 
@@ -251,7 +253,10 @@ def tpc_h08(
         nation_volume=ibis.case().when(q.nation == "BRAZIL", q.volume).else_(0).end()
     )
     gq = q.group_by([q.o_year])
-    q = gq.aggregate(mkt_share=q.nation_volume.sum() / q.volume.sum())
+    # q = gq.aggregate(mkt_share=q.nation_volume.sum() / q.volume.sum())
+    q = gq.aggregate(nation_volume_sum=q.nation_volume.sum(), volume_sum=q.volume.sum())
+    q = q.mutate(mkt_share=q.nation_volume_sum / q.volume_sum)
+    q = q.drop("nation_volume_sum", "volume_sum")
     q = q.order_by([q.o_year])
     return q
 
@@ -402,7 +407,10 @@ def tpc_h14(lineitem, part):
     revenue = q.l_extendedprice * (1 - q.l_discount)
     promo_revenue = q.p_type.like("PROMO%").ifelse(revenue, 0)
 
-    q = q.aggregate(promo_revenue=100 * promo_revenue.sum() / revenue.sum())
+    # q = q.aggregate(promo_revenue=100 * promo_revenue.sum() / revenue.sum())
+    q = q.aggregate(promo_revenue_sum=promo_revenue.sum(), revenue_sum=revenue.sum())
+    q = q.mutate(promo_revenue=100 * q.promo_revenue_sum / q.revenue_sum)
+    q = q.drop("promo_revenue_sum", "revenue_sum")
     return q
 
 
@@ -460,7 +468,8 @@ def tpc_h17(lineitem, part):
             q.l_quantity < (0.2 * innerq.l_quantity.mean()),
         ]
     )
-    q = q.aggregate(avg_yearly=q.l_extendedprice.sum() / 7.0)
+    q = q.aggregate(avg_yearly=q.l_extendedprice.sum())
+    q = q.mutate(avg_yearly=q.avg_yearly / 0.7)
     return q
 
 
@@ -625,98 +634,32 @@ def tpc_h22(customer, orders):
 
 TPC_H = [
     "tpc_h01",
-    pytest.param(
-        "tpc_h02",
-        marks=pytest.mark.xfail(
-            raises=NotImplementedError, reason="Correlated Subquery issues"
-        ),
-    ),
+    "tpc_h02",
     "tpc_h03",
     "tpc_h04",
     "tpc_h05",
     "tpc_h06",
     "tpc_h07",
-    pytest.param(
-        "tpc_h08",
-        marks=pytest.mark.xfail(
-            raises=TypeError,
-            reason="Aggregates need to be handled differently than they are",
-        ),
-    ),
-    pytest.param(
-        "tpc_h09",
-        marks=ibis_version("<7.0,~=7.1.0", "Field ordering difference"),
-    ),
-    pytest.param(
-        "tpc_h09",
-        marks=ibis_version("~=7.0.0", "Field ordering difference"),
-    ),
-    pytest.param(
-        "tpc_h09",
-        marks=ibis_version(">=7.2", "7.2 adds a cast to int and dec multiplication"),
-    ),
+    "tpc_h08",
+    "tpc_h09",
     "tpc_h10",
-    pytest.param(
-        "tpc_h11",
-        marks=ibis_version("<7.2", "7.2 makes join output columns nullable"),
-    ),
-    pytest.param(
-        "tpc_h11",
-        marks=ibis_version(">=7.2", "7.2 makes join output columns nullable"),
-    ),
+    "tpc_h11",
     "tpc_h12",
     "tpc_h13",
-    pytest.param(
-        "tpc_h14",
-        marks=pytest.mark.xfail(
-            raises=TypeError,
-            reason="protobuf error resulting subquery (cannot merge Expression and AggregateFunction)",
-        ),
-    ),
-    pytest.param(
-        "tpc_h15",
-        marks=pytest.mark.xfail(
-            raises=NotImplementedError, reason="Correlated Subquery issues"
-        ),
-    ),
+    "tpc_h14",
+    "tpc_h15",
     pytest.param(
         "tpc_h16",
         marks=pytest.mark.xfail(
             raises=ValueError, reason="countdistinct not handled correctly"
         ),
     ),
-    pytest.param(
-        "tpc_h17",
-        marks=(
-            pytest.mark.xfail(
-                raises=NotImplementedError,
-                reason="ibis.expr.operations.relations.Aggregation",
-            ),
-            ibis_version("<7.1", "Aggregation not implemented before 7.1"),
-        ),
-    ),
-    pytest.param(
-        "tpc_h17",
-        marks=(
-            pytest.mark.xfail(
-                raises=NotImplementedError,
-                reason="Filters on subqueries are unsupported",
-            ),
-            ibis_version(">=7.1", "Aggregation not implemented before 7.1"),
-        ),
-    ),
+    "tpc_h17",
     "tpc_h18",
     "tpc_h19",
     "tpc_h20",
     "tpc_h21",
-    pytest.param(
-        "tpc_h22",
-        marks=ibis_version("<7.1", "7.1 changes function order"),
-    ),
-    pytest.param(
-        "tpc_h22",
-        marks=ibis_version(">=7.1", "7.1 changes function order"),
-    ),
+    "tpc_h22",
 ]
 
 

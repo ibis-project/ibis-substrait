@@ -54,9 +54,9 @@
     {
       "root": {
         "input": {
-          "aggregate": {
+          "sort": {
             "input": {
-              "sort": {
+              "aggregate": {
                 "input": {
                   "filter": {
                     "input": {
@@ -452,50 +452,48 @@
                     }
                   }
                 },
-                "sorts": [
+                "groupings": [
                   {
-                    "expr": {
-                      "selection": {
-                        "directReference": {
-                          "structField": {
-                            "field": 5
-                          }
-                        },
-                        "rootReference": {}
+                    "groupingExpressions": [
+                      {
+                        "selection": {
+                          "directReference": {
+                            "structField": {
+                              "field": 5
+                            }
+                          },
+                          "rootReference": {}
+                        }
                       }
-                    },
-                    "direction": "SORT_DIRECTION_ASC_NULLS_FIRST"
+                    ]
+                  }
+                ],
+                "measures": [
+                  {
+                    "measure": {
+                      "functionReference": 5,
+                      "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
+                      "outputType": {
+                        "i64": {
+                          "nullability": "NULLABILITY_NULLABLE"
+                        }
+                      }
+                    }
                   }
                 ]
               }
             },
-            "groupings": [
+            "sorts": [
               {
-                "groupingExpressions": [
-                  {
-                    "selection": {
-                      "directReference": {
-                        "structField": {
-                          "field": 5
-                        }
-                      },
-                      "rootReference": {}
-                    }
+                "expr": {
+                  "selection": {
+                    "directReference": {
+                      "structField": {}
+                    },
+                    "rootReference": {}
                   }
-                ]
-              }
-            ],
-            "measures": [
-              {
-                "measure": {
-                  "functionReference": 5,
-                  "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
-                  "outputType": {
-                    "i64": {
-                      "nullability": "NULLABILITY_NULLABLE"
-                    }
-                  }
-                }
+                },
+                "direction": "SORT_DIRECTION_ASC_NULLS_FIRST"
               }
             ]
           }
@@ -508,7 +506,7 @@
     }
   ],
   "version": {
-    "minorNumber": 44,
+    "minorNumber": 49,
     "producer": "ibis-substrait"
   }
 }
