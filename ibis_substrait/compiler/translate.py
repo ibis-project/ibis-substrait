@@ -894,9 +894,11 @@ def join(
 
         relation = stalg.Rel(
             join=stalg.JoinRel(
-                left=translate(op.first.parent, compiler=compiler, **kwargs)
-                if i == 0
-                else relation,
+                left=(
+                    translate(op.first.parent, compiler=compiler, **kwargs)
+                    if i == 0
+                    else relation
+                ),
                 right=translate(join_link.table.parent, compiler=compiler, **kwargs),
                 expression=translate(
                     functools.reduce(operator.and_, predicates),
