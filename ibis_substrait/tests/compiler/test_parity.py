@@ -43,7 +43,9 @@ def run_query_duckdb(query, datasets):
         con = ibis.duckdb.connect(os.path.join(tempdir, "temp.db"))
         for table_name, pa_table in datasets.items():
             con.create_table(name=table_name, obj=ibis.memtable(pa_table))
-        return con.to_pyarrow(query)
+
+        # TODO con.to_pyarrow(query) in duckdb backend doesn't work with latest ibis and pyarrow versions
+        return pa.Table.from_pandas(con.to_pandas(query))
 
 
 def run_query_duckdb_substrait(expr, datasets, compiler):
