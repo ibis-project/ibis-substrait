@@ -48,7 +48,7 @@ def run_query_acero(plan, datasets, compiler):
 
 
 def run_query_duckdb(query, datasets):
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         con = ibis.duckdb.connect(os.path.join(tempdir, "temp.db"))
         for table_name, pa_table in datasets.items():
             con.create_table(name=table_name, obj=ibis.memtable(pa_table))
@@ -60,7 +60,7 @@ def run_query_duckdb(query, datasets):
 def run_query_duckdb_substrait(expr, datasets, compiler):
     import duckdb
 
-    with tempfile.TemporaryDirectory() as tempdir:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
         con = duckdb.connect(database=os.path.join(tempdir, "temp.db"))
         con.sql(f"SET home_directory='{tempdir}'")
         con.install_extension("substrait")
