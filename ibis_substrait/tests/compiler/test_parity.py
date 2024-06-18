@@ -48,19 +48,21 @@ def run_query_acero(plan, datasets, compiler):
 
 
 def run_query_duckdb(query, datasets):
-    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
+    with tempfile.TemporaryDirectory() as tempdir:
         con = ibis.duckdb.connect(os.path.join(tempdir, "temp.db"))
         for table_name, pa_table in datasets.items():
             con.create_table(name=table_name, obj=ibis.memtable(pa_table))
 
         # TODO con.to_pyarrow(query) in duckdb backend doesn't work with latest ibis and pyarrow versions
-        return pa.Table.from_pandas(con.to_pandas(query))
+        res = pa.Table.from_pandas(con.to_pandas(query))
+        con.disconnect()
+        return res
 
 
 def run_query_duckdb_substrait(expr, datasets, compiler):
     import duckdb
 
-    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tempdir:
+    with tempfile.TemporaryDirectory() as tempdir:
         con = duckdb.connect(database=os.path.join(tempdir, "temp.db"))
         con.sql(f"SET home_directory='{tempdir}'")
         con.install_extension("substrait")
@@ -76,7 +78,7 @@ def run_query_duckdb_substrait(expr, datasets, compiler):
 
 def run_parity_tests(expr, datasets, compiler, engines=None):
     if engines is None:
-        engines = ["acero", "duckdb_substrait"]
+        engines = ["acero"]  # duckdb_substrait disabled because can't run on windows
     res_duckdb = sort_pyarrow_table(run_query_duckdb(expr, datasets))
     if "acero" in engines:
         res_acero = sort_pyarrow_table(run_query_acero(expr, datasets, compiler))
@@ -211,7 +213,7 @@ def test_union():
     expr = orders.union(orders)
 
     compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=["acero"])
+    run_parity_tests(expr, datasets, compiler=compiler)
 
 
 # TODO acero doesn't seem to support this, maybe run duckdb on both sides?
