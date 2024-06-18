@@ -117,7 +117,6 @@ datasets = {
 }
 
 
-@nix_linux_sandbox
 def test_projection():
     expr = orders["order_id", "order_total"]
 
@@ -125,7 +124,6 @@ def test_projection():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_mutate():
     expr = orders.mutate(order_total_plus_1=orders["order_total"] + 1)
 
@@ -133,7 +131,6 @@ def test_mutate():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_sort():
     expr = orders.order_by("order_total")
 
@@ -141,7 +138,6 @@ def test_sort():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_sort_limit():
     expr = orders.order_by("order_total").limit(2)
 
@@ -149,7 +145,6 @@ def test_sort_limit():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_filter():
     filtered_table = orders.filter(lambda t: t.order_total > 30)
 
@@ -157,7 +152,6 @@ def test_filter():
     run_parity_tests(filtered_table, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_inner_join():
     expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"])
 
@@ -165,7 +159,6 @@ def test_inner_join():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_left_join():
     expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"], how="left")
 
@@ -173,7 +166,6 @@ def test_left_join():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_filter_groupby():
     filter_table = orders.join(
         stores, orders["fk_store_id"] == stores["store_id"]
@@ -187,7 +179,6 @@ def test_filter_groupby():
     run_parity_tests(grouped_table, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_aggregate_having():
     expr = orders.aggregate(
         [orders.order_id.max().name("amax"), orders.order_id.count().name("acount")],
@@ -199,7 +190,6 @@ def test_aggregate_having():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-@nix_linux_sandbox
 def test_inner_join_chain():
     expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"]).join(
         customers, orders["fk_customer_id"] == customers["customer_id"]
@@ -226,7 +216,6 @@ def test_window():
     run_parity_tests(expr, datasets, compiler=compiler, engines=[])
 
 
-@nix_linux_sandbox
 def test_is_in():
     expr = stores.filter(stores.city.isin(["NY", "LA"]))
 
