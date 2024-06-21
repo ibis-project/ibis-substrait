@@ -362,56 +362,54 @@ test = ["objgraph", "psutil"]
 
 [[package]]
 name = "ibis-framework"
-version = "8.0.0"
-description = "Productivity-centric Python Big Data Framework"
+version = "9.0.0"
+description = "The portable Python dataframe library"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "ibis_framework-8.0.0-py3-none-any.whl", hash = "sha256:9f54678ec58a8654338e31cc0b0960f2555d245c6a6249cc7748e5fd8f3a70fb"},
-    {file = "ibis_framework-8.0.0.tar.gz", hash = "sha256:20e74a0cdbd5fc03c96955fdb80ad4cc6d16518c28339e24a2b0f930bc40eeb6"},
+    {file = "ibis_framework-9.0.0-py3-none-any.whl", hash = "sha256:9ed9cb4f68fb528d2f5be2879937aa186ce54305eaf40112aa97b2ce4159bdae"},
+    {file = "ibis_framework-9.0.0.tar.gz", hash = "sha256:464c4f14febbc54625be80915df3b307bc0adc89b498ec2481b6c13358db321e"},
 ]
 
 [package.dependencies]
 atpublic = ">=2.3,<5"
 bidict = ">=0.22.1,<1"
-multipledispatch = ">=0.6,<2"
-numpy = ">=1,<2"
-pandas = ">=1.2.5,<3"
+numpy = ">=1.23.2,<2"
+pandas = ">=1.5.3,<3"
 parsy = ">=2,<3"
-pyarrow = ">=2,<16"
+pyarrow = ">=10.0.1,<17"
 pyarrow-hotfix = ">=0.4,<1"
 python-dateutil = ">=2.8.2,<3"
 pytz = ">=2022.7"
 rich = ">=12.4.4,<14"
-sqlglot = ">=18.12.0,<=20.11"
+sqlglot = ">=23.4,<23.13"
 toolz = ">=0.11,<1"
 typing-extensions = ">=4.3.0,<5"
 
 [package.extras]
-all = ["black (>=22.1.0,<25)", "clickhouse-connect[arrow,numpy,pandas] (>=0.5.23,<1)", "dask[array,dataframe] (>=2022.9.1)", "datafusion (>=0.6,<36)", "db-dtypes (>=0.3,<2)", "deltalake (>=0.9.0,<1)", "duckdb (>=0.8.1,<1)", "duckdb-engine (>=0.1.8,<1)", "geoalchemy2 (>=0.6.3,<1)", "geopandas (>=0.6,<1)", "google-cloud-bigquery (>=3,<4)", "google-cloud-bigquery-storage (>=2,<3)", "graphviz (>=0.16,<1)", "impyla (>=0.17,<1)", "oracledb (>=1.3.1,<3)", "packaging (>=21.3,<24)", "pins[gcs] (>=0.8.3,<1)", "polars (>=0.19.3,<1)", "psycopg2 (>=2.8.4,<3)", "pydata-google-auth (>=1.4.0,<2)", "pydruid[sqlalchemy] (>=0.6.5,<1)", "pymysql (>=1,<2)", "pyodbc (>=4.0.39,<6)", "pyspark (>=3,<3.4)", "regex (>=2021.7.6)", "shapely (>=2,<3)", "snowflake-connector-python (>=3.0.2,!=3.3.0b1,<4)", "snowflake-sqlalchemy (>=1.4.1,<2)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-exasol (>=4.6.0)", "sqlalchemy-risingwave (>=1.0.0,<2)", "sqlalchemy-views (>=0.3.1,<1)", "trino[sqlalchemy] (>=0.321,<1)"]
 bigquery = ["db-dtypes (>=0.3,<2)", "google-cloud-bigquery (>=3,<4)", "google-cloud-bigquery-storage (>=2,<3)", "pydata-google-auth (>=1.4.0,<2)"]
-clickhouse = ["clickhouse-connect[arrow,numpy,pandas] (>=0.5.23,<1)", "sqlalchemy (>=1.4,<3)"]
-dask = ["dask[array,dataframe] (>=2022.9.1)", "regex (>=2021.7.6)"]
-datafusion = ["datafusion (>=0.6,<36)"]
+clickhouse = ["clickhouse-connect[arrow,numpy,pandas] (>=0.5.23,<1)"]
+dask = ["dask[array,dataframe] (>=2022.9.1,<2024.3.0)", "packaging (>=21.3,<25)", "regex (>=2021.7.6)"]
+datafusion = ["datafusion (>=0.6,<37)"]
 decompiler = ["black (>=22.1.0,<25)"]
 deltalake = ["deltalake (>=0.9.0,<1)"]
-druid = ["pydruid[sqlalchemy] (>=0.6.5,<1)", "sqlalchemy (>=1.4,<3)"]
-duckdb = ["duckdb (>=0.8.1,<1)", "duckdb-engine (>=0.1.8,<1)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-examples = ["pins[gcs] (>=0.8.3,<1)"]
-exasol = ["sqlalchemy (>=1.4,<3)", "sqlalchemy-exasol (>=4.6.0)", "sqlalchemy-views (>=0.3.1,<1)"]
-geospatial = ["geoalchemy2 (>=0.6.3,<1)", "geopandas (>=0.6,<1)", "shapely (>=2,<3)"]
-impala = ["impyla (>=0.17,<1)", "sqlalchemy (>=1.4,<3)"]
-mssql = ["pyodbc (>=4.0.39,<6)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-mysql = ["pymysql (>=1,<2)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-oracle = ["oracledb (>=1.3.1,<3)", "packaging (>=21.3,<24)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-pandas = ["regex (>=2021.7.6)"]
-polars = ["packaging (>=21.3,<24)", "polars (>=0.19.3,<1)"]
-postgres = ["psycopg2 (>=2.8.4,<3)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-pyspark = ["packaging (>=21.3,<24)", "pyspark (>=3,<3.4)", "sqlalchemy (>=1.4,<3)"]
-risingwave = ["psycopg2 (>=2.8.4,<3)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-risingwave (>=1.0.0,<2)", "sqlalchemy-views (>=0.3.1,<1)"]
-snowflake = ["packaging (>=21.3,<24)", "snowflake-connector-python (>=3.0.2,!=3.3.0b1,<4)", "snowflake-sqlalchemy (>=1.4.1,<2)", "sqlalchemy-views (>=0.3.1,<1)"]
-sqlite = ["regex (>=2021.7.6)", "sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)"]
-trino = ["sqlalchemy (>=1.4,<3)", "sqlalchemy-views (>=0.3.1,<1)", "trino[sqlalchemy] (>=0.321,<1)"]
+druid = ["pydruid[sqlalchemy] (>=0.6.5,<1)"]
+duckdb = ["duckdb (>=0.8.1,<1)"]
+examples = ["fsspec (<2024.3.0)", "pins[gcs] (>=0.8.3,<1)"]
+exasol = ["pyexasol[pandas] (>=0.25.2,<1)"]
+geospatial = ["geopandas (>=0.6,<1)", "shapely (>=2,<3)"]
+impala = ["impyla (>=0.17,<1)"]
+mssql = ["pyodbc (>=4.0.39,<6)"]
+mysql = ["pymysql (>=1,<2)"]
+oracle = ["oracledb (>=1.3.1,<3)", "packaging (>=21.3,<25)"]
+pandas = ["packaging (>=21.3,<25)", "regex (>=2021.7.6)"]
+polars = ["packaging (>=21.3,<25)", "polars (>=0.20.17,<1)"]
+postgres = ["psycopg2 (>=2.8.4,<3)"]
+pyspark = ["packaging (>=21.3,<25)", "pyspark (>=3,<4)"]
+risingwave = ["psycopg2 (>=2.8.4,<3)"]
+snowflake = ["snowflake-connector-python (>=3.0.2,!=3.3.0b1,<4)"]
+sqlite = ["regex (>=2021.7.6)"]
+trino = ["trino (>=0.321,<1)"]
 visualization = ["graphviz (>=0.16,<1)"]
 
 [[package]]
@@ -547,17 +545,6 @@ python-versions = ">=3.7"
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
-]
-
-[[package]]
-name = "multipledispatch"
-version = "1.0.0"
-description = "Multiple dispatch"
-optional = false
-python-versions = "*"
-files = [
-    {file = "multipledispatch-1.0.0-py3-none-any.whl", hash = "sha256:0c53cd8b077546da4e48869f49b13164bebafd0c2a5afceb6bb6a316e7fb46e4"},
-    {file = "multipledispatch-1.0.0.tar.gz", hash = "sha256:5c839915465c68206c3e9c473357908216c28383b425361e5d144594bf85a7e0"},
 ]
 
 [[package]]
@@ -1332,18 +1319,18 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlglot"
-version = "20.11.0"
+version = "23.12.2"
 description = "An easily customizable SQL parser and transpiler"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "sqlglot-20.11.0-py3-none-any.whl", hash = "sha256:658509272da15e90dd1c59d9ca5281d7bff2e87121f87e6f9e6541067a057c9c"},
-    {file = "sqlglot-20.11.0.tar.gz", hash = "sha256:79a1510ffad1f1e4c5915751f0ed978c099e7e83cd4010ecbd471c00331b6902"},
+    {file = "sqlglot-23.12.2-py3-none-any.whl", hash = "sha256:5d63006a802482ab49a4f2e848cecb17edc4ba920395c1f226c8e7ad48fac874"},
+    {file = "sqlglot-23.12.2.tar.gz", hash = "sha256:3d887c3841d615fc97f02df73b441514ebe20576afffdf145019212a4c37e4a8"},
 ]
 
 [package.extras]
-dev = ["autoflake", "black", "duckdb (>=0.6)", "isort", "maturin (>=1.4,<2.0)", "mypy (>=0.990)", "pandas", "pdoc", "pre-commit", "pyspark", "python-dateutil", "types-python-dateutil", "typing-extensions"]
-rs = ["sqlglotrs (==0.1.0)"]
+dev = ["duckdb (>=0.6)", "maturin (>=1.4,<2.0)", "mypy", "pandas", "pandas-stubs", "pdoc", "pre-commit", "pyspark", "python-dateutil", "ruff (==0.3.2)", "types-python-dateutil", "typing-extensions"]
+rs = ["sqlglotrs (==0.2.0)"]
 
 [[package]]
 name = "stack-data"
@@ -1503,4 +1490,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "64cd61b4329f2ebccd852e805718d9daf40300410e37f572394276fbfe708fb9"
+content-hash = "efb06c536f467879dad0f2d346a9c8459ea800ce1d757ae7bed235e3fa48c9ba"

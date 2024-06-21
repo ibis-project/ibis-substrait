@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-ibis-framework = ">=4,<9"
+ibis-framework = ">=9,<10"
 packaging = ">=21.3"
 pyyaml = ">=5"
 substrait = ">=0.2.1"
