@@ -558,24 +558,6 @@ def window_op(
     )
 
 
-@translate.register(ops.Sum)
-def _sum(
-    op: ops.Sum,
-    *,
-    compiler: SubstraitCompiler,
-    **kwargs: Any,
-) -> stalg.Expression:
-    return stalg.AggregateFunction(
-        function_reference=compiler.function_id(op),
-        arguments=[
-            stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))  # type: ignore
-        ],
-        sorts=[],  # TODO: ibis doesn't support this yet
-        phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
-        output_type=translate(op.dtype),
-    )
-
-
 @translate.register(ops.Reduction)
 def _reduction(
     op: ops.Reduction,
@@ -953,7 +935,7 @@ def aggregate(
             stalg.AggregateRel.Grouping(
                 grouping_expressions=[
                     translate(group, compiler=compiler, **kwargs)
-                    for group in op.groups.keys()
+                    for group in op.groups.values()
                 ]
             )
         ],
@@ -961,7 +943,7 @@ def aggregate(
             stalg.AggregateRel.Measure(
                 measure=translate(agg_func, compiler=compiler, **kwargs)
             )
-            for agg_func in op.metrics.keys()
+            for agg_func in op.metrics.values()
         ],
     )
 
