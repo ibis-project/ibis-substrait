@@ -38,10 +38,6 @@ except ImportError:
     # Python <= 3.9
     from typing_extensions import TypeAlias
 
-# When an op gets renamed between major versions, we can assign the old name to this
-# DummyOp so that we don't get Attribute errors when the new version goes looking for it
-# class DummyOp(ops.Value):
-#     pass
 
 T = TypeVar("T")
 
@@ -739,38 +735,6 @@ def unbound_table(
     )
 
 
-# def _get_child_relation_field_offsets(table: ops.TableNode) -> dict[ops.TableNode, int]:
-#     """Return the offset of each of table's fields.
-
-#     This function calculates the starting index of a relations fields, as if
-#     all relations were part of a single flat schema.
-
-#     Examples
-#     --------
-#     >>> import ibis
-#     >>> t1 = ibis.table(
-#     ...     [("a", "int64"), ("b", "string"), ("c", "array<int64>")],
-#     ...     name="t1",
-#     ... )
-#     >>> t2 = ibis.table([("d", "string"), ("e", "map<string, float64>")], name="t2")
-#     >>> expr = t1.join(t2, t1.b == t2.d)
-#     >>> mapping = _get_child_relation_field_offsets(expr.op())
-#     >>> mapping[t1.op()]  # the first relation is always zero
-#     0
-#     >>> mapping[t2.op()]  # first relation has 3 fields, so the second starts at 3
-#     3
-
-#     """
-#     if isinstance(table, ops.Join):
-#         # Descend into the left and right tables to grab offsets from nested joins
-#         left_keys = _get_child_relation_field_offsets(table.left)
-#         right_keys = _get_child_relation_field_offsets(table.right)
-#         root_tables = [table.left, table.right]
-#         accum = [0, len(root_tables[0].schema)]
-#         return toolz.merge(left_keys, right_keys, dict(zip(root_tables, accum)))
-#     return {}
-
-
 @translate.register(ops.Filter)
 def filter(
     filter: ops.Filter,
@@ -860,7 +824,6 @@ def sort(
     )
 
 
-# @functools.singledispatch
 def _translate_join_type(join_kind: ops.JoinKind) -> stalg.JoinRel.JoinType.V:
     JOIN_KIND_MAP = {
         "inner": stalg.JoinRel.JoinType.JOIN_TYPE_INNER,
@@ -888,10 +851,10 @@ def join(
     if not child_rel_field_offsets:
         child_rel_field_offsets = {}
         child_rel_field_offsets[op.first] = 0
-        agg = len(op.first.parent.schema)
+        offset = len(op.first.parent.schema)
         for join_link in op.rest:
-            child_rel_field_offsets[join_link.table] = agg
-            agg += len(join_link.table.schema)
+            child_rel_field_offsets[join_link.table] = offset
+            offset += len(join_link.table.schema)
 
     relation = None
 
@@ -989,16 +952,16 @@ def aggregate(
         groupings=[
             stalg.AggregateRel.Grouping(
                 grouping_expressions=[
-                    translate(v, compiler=compiler, **kwargs)
-                    for k, v in op.groups.items()
+                    translate(group, compiler=compiler, **kwargs)
+                    for group in op.groups.keys()
                 ]
             )
         ],
         measures=[
             stalg.AggregateRel.Measure(
-                measure=translate(v, compiler=compiler, **kwargs)
+                measure=translate(agg_func, compiler=compiler, **kwargs)
             )
-            for k, v in op.metrics.items()
+            for agg_func in op.metrics.keys()
         ],
     )
 
