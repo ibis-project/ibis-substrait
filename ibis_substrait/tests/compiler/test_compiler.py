@@ -45,7 +45,7 @@ def test_aggregation_with_sort(t, compiler):
     expr = (
         t.group_by(name_len=lambda t: t.full_name.length())
         .aggregate(max_age=t.age.max(), min_age=t.age.min())
-        .order_by(t.ts)
+        .order_by(_.max_age)
         .filter(lambda t: t.name_len > 3)
     )
     result = translate(expr, compiler=compiler)
@@ -504,7 +504,7 @@ def test_aggregate_filter_select_output_mapping(compiler):
                 t.a.min().name("amin"),
                 t.c.min().name("cmin"),
                 t.c.max().name("cmax"),
-            ]
+            ],
         )
         .filter(_.amin < 5)
         .select("amin", "bmax")
@@ -519,9 +519,6 @@ def test_aggregate_filter_select_output_mapping(compiler):
     assert result.project.common.emit.output_mapping == [5, 6]
 
 
-@pytest.mark.xfail(
-    raises=NotImplementedError, reason="Scalar subqueries are unsupported"
-)
 def test_filter_over_subquery(compiler):
     t = ibis.table([("a", "int")], name="t").filter(_.a > _.a.mean())
     translate(t, compiler=compiler)
