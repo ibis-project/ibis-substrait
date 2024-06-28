@@ -18,7 +18,7 @@ in
 
       ruffnix = {
         enable = true;
-        entry = "ruff --force-exclude";
+        entry = "ruff check --force-exclude";
         types = [ "python" ];
         excludes = [ protoExcludePattern ];
       };
