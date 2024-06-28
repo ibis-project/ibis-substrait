@@ -648,12 +648,7 @@ TPC_H = [
     "tpc_h13",
     "tpc_h14",
     "tpc_h15",
-    pytest.param(
-        "tpc_h16",
-        marks=pytest.mark.xfail(
-            raises=ValueError, reason="countdistinct not handled correctly"
-        ),
-    ),
+    "tpc_h16",
     "tpc_h17",
     "tpc_h18",
     "tpc_h19",

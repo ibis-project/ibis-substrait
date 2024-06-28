@@ -576,9 +576,30 @@ def _reduction(
     )
 
 
+@translate.register(ops.CountDistinct)
+def _count_distinct(
+    op: ops.Count,
+    *,
+    compiler: SubstraitCompiler,
+    **kwargs: Any,
+) -> stalg.AggregateFunction:
+    translated_args: list[stalg.FunctionArgument] = []
+    if not isinstance(op.arg, ops.Relation):
+        translated_args.append(
+            stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))
+        )
+    return stalg.AggregateFunction(
+        function_reference=compiler.function_id(op),
+        arguments=translated_args,
+        sorts=[],  # TODO: ibis doesn't support this yet
+        phase=stalg.AggregationPhase.AGGREGATION_PHASE_INITIAL_TO_RESULT,
+        output_type=translate(op.dtype),
+        invocation=stalg.AggregateFunction.AGGREGATION_INVOCATION_DISTINCT,
+    )
+
+
 @translate.register(ops.Count)
 @translate.register(ops.CountStar)
-@translate.register(ops.CountDistinct)
 def _count(
     op: ops.Count,
     *,

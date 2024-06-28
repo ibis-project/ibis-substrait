@@ -30,7 +30,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "Cos": "cos",
     "Count": "count",
     "CountStar": "count",
-    "CountDistinct": "countdistinct",
+    "CountDistinct": "count",
     "Divide": "divide",
     "EndsWith": "ends_with",
     "Equals": "equal",

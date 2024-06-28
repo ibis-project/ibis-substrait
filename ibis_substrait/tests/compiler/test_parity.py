@@ -179,6 +179,19 @@ def test_filter_groupby():
     run_parity_tests(grouped_table, datasets, compiler=compiler)
 
 
+def test_filter_groupby_count_distinct():
+    filter_table = orders.join(
+        stores, orders["fk_store_id"] == stores["store_id"]
+    ).filter(lambda t: t.order_total > 30)
+
+    grouped_table = filter_table.group_by("city").aggregate(
+        sales=filter_table["city"].nunique()
+    )
+
+    compiler = SubstraitCompiler()
+    run_parity_tests(grouped_table, datasets, compiler=compiler, engines=[])
+
+
 def test_aggregate_having():
     expr = orders.aggregate(
         [orders.order_id.max().name("amax"), orders.order_id.count().name("acount")],
