@@ -257,27 +257,6 @@ class SubstraitCompiler:
         )
 
 
-class SubstraitDecompiler:
-    def __init__(self, plan: stp.Plan) -> None:
-        """Initialize the decompiler with a :class:`Plan`."""
-        self.function_extensions = {
-            ext.extension_function.function_anchor: ext.extension_function
-            for ext in plan.extensions
-            if ext.WhichOneof("mapping_type") == "extension_function"
-        }
-        self.type_extensions = {
-            ext.extension_type.type_anchor: ext.extension_type
-            for ext in plan.extensions
-            if ext.WhichOneof("mapping_type") == "extension_type"
-        }
-        self.type_variations = {
-            ext.extension_type_variation.type_variation_anchor: ext.extension_type_variation
-            for ext in plan.extensions
-            if ext.WhichOneof("mapping_type") == "extension_type_variation"
-        }
-        self.extension_uris = plan.extension_uris
-
-
 def _get_fields(dtype: dt.DataType) -> Iterator[tuple[str | None, dt.DataType]]:
     """Extract fields from `dtype`.
 
