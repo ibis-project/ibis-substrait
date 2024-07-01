@@ -26,7 +26,6 @@ pyyaml = ">=5"
 substrait = ">=0.2.1"
 
 [tool.poetry.group.dev.dependencies]
-black = ">=23.0.0"
 ipython = ">=8.2.0"
 ruff = ">=0.0.252"
 setuptools = ">=67.0.0"
@@ -142,11 +141,6 @@ filterwarnings = [
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]
 
-[tool.black]
-line_length = 88
-
-[tool.isort]
-profile = "black"
 
 [tool.mypy]
 exclude = '((tests|docs)/.+|build)\.py'

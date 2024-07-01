@@ -23,8 +23,10 @@ in
         excludes = [ protoExcludePattern ];
       };
 
-      black = {
+      ruff-format-nix = {
         enable = true;
+        entry = "ruff format --force-exclude";
+        types = [ "python" ];
         excludes = [ protoExcludePattern ];
       };
 
