@@ -385,3 +385,20 @@ def test_extension_round_upcast(compiler, col_dtype, digits_dtype):
     ]
 
     assert f"round:{_TYPE_MAPPING[col_dtype]}_i32" in scalar_func_names
+
+
+def test_ops_mapping_validity():
+    from ibis_substrait.compiler.mapping import (
+        IBIS_SUBSTRAIT_OP_MAPPING,
+        _extension_mapping,
+    )
+
+    for op in IBIS_SUBSTRAIT_OP_MAPPING.keys():
+        assert hasattr(ops, op)
+
+    # `any` isn't a valid mapping
+    for target in IBIS_SUBSTRAIT_OP_MAPPING.values():
+        if target == "any":
+            # any is special-cased
+            continue
+        assert target in _extension_mapping.keys()
