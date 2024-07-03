@@ -1,6 +1,24 @@
 Release Notes
 ---
 
+## [4.0.0](https://github.com/ibis-project/ibis-substrait/compare/v3.2.1...v4.0.0) (2024-07-03)
+
+### ⚠ BREAKING CHANGES
+
+* ibis-substrait no longer supports versions of Ibis <
+9.x. If you are using an older version of Ibis, you can pin `ibis-substrait<4`
+
+Co-authored-by: Gil Forsyth <gil@forsyth.dev>
+Co-authored-by: Gil Forsyth <gforsyth@users.noreply.github.com>
+
+### Features
+
+* add support for Ibis 9.x ([#1034](https://github.com/ibis-project/ibis-substrait/issues/1034)) ([390905e](https://github.com/ibis-project/ibis-substrait/commit/390905e464d29896bf0a4753a71136c1e0335f99))
+
+### Documentation
+
+* remove defunct proto instructions, add commit guide ([c5fcb97](https://github.com/ibis-project/ibis-substrait/commit/c5fcb9713d4d80908c4dc08d4fb67d4bb5986a28))
+
 ## [3.2.1](https://github.com/ibis-project/ibis-substrait/compare/v3.2.0...v3.2.1) (2024-05-21)
 
 
