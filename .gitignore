@@ -58,3 +58,5 @@ result-*
 
 # nix-generated pre-commit
 .pre-commit-config.yaml
+
+.pixi

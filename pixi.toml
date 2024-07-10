@@ -1,0 +1,24 @@
+[project]
+name = "ibis-substrait"
+version = "0.1.0"
+description = "Add a short description here"
+authors = ["Gil Forsyth <gil@forsyth.dev>"]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tasks]
+
+[dependencies]
+pytest-snapshot = ">=0.9.0,<0.10"
+pytz = ">=2024.1,<2025"
+sqlalchemy = ">=1.4.49,<1.5"
+pathspec = ">=0.12.1,<0.13"
+ibis-framework = "4.1.*"
+pyarrow = ">=15.0.2,<15.1"
+python-substrait = ">=0.14.1,<0.15"
+packaging = ">=24.0,<25"
+pytest-cov = ">=4.1.0,<4.2"
+pytest-mock = ">=3.12.0,<3.13"
+pytest-clarity = ">=1.0.1,<1.1"
+pytest-randomly = ">=3.15.0,<3.16"
+pyyaml = ">=6.0.1,<6.1"
