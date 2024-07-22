@@ -732,7 +732,7 @@
                                                       "selection": {
                                                         "directReference": {
                                                           "structField": {
-                                                            "field": 1
+                                                            "field": 45
                                                           }
                                                         },
                                                         "rootReference": {}
@@ -764,7 +764,9 @@
                                                     "value": {
                                                       "selection": {
                                                         "directReference": {
-                                                          "structField": {}
+                                                          "structField": {
+                                                            "field": 41
+                                                          }
                                                         },
                                                         "rootReference": {}
                                                       }
@@ -810,7 +812,7 @@
                                                       "selection": {
                                                         "directReference": {
                                                           "structField": {
-                                                            "field": 1
+                                                            "field": 45
                                                           }
                                                         },
                                                         "rootReference": {}
@@ -842,7 +844,9 @@
                                                     "value": {
                                                       "selection": {
                                                         "directReference": {
-                                                          "structField": {}
+                                                          "structField": {
+                                                            "field": 41
+                                                          }
                                                         },
                                                         "rootReference": {}
                                                       }
@@ -882,7 +886,7 @@
                                       "selection": {
                                         "directReference": {
                                           "structField": {
-                                            "field": 2
+                                            "field": 17
                                           }
                                         },
                                         "rootReference": {}
