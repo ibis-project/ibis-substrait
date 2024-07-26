@@ -712,19 +712,17 @@ def table_column(
         # Join reference containing the field we care about
         field_table = op.rel.values.get(op.name).rel
         # Index of that join reference in the list of join references
-        field_table_index = op.rel.tables.index(field_table)
+        field_table_index = join_tables.index(field_table)
 
-        join_table_offset = 0
         # Offset by the number of columns in each preceding table
-        for i in range(field_table_index):
-            join_table_offset += len(join_tables[i].schema)
+        join_table_offset = sum(
+            len(join_tables[i].schema) for i in range(field_table_index)
+        )
         # Then add on the index of the column in the table
         # Also in the event of renaming due to join collisions, resolve
         # the renamed column to the original name so we can pull it off the parent table
         orig_name = op.rel.values[op.name].name
-        relative_offset = join_table_offset + field_table.schema._name_locs.get(
-            orig_name
-        )
+        relative_offset = join_table_offset + field_table.schema._name_locs[orig_name]
     else:
         schema = op.rel.schema
         relative_offset = schema._name_locs[op.name]
