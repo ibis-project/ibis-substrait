@@ -674,8 +674,58 @@ def table_column(
     else:
         base_offset = 0
 
-    schema = op.rel.schema
-    relative_offset = schema._name_locs[op.name]
+    if isinstance(op.rel, ops.JoinChain):
+        # JoinChains provide the schema of the joined table (which is great for Ibis)
+        # but for substrait we need the Field index computed with respect to
+        # the original table schemas.  In practice, this means rolling through
+        # the tables in a JoinChain and computing the field index _without_
+        # removing the join key
+        #
+        # Given
+        # Table 1
+        #   a: int
+        #   b: int
+        #
+        # Table 2
+        #   a: int
+        #   c: int
+        #
+        # JoinChain[r0]
+        #  JoinLink[inner, r1]
+        #    r0.a == r1.a
+        #  values:
+        #    a: r0.a
+        #    b: r0.b
+        #    c: r1.c
+        #
+        # If we ask for the field index of `c`, the JoinChain schema will give
+        # us an index of `2`, but it should be `3` because
+        #
+        #  0: table 1 a
+        #  1: table 1 b
+        #  2: table 2 a
+        #  3: table 2 c
+        #
+
+        # List of join reference objects
+        join_tables = op.rel.tables
+        # Join reference containing the field we care about
+        field_table = op.rel.values.get(op.name).rel
+        # Index of that join reference in the list of join references
+        field_table_index = join_tables.index(field_table)
+
+        # Offset by the number of columns in each preceding table
+        join_table_offset = sum(
+            len(join_tables[i].schema) for i in range(field_table_index)
+        )
+        # Then add on the index of the column in the table
+        # Also in the event of renaming due to join collisions, resolve
+        # the renamed column to the original name so we can pull it off the parent table
+        orig_name = op.rel.values[op.name].name
+        relative_offset = join_table_offset + field_table.schema._name_locs[orig_name]
+    else:
+        schema = op.rel.schema
+        relative_offset = schema._name_locs[op.name]
     absolute_offset = base_offset + relative_offset
     return stalg.Expression(
         selection=stalg.Expression.FieldReference(

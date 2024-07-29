@@ -532,3 +532,55 @@ def test_groupby_multiple_keys(compiler):
     # There should be one grouping with two separate expressions inside
     assert len(plan.aggregate.groupings) == 1
     assert len(plan.aggregate.groupings[0].grouping_expressions) == 2
+
+
+def test_join_chain_indexing_in_group_by(compiler):
+    t1 = ibis.table([("a", int), ("b", int)], name="t1")
+    t2 = ibis.table([("a", int), ("c", int)], name="t2")
+    t3 = ibis.table([("a", int), ("d", int)], name="t3")
+    t4 = ibis.table([("a", int), ("c", int)], name="t4")
+
+    join_chain = t1.join(t2, "a").join(t3, "a").join(t4, "a")
+    # Indexing for chained join
+    # t1: a: 0
+    # t1: b: 1
+    # t2: a: 2
+    # t2: c: 3
+    # t3: a: 4
+    # t3: d: 5
+    # t4: a: 6
+    # t4: c: 7
+
+    expr = join_chain.group_by("d").count().select("d")
+    plan = compiler.compile(expr)
+    # Check that the field index for the group_by key is correctly indexed
+    assert (
+        plan.relations[0]
+        .root.input.project.input.aggregate.groupings[0]
+        .grouping_expressions[0]
+        .selection.direct_reference.struct_field.field
+        == 5
+    )
+
+    expr = join_chain.group_by("c").count().select("c")
+    plan = compiler.compile(expr)
+    # Check that the field index for the group_by key is correctly indexed
+    assert (
+        plan.relations[0]
+        .root.input.project.input.aggregate.groupings[0]
+        .grouping_expressions[0]
+        .selection.direct_reference.struct_field.field
+        == 3
+    )
+
+    # Group-by on a column that will be renamed by the joinchain
+    expr = join_chain.group_by(t4.c).count().select("c")
+    plan = compiler.compile(expr)
+    # Check that the field index for the group_by key is correctly indexed
+    assert (
+        plan.relations[0]
+        .root.input.project.input.aggregate.groupings[0]
+        .grouping_expressions[0]
+        .selection.direct_reference.struct_field.field
+        == 7
+    )
