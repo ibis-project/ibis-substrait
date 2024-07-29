@@ -1,6 +1,12 @@
 Release Notes
 ---
 
+## [4.0.1](https://github.com/ibis-project/ibis-substrait/compare/v4.0.0...v4.0.1) (2024-07-29)
+
+### Bug Fixes
+
+* **field_index:** get field index w.r.t. pre-join table schemata ([#1078](https://github.com/ibis-project/ibis-substrait/issues/1078)) ([7095b19](https://github.com/ibis-project/ibis-substrait/commit/7095b19fd443a7b4bf13e706274a2cab2e6ee691))
+
 ## [4.0.0](https://github.com/ibis-project/ibis-substrait/compare/v3.2.1...v4.0.0) (2024-07-03)
 
 ### ⚠ BREAKING CHANGES
