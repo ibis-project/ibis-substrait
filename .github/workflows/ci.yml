@@ -118,31 +118,6 @@ jobs:
 
       - name: run pytest
         run: poetry run pytest
-  poetry_ibis_pyarrow_nightly:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        python-version:
-          - "3.9"
-          - "3.11"
-        ibis-version:
-          - "9.0"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - run: pip3 install 'poetry<1.4'
-      - run: poetry install --sync
-      - run: poetry run pip install 'ibis-framework==${{ matrix.ibis-version }}'
-      - run: poetry run pip install --extra-index-url https://pypi.fury.io/arrow-nightlies --pre -U pyarrow
-      - run: poetry run pytest
   dry-run-release:
     runs-on: ubuntu-latest
     steps:
