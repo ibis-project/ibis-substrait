@@ -76,9 +76,38 @@ def run_query_duckdb_substrait(expr, datasets, compiler):
         return result.fetch_arrow_table()
 
 
+def run_query_datafusion(expr, datasets, compiler):
+    import pyarrow
+    import datafusion.substrait
+
+    connection = datafusion.SessionContext()
+
+    for k, v in datasets.items():  # noqa: B007
+        connection.deregister_table(k)
+        connection.register_record_batches(k, [v.to_batches()])
+
+    plan = compiler.compile(expr)
+
+    plan_data = plan.SerializeToString()
+    substrait_plan = datafusion.substrait.serde.deserialize_bytes(plan_data)
+    logical_plan = datafusion.substrait.consumer.from_substrait_plan(
+        connection, substrait_plan
+    )
+
+    df = connection.create_dataframe_from_logical_plan(logical_plan)
+    for column_number, column_name in enumerate(df.schema().names):
+        df = df.with_column_renamed(
+            column_name, plan.relations[0].root.names[column_number]
+        )
+    return df.to_arrow_table()
+
+
 def run_parity_tests(expr, datasets, compiler, engines=None):
     if engines is None:
-        engines = ["acero"]  # duckdb_substrait disabled because can't run on windows
+        engines = [
+            "acero",
+            "datafusion",
+        ]  # duckdb_substrait disabled because can't run on windows
     res_duckdb = sort_pyarrow_table(run_query_duckdb(expr, datasets))
     if "acero" in engines:
         res_acero = sort_pyarrow_table(run_query_acero(expr, datasets, compiler))
@@ -89,6 +118,12 @@ def run_parity_tests(expr, datasets, compiler, engines=None):
             run_query_duckdb_substrait(expr, datasets, compiler)
         )
         assert res_duckdb_substrait.equals(res_duckdb)
+
+    if "datafusion" in engines:
+        res_datafusion = sort_pyarrow_table(
+            run_query_datafusion(expr, datasets, compiler)
+        )
+        assert res_datafusion.equals(res_duckdb)
 
 
 orders_raw = [
@@ -176,7 +211,7 @@ def test_filter_groupby():
     )
 
     compiler = SubstraitCompiler()
-    run_parity_tests(grouped_table, datasets, compiler=compiler)
+    run_parity_tests(grouped_table, datasets, compiler=compiler, engines=["acero"])
 
 
 def test_filter_groupby_count_distinct():
@@ -200,7 +235,7 @@ def test_aggregate_having():
     )
 
     compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+    run_parity_tests(expr, datasets, compiler=compiler, engines=["acero"])
 
 
 def test_inner_join_chain():
@@ -219,14 +254,13 @@ def test_union():
     run_parity_tests(expr, datasets, compiler=compiler)
 
 
-# TODO acero doesn't seem to support this, maybe run duckdb on both sides?
 def test_window():
     expr = orders.select(
         orders["order_total"].mean().over(ibis.window(group_by="fk_store_id"))
     )
 
     compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=[])
+    run_parity_tests(expr, datasets, compiler=compiler, engines=["datafusion"])
 
 
 def test_is_in():
@@ -240,4 +274,4 @@ def test_scalar_subquery():
     expr = orders.filter(orders["order_total"] == orders["order_total"].max())
 
     compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=[])
+    run_parity_tests(expr, datasets, compiler=compiler, engines=["datafusion"])
