@@ -77,12 +77,11 @@ def run_query_duckdb_substrait(expr, datasets, compiler):
 
 
 def run_query_datafusion(expr, datasets, compiler):
-    import pyarrow
     import datafusion.substrait
 
     connection = datafusion.SessionContext()
 
-    for k, v in datasets.items():  # noqa: B007
+    for k, v in datasets.items():
         connection.deregister_table(k)
         connection.register_record_batches(k, [v.to_batches()])
 
