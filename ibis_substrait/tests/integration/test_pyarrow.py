@@ -47,7 +47,7 @@ def run_query(plan, tbl):
     )
 
     results = result.read_all()
-    assert type(results) == pa.lib.Table
+    assert isinstance(results, pa.lib.Table)
 
     return results
 
