@@ -5,12 +5,17 @@ import duckdb
 import ibis
 import pyarrow as pa
 import pyarrow.compute as pc
-import pyarrow.substrait as pa_substrait
 import pytest
 from ibis import _
 from ibis.conftest import LINUX, SANDBOXED
 
 from ibis_substrait.compiler.core import SubstraitCompiler
+
+from .parity_utils import (
+    AceroSubstraitConsumer,
+    DatafusionSubstraitConsumer,
+    SubstraitConsumer,
+)
 
 nix_linux_sandbox = pytest.mark.xfail(
     LINUX and SANDBOXED,
@@ -25,28 +30,7 @@ def sort_pyarrow_table(table: pa.Table):
     return pc.take(table, sort_indices)
 
 
-def run_query_acero(plan, datasets, compiler):
-    def get_table_provider(datasets):
-        def table_provider(names, schema):
-            return datasets[names[0]]
-
-        return table_provider
-
-    plan = compiler.compile(plan)
-    query_bytes = plan.SerializeToString()
-    result = pa_substrait.run_query(
-        # TODO is this still necessary?
-        # PyArrow wants its bytes in a very specific byte-string
-        pa.py_buffer(query_bytes),
-        table_provider=get_table_provider(datasets),
-    )
-
-    results = result.read_all()
-    assert isinstance(results, pa.lib.Table)
-
-    return results
-
-
+# TODO move this into a consumer class
 def run_query_duckdb(query, datasets):
     with tempfile.TemporaryDirectory() as tempdir:
         con = ibis.duckdb.connect(os.path.join(tempdir, "temp.db"))
@@ -57,72 +41,6 @@ def run_query_duckdb(query, datasets):
         res = pa.Table.from_pandas(con.to_pandas(query))
         con.disconnect()
         return res
-
-
-def run_query_duckdb_substrait(expr, datasets, compiler):
-    import duckdb
-
-    with tempfile.TemporaryDirectory() as tempdir:
-        con = duckdb.connect(database=os.path.join(tempdir, "temp.db"))
-        con.sql(f"SET home_directory='{tempdir}'")
-        con.install_extension("substrait")
-        con.load_extension("substrait")
-
-        for k, v in datasets.items():  # noqa: B007
-            con.sql(f"CREATE TABLE {k} AS SELECT * FROM v")
-
-        plan = compiler.compile(expr)
-        result = con.from_substrait(plan.SerializeToString())
-        return result.fetch_arrow_table()
-
-
-def run_query_datafusion(expr, datasets, compiler):
-    import datafusion.substrait
-
-    connection = datafusion.SessionContext()
-
-    for k, v in datasets.items():
-        connection.deregister_table(k)
-        connection.register_record_batches(k, [v.to_batches()])
-
-    plan = compiler.compile(expr)
-
-    plan_data = plan.SerializeToString()
-    substrait_plan = datafusion.substrait.serde.deserialize_bytes(plan_data)
-    logical_plan = datafusion.substrait.consumer.from_substrait_plan(
-        connection, substrait_plan
-    )
-
-    df = connection.create_dataframe_from_logical_plan(logical_plan)
-    for column_number, column_name in enumerate(df.schema().names):
-        df = df.with_column_renamed(
-            column_name, plan.relations[0].root.names[column_number]
-        )
-    return df.to_arrow_table()
-
-
-def run_parity_tests(expr, datasets, compiler, engines=None):
-    if engines is None:
-        engines = [
-            "acero",
-            "datafusion",
-        ]  # duckdb_substrait disabled because can't run on windows
-    res_duckdb = sort_pyarrow_table(run_query_duckdb(expr, datasets))
-    if "acero" in engines:
-        res_acero = sort_pyarrow_table(run_query_acero(expr, datasets, compiler))
-        assert res_acero.equals(res_duckdb)
-
-    if "duckdb_substrait" in engines:
-        res_duckdb_substrait = sort_pyarrow_table(
-            run_query_duckdb_substrait(expr, datasets, compiler)
-        )
-        assert res_duckdb_substrait.equals(res_duckdb)
-
-    if "datafusion" in engines:
-        res_datafusion = sort_pyarrow_table(
-            run_query_datafusion(expr, datasets, compiler)
-        )
-        assert res_datafusion.equals(res_duckdb)
 
 
 orders_raw = [
@@ -151,126 +69,164 @@ datasets = {
 }
 
 
-def test_projection():
-    expr = orders["order_id", "order_total"]
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+@pytest.fixture
+def acero_consumer():
+    return AceroSubstraitConsumer().with_tables(datasets)
 
 
-def test_mutate():
-    expr = orders.mutate(order_total_plus_1=orders["order_total"] + 1)
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+@pytest.fixture
+def datafusion_consumer():
+    return DatafusionSubstraitConsumer().with_tables(datasets)
 
 
-def test_sort():
-    expr = orders.order_by("order_total")
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+all_consumers = ["acero_consumer", "datafusion_consumer"]
 
 
-def test_sort_limit():
-    expr = orders.order_by("order_total").limit(2)
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+@pytest.fixture
+def ibis_projection():
+    return orders["order_id", "order_total"]
 
 
-def test_filter():
-    filtered_table = orders.filter(lambda t: t.order_total > 30)
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(filtered_table, datasets, compiler=compiler)
+@pytest.fixture
+def ibis_mutate():
+    return orders.mutate(order_total_plus_1=orders["order_total"] + 1)
 
 
-def test_inner_join():
-    expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"])
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+@pytest.fixture
+def ibis_sort():
+    return orders.order_by("order_total")
 
 
-def test_left_join():
-    expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"], how="left")
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+@pytest.fixture
+def ibis_sort_limit():
+    return orders.order_by("order_total").limit(2)
 
 
-def test_filter_groupby():
+@pytest.fixture
+def ibis_filter():
+    return orders.filter(lambda t: t.order_total > 30)
+
+
+@pytest.fixture
+def ibis_inner_join():
+    return orders.join(stores, orders["fk_store_id"] == stores["store_id"])
+
+
+@pytest.fixture
+def ibis_left_join():
+    return orders.join(stores, orders["fk_store_id"] == stores["store_id"], how="left")
+
+
+@pytest.fixture
+def ibis_filter_groupby():
     filter_table = orders.join(
         stores, orders["fk_store_id"] == stores["store_id"]
     ).filter(lambda t: t.order_total > 30)
 
-    grouped_table = filter_table.group_by("city").aggregate(
+    return filter_table.group_by("city").aggregate(
         sales=filter_table["order_id"].count()
     )
 
-    compiler = SubstraitCompiler()
-    run_parity_tests(grouped_table, datasets, compiler=compiler, engines=["acero"])
 
-
-def test_filter_groupby_count_distinct():
+@pytest.fixture
+def ibis_filter_groupby_count_distinct():
     filter_table = orders.join(
         stores, orders["fk_store_id"] == stores["store_id"]
     ).filter(lambda t: t.order_total > 30)
 
-    grouped_table = filter_table.group_by("city").aggregate(
-        sales=filter_table["city"].nunique()
-    )
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(grouped_table, datasets, compiler=compiler, engines=[])
+    return filter_table.group_by("city").aggregate(sales=filter_table["city"].nunique())
 
 
-def test_aggregate_having():
-    expr = orders.aggregate(
+@pytest.fixture
+def ibis_aggregate_having():
+    return orders.aggregate(
         [orders.order_id.max().name("amax"), orders.order_id.count().name("acount")],
         by="fk_store_id",
         having=(_.order_id.count() > 1),
     )
 
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=["acero"])
 
-
-def test_inner_join_chain():
-    expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"]).join(
+@pytest.fixture
+def ibis_inner_join_chain():
+    return orders.join(stores, orders["fk_store_id"] == stores["store_id"]).join(
         customers, orders["fk_customer_id"] == customers["customer_id"]
     )
 
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
+
+@pytest.fixture
+def ibis_union():
+    return orders.union(orders)
 
 
-def test_union():
-    expr = orders.union(orders)
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
-
-
-def test_window():
-    expr = orders.select(
+@pytest.fixture
+def ibis_window():
+    return orders.select(
         orders["order_total"].mean().over(ibis.window(group_by="fk_store_id"))
     )
 
+
+@pytest.fixture
+def ibis_is_in():
+    return stores.filter(stores.city.isin(["NY", "LA"]))
+
+
+@pytest.fixture
+def ibis_scalar_subquery():
+    return orders.filter(orders["order_total"] == orders["order_total"].max())
+
+
+all_exprs = [
+    "ibis_projection",
+    "ibis_mutate",
+    "ibis_sort",
+    "ibis_sort_limit",
+    "ibis_filter",
+    "ibis_inner_join",
+    "ibis_left_join",
+    ("ibis_filter_groupby", {"datafusion_consumer": (Exception, "")}),
+    (
+        "ibis_filter_groupby_count_distinct",
+        {
+            "acero_consumer": (pa.ArrowNotImplementedError, "Unimplemented"),
+            "datafusion_consumer": (Exception, ""),
+        },
+    ),
+    ("ibis_aggregate_having", {"datafusion_consumer": (Exception, "")}),
+    "ibis_inner_join_chain",
+    "ibis_union",
+    ("ibis_window", {"acero_consumer": (pa.ArrowNotImplementedError, "Unimplemented")}),
+    "ibis_is_in",
+    (
+        "ibis_scalar_subquery",
+        {"acero_consumer": (pa.ArrowNotImplementedError, "Unimplemented")},
+    ),
+]
+
+
+all_fixtures = [
+    pytest.param(
+        c,
+        e[0] if isinstance(e, tuple) else e,
+        marks=(
+            [pytest.mark.xfail(raises=e[1][c][0], reason=e[1][c][1])]
+            if isinstance(e, tuple) and c in e[1]
+            else []
+        ),
+    )
+    for e in all_exprs
+    for c in all_consumers
+]
+
+
+@pytest.mark.parametrize(("consumer", "expr"), all_fixtures)
+def test_parity(consumer: str, expr, request):
+    consumer: SubstraitConsumer = request.getfixturevalue(consumer)
+    expr = request.getfixturevalue(expr)
+
+    res_duckdb = sort_pyarrow_table(run_query_duckdb(expr, datasets))
+
     compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=["datafusion"])
 
+    res_compare = sort_pyarrow_table(consumer.execute(compiler.compile(expr)))
 
-def test_is_in():
-    expr = stores.filter(stores.city.isin(["NY", "LA"]))
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler)
-
-
-def test_scalar_subquery():
-    expr = orders.filter(orders["order_total"] == orders["order_total"].max())
-
-    compiler = SubstraitCompiler()
-    run_parity_tests(expr, datasets, compiler=compiler, engines=["datafusion"])
+    assert res_compare.equals(res_duckdb)
