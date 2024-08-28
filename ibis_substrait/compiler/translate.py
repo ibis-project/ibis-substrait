@@ -914,14 +914,25 @@ def join(
     for i, join_link in enumerate(op.rest):
         predicates = [pred.to_expr() for pred in join_link.predicates]
 
-        relation = stalg.Rel(
-            join=stalg.JoinRel(
-                left=(
-                    translate(op.first.parent, compiler=compiler, **kwargs)
-                    if i == 0
-                    else relation
-                ),
-                right=translate(join_link.table.parent, compiler=compiler, **kwargs),
+        left = (
+            translate(op.first.parent, compiler=compiler, **kwargs)
+            if i == 0
+            else relation
+        )
+
+        right = translate(join_link.table.parent, compiler=compiler, **kwargs)
+
+        if join_link.how == "cross":
+            rel = stalg.CrossRel(
+                left=left,
+                right=right,
+            )
+
+            relation = stalg.Rel(cross=rel)
+        else:
+            rel = stalg.JoinRel(
+                left=left,
+                right=right,
                 expression=translate(
                     functools.reduce(operator.and_, predicates),
                     compiler=compiler,
@@ -930,7 +941,8 @@ def join(
                 ),
                 type=_translate_join_type(join_link.how),
             )
-        )
+
+            relation = stalg.Rel(join=rel)
 
     return relation
 

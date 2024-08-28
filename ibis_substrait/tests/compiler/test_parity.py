@@ -125,6 +125,23 @@ def test_inner_join(consumer: str, request):
     run_parity_test(request.getfixturevalue(consumer), expr)
 
 
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        pytest.param(
+            "acero_consumer",
+            marks=[
+                pytest.mark.xfail(pa.ArrowNotImplementedError, reason="Unimplemented")
+            ],
+        ),
+        "datafusion_consumer",
+    ],
+)
+def test_cross_join(consumer: str, request):
+    expr = orders.cross_join(stores)
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
 @pytest.mark.parametrize("consumer", ["acero_consumer", "datafusion_consumer"])
 def test_left_join(consumer: str, request):
     expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"], how="left")
