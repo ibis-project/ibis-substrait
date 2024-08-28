@@ -815,6 +815,37 @@ def filter(
     )
 
 
+def apply_projection(
+    schema_len: int,
+    relation: stalg.Rel,
+    values,
+    compiler: SubstraitCompiler,
+    child_rel_field_offsets,
+    kwargs,
+):
+    mapping_counter = itertools.count(schema_len)
+
+    return stalg.Rel(
+        project=stalg.ProjectRel(
+            input=relation,
+            common=stalg.RelCommon(
+                emit=stalg.RelCommon.Emit(
+                    output_mapping=[next(mapping_counter) for _ in values]
+                )
+            ),
+            expressions=[
+                translate(
+                    v,
+                    compiler=compiler,
+                    child_rel_field_offsets=child_rel_field_offsets,
+                    **kwargs,
+                )
+                for k, v in values.items()
+            ],
+        )
+    )
+
+
 @translate.register(ops.Project)
 def project(
     op: ops.Project,
@@ -826,26 +857,14 @@ def project(
     relation = translate(
         op.parent, compiler=compiler, child_rel_field_offsets=child_rel_field_offsets
     )
-    mapping_counter = itertools.count(len(op.parent.schema))
 
-    return stalg.Rel(
-        project=stalg.ProjectRel(
-            input=relation,
-            common=stalg.RelCommon(
-                emit=stalg.RelCommon.Emit(
-                    output_mapping=[next(mapping_counter) for _ in op.values]
-                )
-            ),
-            expressions=[
-                translate(
-                    v,
-                    compiler=compiler,
-                    child_rel_field_offsets=child_rel_field_offsets,
-                    **kwargs,
-                )
-                for k, v in op.values.items()
-            ],
-        )
+    return apply_projection(
+        schema_len=len(op.parent.schema),
+        relation=relation,
+        values=op.values,
+        compiler=compiler,
+        child_rel_field_offsets=child_rel_field_offsets,
+        kwargs=kwargs,
     )
 
 
@@ -944,7 +963,14 @@ def join(
 
             relation = stalg.Rel(join=rel)
 
-    return relation
+    return apply_projection(
+        schema_len=offset,
+        relation=relation,
+        values=op.values,
+        compiler=compiler,
+        child_rel_field_offsets=child_rel_field_offsets,
+        kwargs=kwargs,
+    )
 
 
 @translate.register(ops.Limit)

@@ -64,251 +64,448 @@
                 "input": {
                   "aggregate": {
                     "input": {
-                      "join": {
-                        "left": {
-                          "read": {
-                            "common": {
-                              "direct": {}
-                            },
-                            "baseSchema": {
-                              "names": [
-                                "c_custkey",
-                                "c_name",
-                                "c_address",
-                                "c_nationkey",
-                                "c_phone",
-                                "c_acctbal",
-                                "c_mktsegment",
-                                "c_comment"
-                              ],
-                              "struct": {
-                                "types": [
-                                  {
-                                    "i32": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "i32": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "decimal": {
-                                      "scale": 2,
-                                      "precision": 15,
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  }
-                                ],
-                                "nullability": "NULLABILITY_REQUIRED"
-                              }
-                            },
-                            "namedTable": {
-                              "names": [
-                                "customer"
-                              ]
-                            }
-                          }
-                        },
-                        "right": {
-                          "read": {
-                            "common": {
-                              "direct": {}
-                            },
-                            "baseSchema": {
-                              "names": [
-                                "o_orderkey",
-                                "o_custkey",
-                                "o_orderstatus",
-                                "o_totalprice",
-                                "o_orderdate",
-                                "o_orderpriority",
-                                "o_clerk",
-                                "o_shippriority",
-                                "o_comment"
-                              ],
-                              "struct": {
-                                "types": [
-                                  {
-                                    "i32": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "i32": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "decimal": {
-                                      "scale": 2,
-                                      "precision": 15,
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "date": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "i32": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  },
-                                  {
-                                    "string": {
-                                      "nullability": "NULLABILITY_REQUIRED"
-                                    }
-                                  }
-                                ],
-                                "nullability": "NULLABILITY_REQUIRED"
-                              }
-                            },
-                            "namedTable": {
-                              "names": [
-                                "orders"
-                              ]
-                            }
-                          }
-                        },
-                        "expression": {
-                          "scalarFunction": {
-                            "functionReference": 1,
-                            "outputType": {
-                              "bool": {
-                                "nullability": "NULLABILITY_NULLABLE"
-                              }
-                            },
-                            "arguments": [
-                              {
-                                "value": {
-                                  "scalarFunction": {
-                                    "functionReference": 2,
-                                    "outputType": {
-                                      "bool": {
-                                        "nullability": "NULLABILITY_NULLABLE"
-                                      }
-                                    },
-                                    "arguments": [
-                                      {
-                                        "value": {
-                                          "selection": {
-                                            "directReference": {
-                                              "structField": {}
-                                            },
-                                            "rootReference": {}
-                                          }
-                                        }
-                                      },
-                                      {
-                                        "value": {
-                                          "selection": {
-                                            "directReference": {
-                                              "structField": {
-                                                "field": 9
-                                              }
-                                            },
-                                            "rootReference": {}
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              {
-                                "value": {
-                                  "scalarFunction": {
-                                    "functionReference": 3,
-                                    "outputType": {
-                                      "bool": {
-                                        "nullability": "NULLABILITY_NULLABLE"
-                                      }
-                                    },
-                                    "arguments": [
-                                      {
-                                        "value": {
-                                          "scalarFunction": {
-                                            "functionReference": 4,
-                                            "outputType": {
-                                              "bool": {
-                                                "nullability": "NULLABILITY_NULLABLE"
-                                              }
-                                            },
-                                            "arguments": [
-                                              {
-                                                "value": {
-                                                  "selection": {
-                                                    "directReference": {
-                                                      "structField": {
-                                                        "field": 16
-                                                      }
-                                                    },
-                                                    "rootReference": {}
-                                                  }
-                                                }
-                                              },
-                                              {
-                                                "value": {
-                                                  "literal": {
-                                                    "string": "%special%requests%"
-                                                  }
-                                                }
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
+                      "project": {
+                        "common": {
+                          "emit": {
+                            "outputMapping": [
+                              17,
+                              18,
+                              19,
+                              20,
+                              21,
+                              22,
+                              23,
+                              24,
+                              25,
+                              26,
+                              27,
+                              28,
+                              29,
+                              30,
+                              31,
+                              32,
+                              33
                             ]
                           }
                         },
-                        "type": "JOIN_TYPE_LEFT"
+                        "input": {
+                          "join": {
+                            "left": {
+                              "read": {
+                                "common": {
+                                  "direct": {}
+                                },
+                                "baseSchema": {
+                                  "names": [
+                                    "c_custkey",
+                                    "c_name",
+                                    "c_address",
+                                    "c_nationkey",
+                                    "c_phone",
+                                    "c_acctbal",
+                                    "c_mktsegment",
+                                    "c_comment"
+                                  ],
+                                  "struct": {
+                                    "types": [
+                                      {
+                                        "i32": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "i32": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "decimal": {
+                                          "scale": 2,
+                                          "precision": 15,
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      }
+                                    ],
+                                    "nullability": "NULLABILITY_REQUIRED"
+                                  }
+                                },
+                                "namedTable": {
+                                  "names": [
+                                    "customer"
+                                  ]
+                                }
+                              }
+                            },
+                            "right": {
+                              "read": {
+                                "common": {
+                                  "direct": {}
+                                },
+                                "baseSchema": {
+                                  "names": [
+                                    "o_orderkey",
+                                    "o_custkey",
+                                    "o_orderstatus",
+                                    "o_totalprice",
+                                    "o_orderdate",
+                                    "o_orderpriority",
+                                    "o_clerk",
+                                    "o_shippriority",
+                                    "o_comment"
+                                  ],
+                                  "struct": {
+                                    "types": [
+                                      {
+                                        "i32": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "i32": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "decimal": {
+                                          "scale": 2,
+                                          "precision": 15,
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "date": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "i32": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      },
+                                      {
+                                        "string": {
+                                          "nullability": "NULLABILITY_REQUIRED"
+                                        }
+                                      }
+                                    ],
+                                    "nullability": "NULLABILITY_REQUIRED"
+                                  }
+                                },
+                                "namedTable": {
+                                  "names": [
+                                    "orders"
+                                  ]
+                                }
+                              }
+                            },
+                            "expression": {
+                              "scalarFunction": {
+                                "functionReference": 1,
+                                "outputType": {
+                                  "bool": {
+                                    "nullability": "NULLABILITY_NULLABLE"
+                                  }
+                                },
+                                "arguments": [
+                                  {
+                                    "value": {
+                                      "scalarFunction": {
+                                        "functionReference": 2,
+                                        "outputType": {
+                                          "bool": {
+                                            "nullability": "NULLABILITY_NULLABLE"
+                                          }
+                                        },
+                                        "arguments": [
+                                          {
+                                            "value": {
+                                              "selection": {
+                                                "directReference": {
+                                                  "structField": {}
+                                                },
+                                                "rootReference": {}
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "value": {
+                                              "selection": {
+                                                "directReference": {
+                                                  "structField": {
+                                                    "field": 9
+                                                  }
+                                                },
+                                                "rootReference": {}
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "value": {
+                                      "scalarFunction": {
+                                        "functionReference": 3,
+                                        "outputType": {
+                                          "bool": {
+                                            "nullability": "NULLABILITY_NULLABLE"
+                                          }
+                                        },
+                                        "arguments": [
+                                          {
+                                            "value": {
+                                              "scalarFunction": {
+                                                "functionReference": 4,
+                                                "outputType": {
+                                                  "bool": {
+                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                  }
+                                                },
+                                                "arguments": [
+                                                  {
+                                                    "value": {
+                                                      "selection": {
+                                                        "directReference": {
+                                                          "structField": {
+                                                            "field": 16
+                                                          }
+                                                        },
+                                                        "rootReference": {}
+                                                      }
+                                                    }
+                                                  },
+                                                  {
+                                                    "value": {
+                                                      "literal": {
+                                                        "string": "%special%requests%"
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "type": "JOIN_TYPE_LEFT"
+                          }
+                        },
+                        "expressions": [
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {}
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 1
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 2
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 3
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 4
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 5
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 6
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 7
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 8
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 9
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 10
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 11
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 12
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 13
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 14
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 15
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          },
+                          {
+                            "selection": {
+                              "directReference": {
+                                "structField": {
+                                  "field": 16
+                                }
+                              },
+                              "rootReference": {}
+                            }
+                          }
+                        ]
                       }
                     },
                     "groupings": [
