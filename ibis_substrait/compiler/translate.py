@@ -818,11 +818,11 @@ def filter(
 def apply_projection(
     schema_len: int,
     relation: stalg.Rel,
-    values,
+    values: Mapping[str, ops.Value],
     compiler: SubstraitCompiler,
-    child_rel_field_offsets,
-    kwargs,
-):
+    child_rel_field_offsets: Mapping[ops.TableNode, int] | None,
+    kwargs: Mapping,
+) -> stalg.ReadRel:
     mapping_counter = itertools.count(schema_len)
 
     return stalg.Rel(
