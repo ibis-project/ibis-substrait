@@ -883,7 +883,7 @@ def _translate_join_type(join_kind: ops.JoinKind) -> stalg.JoinRel.JoinType.V:
         "left": stalg.JoinRel.JoinType.JOIN_TYPE_LEFT,
         "right": stalg.JoinRel.JoinType.JOIN_TYPE_RIGHT,
         "outer": stalg.JoinRel.JoinType.JOIN_TYPE_OUTER,
-        "semi": stalg.JoinRel.JoinType.JOIN_TYPE_SEMI,
+        "semi": stalg.JoinRel.JoinType.JOIN_TYPE_LEFT_SEMI,
         # "asof",
         # "anti",
         # "any_inner",
