@@ -160,10 +160,7 @@ def test_left_join(consumer: str, request):
     "consumer",
     [
         "acero_consumer",
-        pytest.param(
-            "datafusion_consumer",
-            marks=[pytest.mark.xfail(Exception, reason="")],
-        ),
+        "datafusion_consumer",
     ],
 )
 def test_filter_groupby(consumer: str, request):
@@ -187,10 +184,7 @@ def test_filter_groupby(consumer: str, request):
                 pytest.mark.xfail(pa.ArrowNotImplementedError, reason="Unimplemented")
             ],
         ),
-        pytest.param(
-            "datafusion_consumer",
-            marks=[pytest.mark.xfail(Exception, reason="")],
-        ),
+        "datafusion_consumer",
     ],
 )
 def test_filter_groupby_count_distinct(consumer: str, request):

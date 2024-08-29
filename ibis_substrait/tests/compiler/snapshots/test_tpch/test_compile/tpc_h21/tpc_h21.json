@@ -65,93 +65,265 @@
             "input": {
               "sort": {
                 "input": {
-                  "aggregate": {
+                  "project": {
+                    "common": {
+                      "emit": {
+                        "outputMapping": [
+                          2,
+                          3
+                        ]
+                      }
+                    },
                     "input": {
-                      "filter": {
+                      "aggregate": {
                         "input": {
-                          "project": {
-                            "common": {
-                              "emit": {
-                                "outputMapping": [
-                                  36,
-                                  37,
-                                  38,
-                                  39,
-                                  40,
-                                  41,
-                                  42
-                                ]
-                              }
-                            },
+                          "filter": {
                             "input": {
-                              "join": {
-                                "left": {
+                              "project": {
+                                "common": {
+                                  "emit": {
+                                    "outputMapping": [
+                                      36,
+                                      37,
+                                      38,
+                                      39,
+                                      40,
+                                      41,
+                                      42
+                                    ]
+                                  }
+                                },
+                                "input": {
                                   "join": {
                                     "left": {
                                       "join": {
                                         "left": {
-                                          "read": {
-                                            "common": {
-                                              "direct": {}
-                                            },
-                                            "baseSchema": {
-                                              "names": [
-                                                "s_suppkey",
-                                                "s_name",
-                                                "s_address",
-                                                "s_nationkey",
-                                                "s_phone",
-                                                "s_acctbal",
-                                                "s_comment"
-                                              ],
-                                              "struct": {
-                                                "types": [
-                                                  {
-                                                    "i32": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "string": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "string": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "i32": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "string": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "decimal": {
-                                                      "scale": 2,
-                                                      "precision": 15,
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
-                                                  },
-                                                  {
-                                                    "string": {
-                                                      "nullability": "NULLABILITY_REQUIRED"
-                                                    }
+                                          "join": {
+                                            "left": {
+                                              "read": {
+                                                "common": {
+                                                  "direct": {}
+                                                },
+                                                "baseSchema": {
+                                                  "names": [
+                                                    "s_suppkey",
+                                                    "s_name",
+                                                    "s_address",
+                                                    "s_nationkey",
+                                                    "s_phone",
+                                                    "s_acctbal",
+                                                    "s_comment"
+                                                  ],
+                                                  "struct": {
+                                                    "types": [
+                                                      {
+                                                        "i32": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "i32": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "decimal": {
+                                                          "scale": 2,
+                                                          "precision": 15,
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_REQUIRED"
+                                                        }
+                                                      }
+                                                    ],
+                                                    "nullability": "NULLABILITY_REQUIRED"
                                                   }
-                                                ],
-                                                "nullability": "NULLABILITY_REQUIRED"
+                                                },
+                                                "namedTable": {
+                                                  "names": [
+                                                    "supplier"
+                                                  ]
+                                                }
                                               }
                                             },
-                                            "namedTable": {
-                                              "names": [
-                                                "supplier"
-                                              ]
-                                            }
+                                            "right": {
+                                              "read": {
+                                                "common": {
+                                                  "direct": {}
+                                                },
+                                                "baseSchema": {
+                                                  "names": [
+                                                    "l_orderkey",
+                                                    "l_partkey",
+                                                    "l_suppkey",
+                                                    "l_linenumber",
+                                                    "l_quantity",
+                                                    "l_extendedprice",
+                                                    "l_discount",
+                                                    "l_tax",
+                                                    "l_returnflag",
+                                                    "l_linestatus",
+                                                    "l_shipdate",
+                                                    "l_commitdate",
+                                                    "l_receiptdate",
+                                                    "l_shipinstruct",
+                                                    "l_shipmode",
+                                                    "l_comment"
+                                                  ],
+                                                  "struct": {
+                                                    "types": [
+                                                      {
+                                                        "i64": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "i64": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "i64": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "i64": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "decimal": {
+                                                          "scale": 2,
+                                                          "precision": 15,
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "decimal": {
+                                                          "scale": 2,
+                                                          "precision": 15,
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "decimal": {
+                                                          "scale": 2,
+                                                          "precision": 15,
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "decimal": {
+                                                          "scale": 2,
+                                                          "precision": 15,
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "date": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "date": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "date": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      },
+                                                      {
+                                                        "string": {
+                                                          "nullability": "NULLABILITY_NULLABLE"
+                                                        }
+                                                      }
+                                                    ],
+                                                    "nullability": "NULLABILITY_REQUIRED"
+                                                  }
+                                                },
+                                                "namedTable": {
+                                                  "names": [
+                                                    "lineitem"
+                                                  ]
+                                                }
+                                              }
+                                            },
+                                            "expression": {
+                                              "scalarFunction": {
+                                                "functionReference": 1,
+                                                "outputType": {
+                                                  "bool": {
+                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                  }
+                                                },
+                                                "arguments": [
+                                                  {
+                                                    "value": {
+                                                      "selection": {
+                                                        "directReference": {
+                                                          "structField": {}
+                                                        },
+                                                        "rootReference": {}
+                                                      }
+                                                    }
+                                                  },
+                                                  {
+                                                    "value": {
+                                                      "selection": {
+                                                        "directReference": {
+                                                          "structField": {
+                                                            "field": 9
+                                                          }
+                                                        },
+                                                        "rootReference": {}
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            "type": "JOIN_TYPE_INNER"
                                           }
                                         },
                                         "right": {
@@ -161,111 +333,63 @@
                                             },
                                             "baseSchema": {
                                               "names": [
-                                                "l_orderkey",
-                                                "l_partkey",
-                                                "l_suppkey",
-                                                "l_linenumber",
-                                                "l_quantity",
-                                                "l_extendedprice",
-                                                "l_discount",
-                                                "l_tax",
-                                                "l_returnflag",
-                                                "l_linestatus",
-                                                "l_shipdate",
-                                                "l_commitdate",
-                                                "l_receiptdate",
-                                                "l_shipinstruct",
-                                                "l_shipmode",
-                                                "l_comment"
+                                                "o_orderkey",
+                                                "o_custkey",
+                                                "o_orderstatus",
+                                                "o_totalprice",
+                                                "o_orderdate",
+                                                "o_orderpriority",
+                                                "o_clerk",
+                                                "o_shippriority",
+                                                "o_comment"
                                               ],
                                               "struct": {
                                                 "types": [
                                                   {
-                                                    "i64": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                    "i32": {
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
-                                                    "i64": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "i64": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "i64": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "decimal": {
-                                                      "scale": 2,
-                                                      "precision": 15,
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "decimal": {
-                                                      "scale": 2,
-                                                      "precision": 15,
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "decimal": {
-                                                      "scale": 2,
-                                                      "precision": 15,
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "decimal": {
-                                                      "scale": 2,
-                                                      "precision": 15,
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                    "i32": {
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
                                                     "string": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
-                                                    "string": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                    "decimal": {
+                                                      "scale": 2,
+                                                      "precision": 15,
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
                                                     "date": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "date": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
-                                                    }
-                                                  },
-                                                  {
-                                                    "date": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
                                                     "string": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
                                                     "string": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                      "nullability": "NULLABILITY_REQUIRED"
+                                                    }
+                                                  },
+                                                  {
+                                                    "i32": {
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   },
                                                   {
                                                     "string": {
-                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                      "nullability": "NULLABILITY_REQUIRED"
                                                     }
                                                   }
                                                 ],
@@ -274,7 +398,7 @@
                                             },
                                             "namedTable": {
                                               "names": [
-                                                "lineitem"
+                                                "orders"
                                               ]
                                             }
                                           }
@@ -292,7 +416,9 @@
                                                 "value": {
                                                   "selection": {
                                                     "directReference": {
-                                                      "structField": {}
+                                                      "structField": {
+                                                        "field": 23
+                                                      }
                                                     },
                                                     "rootReference": {}
                                                   }
@@ -303,7 +429,7 @@
                                                   "selection": {
                                                     "directReference": {
                                                       "structField": {
-                                                        "field": 9
+                                                        "field": 7
                                                       }
                                                     },
                                                     "rootReference": {}
@@ -323,47 +449,15 @@
                                         },
                                         "baseSchema": {
                                           "names": [
-                                            "o_orderkey",
-                                            "o_custkey",
-                                            "o_orderstatus",
-                                            "o_totalprice",
-                                            "o_orderdate",
-                                            "o_orderpriority",
-                                            "o_clerk",
-                                            "o_shippriority",
-                                            "o_comment"
+                                            "n_nationkey",
+                                            "n_name",
+                                            "n_regionkey",
+                                            "n_comment"
                                           ],
                                           "struct": {
                                             "types": [
                                               {
                                                 "i32": {
-                                                  "nullability": "NULLABILITY_REQUIRED"
-                                                }
-                                              },
-                                              {
-                                                "i32": {
-                                                  "nullability": "NULLABILITY_REQUIRED"
-                                                }
-                                              },
-                                              {
-                                                "string": {
-                                                  "nullability": "NULLABILITY_REQUIRED"
-                                                }
-                                              },
-                                              {
-                                                "decimal": {
-                                                  "scale": 2,
-                                                  "precision": 15,
-                                                  "nullability": "NULLABILITY_REQUIRED"
-                                                }
-                                              },
-                                              {
-                                                "date": {
-                                                  "nullability": "NULLABILITY_REQUIRED"
-                                                }
-                                              },
-                                              {
-                                                "string": {
                                                   "nullability": "NULLABILITY_REQUIRED"
                                                 }
                                               },
@@ -388,7 +482,7 @@
                                         },
                                         "namedTable": {
                                           "names": [
-                                            "orders"
+                                            "nation"
                                           ]
                                         }
                                       }
@@ -407,7 +501,7 @@
                                               "selection": {
                                                 "directReference": {
                                                   "structField": {
-                                                    "field": 23
+                                                    "field": 3
                                                   }
                                                 },
                                                 "rootReference": {}
@@ -419,7 +513,7 @@
                                               "selection": {
                                                 "directReference": {
                                                   "structField": {
-                                                    "field": 7
+                                                    "field": 32
                                                   }
                                                 },
                                                 "rootReference": {}
@@ -432,864 +526,802 @@
                                     "type": "JOIN_TYPE_INNER"
                                   }
                                 },
-                                "right": {
-                                  "read": {
-                                    "common": {
-                                      "direct": {}
-                                    },
-                                    "baseSchema": {
-                                      "names": [
-                                        "n_nationkey",
-                                        "n_name",
-                                        "n_regionkey",
-                                        "n_comment"
-                                      ],
-                                      "struct": {
-                                        "types": [
-                                          {
-                                            "i32": {
-                                              "nullability": "NULLABILITY_REQUIRED"
-                                            }
-                                          },
-                                          {
-                                            "string": {
-                                              "nullability": "NULLABILITY_REQUIRED"
-                                            }
-                                          },
-                                          {
-                                            "i32": {
-                                              "nullability": "NULLABILITY_REQUIRED"
-                                            }
-                                          },
-                                          {
-                                            "string": {
-                                              "nullability": "NULLABILITY_REQUIRED"
-                                            }
-                                          }
-                                        ],
-                                        "nullability": "NULLABILITY_REQUIRED"
-                                      }
-                                    },
-                                    "namedTable": {
-                                      "names": [
-                                        "nation"
-                                      ]
-                                    }
-                                  }
-                                },
-                                "expression": {
-                                  "scalarFunction": {
-                                    "functionReference": 1,
-                                    "outputType": {
-                                      "bool": {
-                                        "nullability": "NULLABILITY_NULLABLE"
-                                      }
-                                    },
-                                    "arguments": [
-                                      {
-                                        "value": {
-                                          "selection": {
-                                            "directReference": {
-                                              "structField": {
-                                                "field": 3
-                                              }
-                                            },
-                                            "rootReference": {}
-                                          }
+                                "expressions": [
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 7
                                         }
                                       },
-                                      {
-                                        "value": {
-                                          "selection": {
-                                            "directReference": {
-                                              "structField": {
-                                                "field": 32
-                                              }
-                                            },
-                                            "rootReference": {}
-                                          }
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 25
                                         }
-                                      }
-                                    ]
+                                      },
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 19
+                                        }
+                                      },
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 18
+                                        }
+                                      },
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 9
+                                        }
+                                      },
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 1
+                                        }
+                                      },
+                                      "rootReference": {}
+                                    }
+                                  },
+                                  {
+                                    "selection": {
+                                      "directReference": {
+                                        "structField": {
+                                          "field": 33
+                                        }
+                                      },
+                                      "rootReference": {}
+                                    }
                                   }
-                                },
-                                "type": "JOIN_TYPE_INNER"
+                                ]
                               }
                             },
-                            "expressions": [
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 7
+                            "condition": {
+                              "scalarFunction": {
+                                "functionReference": 2,
+                                "outputType": {
+                                  "bool": {
+                                    "nullability": "NULLABILITY_NULLABLE"
+                                  }
+                                },
+                                "arguments": [
+                                  {
+                                    "value": {
+                                      "scalarFunction": {
+                                        "functionReference": 2,
+                                        "outputType": {
+                                          "bool": {
+                                            "nullability": "NULLABILITY_NULLABLE"
+                                          }
+                                        },
+                                        "arguments": [
+                                          {
+                                            "value": {
+                                              "scalarFunction": {
+                                                "functionReference": 2,
+                                                "outputType": {
+                                                  "bool": {
+                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                  }
+                                                },
+                                                "arguments": [
+                                                  {
+                                                    "value": {
+                                                      "scalarFunction": {
+                                                        "functionReference": 2,
+                                                        "outputType": {
+                                                          "bool": {
+                                                            "nullability": "NULLABILITY_NULLABLE"
+                                                          }
+                                                        },
+                                                        "arguments": [
+                                                          {
+                                                            "value": {
+                                                              "scalarFunction": {
+                                                                "functionReference": 1,
+                                                                "outputType": {
+                                                                  "bool": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                "arguments": [
+                                                                  {
+                                                                    "value": {
+                                                                      "selection": {
+                                                                        "directReference": {
+                                                                          "structField": {
+                                                                            "field": 25
+                                                                          }
+                                                                        },
+                                                                        "rootReference": {}
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "value": {
+                                                                      "literal": {
+                                                                        "string": "F"
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          },
+                                                          {
+                                                            "value": {
+                                                              "scalarFunction": {
+                                                                "functionReference": 3,
+                                                                "outputType": {
+                                                                  "bool": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                "arguments": [
+                                                                  {
+                                                                    "value": {
+                                                                      "selection": {
+                                                                        "directReference": {
+                                                                          "structField": {
+                                                                            "field": 19
+                                                                          }
+                                                                        },
+                                                                        "rootReference": {}
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "value": {
+                                                                      "selection": {
+                                                                        "directReference": {
+                                                                          "structField": {
+                                                                            "field": 18
+                                                                          }
+                                                                        },
+                                                                        "rootReference": {}
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    }
+                                                  },
+                                                  {
+                                                    "value": {
+                                                      "scalarFunction": {
+                                                        "functionReference": 1,
+                                                        "outputType": {
+                                                          "bool": {
+                                                            "nullability": "NULLABILITY_NULLABLE"
+                                                          }
+                                                        },
+                                                        "arguments": [
+                                                          {
+                                                            "value": {
+                                                              "selection": {
+                                                                "directReference": {
+                                                                  "structField": {
+                                                                    "field": 33
+                                                                  }
+                                                                },
+                                                                "rootReference": {}
+                                                              }
+                                                            }
+                                                          },
+                                                          {
+                                                            "value": {
+                                                              "literal": {
+                                                                "string": "SAUDI ARABIA"
+                                                              }
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "value": {
+                                              "subquery": {
+                                                "setPredicate": {
+                                                  "predicateOp": "PREDICATE_OP_EXISTS",
+                                                  "tuples": {
+                                                    "filter": {
+                                                      "input": {
+                                                        "read": {
+                                                          "common": {
+                                                            "direct": {}
+                                                          },
+                                                          "baseSchema": {
+                                                            "names": [
+                                                              "l_orderkey",
+                                                              "l_partkey",
+                                                              "l_suppkey",
+                                                              "l_linenumber",
+                                                              "l_quantity",
+                                                              "l_extendedprice",
+                                                              "l_discount",
+                                                              "l_tax",
+                                                              "l_returnflag",
+                                                              "l_linestatus",
+                                                              "l_shipdate",
+                                                              "l_commitdate",
+                                                              "l_receiptdate",
+                                                              "l_shipinstruct",
+                                                              "l_shipmode",
+                                                              "l_comment"
+                                                            ],
+                                                            "struct": {
+                                                              "types": [
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                }
+                                                              ],
+                                                              "nullability": "NULLABILITY_REQUIRED"
+                                                            }
+                                                          },
+                                                          "namedTable": {
+                                                            "names": [
+                                                              "lineitem"
+                                                            ]
+                                                          }
+                                                        }
+                                                      },
+                                                      "condition": {
+                                                        "scalarFunction": {
+                                                          "functionReference": 2,
+                                                          "outputType": {
+                                                            "bool": {
+                                                              "nullability": "NULLABILITY_NULLABLE"
+                                                            }
+                                                          },
+                                                          "arguments": [
+                                                            {
+                                                              "value": {
+                                                                "scalarFunction": {
+                                                                  "functionReference": 1,
+                                                                  "outputType": {
+                                                                    "bool": {
+                                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                                    }
+                                                                  },
+                                                                  "arguments": [
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {}
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 7
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            },
+                                                            {
+                                                              "value": {
+                                                                "scalarFunction": {
+                                                                  "functionReference": 4,
+                                                                  "outputType": {
+                                                                    "bool": {
+                                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                                    }
+                                                                  },
+                                                                  "arguments": [
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 2
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 9
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
                                     }
                                   },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 25
+                                  {
+                                    "value": {
+                                      "scalarFunction": {
+                                        "functionReference": 5,
+                                        "outputType": {
+                                          "bool": {
+                                            "nullability": "NULLABILITY_NULLABLE"
+                                          }
+                                        },
+                                        "arguments": [
+                                          {
+                                            "value": {
+                                              "subquery": {
+                                                "setPredicate": {
+                                                  "predicateOp": "PREDICATE_OP_EXISTS",
+                                                  "tuples": {
+                                                    "filter": {
+                                                      "input": {
+                                                        "read": {
+                                                          "common": {
+                                                            "direct": {}
+                                                          },
+                                                          "baseSchema": {
+                                                            "names": [
+                                                              "l_orderkey",
+                                                              "l_partkey",
+                                                              "l_suppkey",
+                                                              "l_linenumber",
+                                                              "l_quantity",
+                                                              "l_extendedprice",
+                                                              "l_discount",
+                                                              "l_tax",
+                                                              "l_returnflag",
+                                                              "l_linestatus",
+                                                              "l_shipdate",
+                                                              "l_commitdate",
+                                                              "l_receiptdate",
+                                                              "l_shipinstruct",
+                                                              "l_shipmode",
+                                                              "l_comment"
+                                                            ],
+                                                            "struct": {
+                                                              "types": [
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "i64": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "decimal": {
+                                                                    "scale": 2,
+                                                                    "precision": 15,
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "date": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "string": {
+                                                                    "nullability": "NULLABILITY_NULLABLE"
+                                                                  }
+                                                                }
+                                                              ],
+                                                              "nullability": "NULLABILITY_REQUIRED"
+                                                            }
+                                                          },
+                                                          "namedTable": {
+                                                            "names": [
+                                                              "lineitem"
+                                                            ]
+                                                          }
+                                                        }
+                                                      },
+                                                      "condition": {
+                                                        "scalarFunction": {
+                                                          "functionReference": 2,
+                                                          "outputType": {
+                                                            "bool": {
+                                                              "nullability": "NULLABILITY_NULLABLE"
+                                                            }
+                                                          },
+                                                          "arguments": [
+                                                            {
+                                                              "value": {
+                                                                "scalarFunction": {
+                                                                  "functionReference": 2,
+                                                                  "outputType": {
+                                                                    "bool": {
+                                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                                    }
+                                                                  },
+                                                                  "arguments": [
+                                                                    {
+                                                                      "value": {
+                                                                        "scalarFunction": {
+                                                                          "functionReference": 1,
+                                                                          "outputType": {
+                                                                            "bool": {
+                                                                              "nullability": "NULLABILITY_NULLABLE"
+                                                                            }
+                                                                          },
+                                                                          "arguments": [
+                                                                            {
+                                                                              "value": {
+                                                                                "selection": {
+                                                                                  "directReference": {
+                                                                                    "structField": {}
+                                                                                  },
+                                                                                  "rootReference": {}
+                                                                                }
+                                                                              }
+                                                                            },
+                                                                            {
+                                                                              "value": {
+                                                                                "selection": {
+                                                                                  "directReference": {
+                                                                                    "structField": {
+                                                                                      "field": 7
+                                                                                    }
+                                                                                  },
+                                                                                  "rootReference": {}
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "value": {
+                                                                        "scalarFunction": {
+                                                                          "functionReference": 4,
+                                                                          "outputType": {
+                                                                            "bool": {
+                                                                              "nullability": "NULLABILITY_NULLABLE"
+                                                                            }
+                                                                          },
+                                                                          "arguments": [
+                                                                            {
+                                                                              "value": {
+                                                                                "selection": {
+                                                                                  "directReference": {
+                                                                                    "structField": {
+                                                                                      "field": 2
+                                                                                    }
+                                                                                  },
+                                                                                  "rootReference": {}
+                                                                                }
+                                                                              }
+                                                                            },
+                                                                            {
+                                                                              "value": {
+                                                                                "selection": {
+                                                                                  "directReference": {
+                                                                                    "structField": {
+                                                                                      "field": 9
+                                                                                    }
+                                                                                  },
+                                                                                  "rootReference": {}
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            },
+                                                            {
+                                                              "value": {
+                                                                "scalarFunction": {
+                                                                  "functionReference": 3,
+                                                                  "outputType": {
+                                                                    "bool": {
+                                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                                    }
+                                                                  },
+                                                                  "arguments": [
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 12
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    {
+                                                                      "value": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 11
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
                                     }
-                                  },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 19
-                                    }
-                                  },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 18
-                                    }
-                                  },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 9
-                                    }
-                                  },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 1
-                                    }
-                                  },
-                                  "rootReference": {}
-                                }
-                              },
-                              {
-                                "selection": {
-                                  "directReference": {
-                                    "structField": {
-                                      "field": 33
-                                    }
-                                  },
-                                  "rootReference": {}
-                                }
+                                  }
+                                ]
                               }
-                            ]
+                            }
                           }
                         },
-                        "condition": {
-                          "scalarFunction": {
-                            "functionReference": 2,
-                            "outputType": {
-                              "bool": {
-                                "nullability": "NULLABILITY_NULLABLE"
-                              }
-                            },
-                            "arguments": [
+                        "groupings": [
+                          {
+                            "groupingExpressions": [
                               {
-                                "value": {
-                                  "scalarFunction": {
-                                    "functionReference": 2,
-                                    "outputType": {
-                                      "bool": {
-                                        "nullability": "NULLABILITY_NULLABLE"
-                                      }
-                                    },
-                                    "arguments": [
-                                      {
-                                        "value": {
-                                          "scalarFunction": {
-                                            "functionReference": 2,
-                                            "outputType": {
-                                              "bool": {
-                                                "nullability": "NULLABILITY_NULLABLE"
-                                              }
-                                            },
-                                            "arguments": [
-                                              {
-                                                "value": {
-                                                  "scalarFunction": {
-                                                    "functionReference": 2,
-                                                    "outputType": {
-                                                      "bool": {
-                                                        "nullability": "NULLABILITY_NULLABLE"
-                                                      }
-                                                    },
-                                                    "arguments": [
-                                                      {
-                                                        "value": {
-                                                          "scalarFunction": {
-                                                            "functionReference": 1,
-                                                            "outputType": {
-                                                              "bool": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            "arguments": [
-                                                              {
-                                                                "value": {
-                                                                  "selection": {
-                                                                    "directReference": {
-                                                                      "structField": {
-                                                                        "field": 25
-                                                                      }
-                                                                    },
-                                                                    "rootReference": {}
-                                                                  }
-                                                                }
-                                                              },
-                                                              {
-                                                                "value": {
-                                                                  "literal": {
-                                                                    "string": "F"
-                                                                  }
-                                                                }
-                                                              }
-                                                            ]
-                                                          }
-                                                        }
-                                                      },
-                                                      {
-                                                        "value": {
-                                                          "scalarFunction": {
-                                                            "functionReference": 3,
-                                                            "outputType": {
-                                                              "bool": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            "arguments": [
-                                                              {
-                                                                "value": {
-                                                                  "selection": {
-                                                                    "directReference": {
-                                                                      "structField": {
-                                                                        "field": 19
-                                                                      }
-                                                                    },
-                                                                    "rootReference": {}
-                                                                  }
-                                                                }
-                                                              },
-                                                              {
-                                                                "value": {
-                                                                  "selection": {
-                                                                    "directReference": {
-                                                                      "structField": {
-                                                                        "field": 18
-                                                                      }
-                                                                    },
-                                                                    "rootReference": {}
-                                                                  }
-                                                                }
-                                                              }
-                                                            ]
-                                                          }
-                                                        }
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              },
-                                              {
-                                                "value": {
-                                                  "scalarFunction": {
-                                                    "functionReference": 1,
-                                                    "outputType": {
-                                                      "bool": {
-                                                        "nullability": "NULLABILITY_NULLABLE"
-                                                      }
-                                                    },
-                                                    "arguments": [
-                                                      {
-                                                        "value": {
-                                                          "selection": {
-                                                            "directReference": {
-                                                              "structField": {
-                                                                "field": 33
-                                                              }
-                                                            },
-                                                            "rootReference": {}
-                                                          }
-                                                        }
-                                                      },
-                                                      {
-                                                        "value": {
-                                                          "literal": {
-                                                            "string": "SAUDI ARABIA"
-                                                          }
-                                                        }
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      },
-                                      {
-                                        "value": {
-                                          "subquery": {
-                                            "setPredicate": {
-                                              "predicateOp": "PREDICATE_OP_EXISTS",
-                                              "tuples": {
-                                                "filter": {
-                                                  "input": {
-                                                    "read": {
-                                                      "common": {
-                                                        "direct": {}
-                                                      },
-                                                      "baseSchema": {
-                                                        "names": [
-                                                          "l_orderkey",
-                                                          "l_partkey",
-                                                          "l_suppkey",
-                                                          "l_linenumber",
-                                                          "l_quantity",
-                                                          "l_extendedprice",
-                                                          "l_discount",
-                                                          "l_tax",
-                                                          "l_returnflag",
-                                                          "l_linestatus",
-                                                          "l_shipdate",
-                                                          "l_commitdate",
-                                                          "l_receiptdate",
-                                                          "l_shipinstruct",
-                                                          "l_shipmode",
-                                                          "l_comment"
-                                                        ],
-                                                        "struct": {
-                                                          "types": [
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            }
-                                                          ],
-                                                          "nullability": "NULLABILITY_REQUIRED"
-                                                        }
-                                                      },
-                                                      "namedTable": {
-                                                        "names": [
-                                                          "lineitem"
-                                                        ]
-                                                      }
-                                                    }
-                                                  },
-                                                  "condition": {
-                                                    "scalarFunction": {
-                                                      "functionReference": 2,
-                                                      "outputType": {
-                                                        "bool": {
-                                                          "nullability": "NULLABILITY_NULLABLE"
-                                                        }
-                                                      },
-                                                      "arguments": [
-                                                        {
-                                                          "value": {
-                                                            "scalarFunction": {
-                                                              "functionReference": 1,
-                                                              "outputType": {
-                                                                "bool": {
-                                                                  "nullability": "NULLABILITY_NULLABLE"
-                                                                }
-                                                              },
-                                                              "arguments": [
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {}
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                },
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 7
-                                                                        }
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                }
-                                                              ]
-                                                            }
-                                                          }
-                                                        },
-                                                        {
-                                                          "value": {
-                                                            "scalarFunction": {
-                                                              "functionReference": 4,
-                                                              "outputType": {
-                                                                "bool": {
-                                                                  "nullability": "NULLABILITY_NULLABLE"
-                                                                }
-                                                              },
-                                                              "arguments": [
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 2
-                                                                        }
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                },
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 9
-                                                                        }
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                }
-                                                              ]
-                                                            }
-                                                          }
-                                                        }
-                                                      ]
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              {
-                                "value": {
-                                  "scalarFunction": {
-                                    "functionReference": 5,
-                                    "outputType": {
-                                      "bool": {
-                                        "nullability": "NULLABILITY_NULLABLE"
-                                      }
-                                    },
-                                    "arguments": [
-                                      {
-                                        "value": {
-                                          "subquery": {
-                                            "setPredicate": {
-                                              "predicateOp": "PREDICATE_OP_EXISTS",
-                                              "tuples": {
-                                                "filter": {
-                                                  "input": {
-                                                    "read": {
-                                                      "common": {
-                                                        "direct": {}
-                                                      },
-                                                      "baseSchema": {
-                                                        "names": [
-                                                          "l_orderkey",
-                                                          "l_partkey",
-                                                          "l_suppkey",
-                                                          "l_linenumber",
-                                                          "l_quantity",
-                                                          "l_extendedprice",
-                                                          "l_discount",
-                                                          "l_tax",
-                                                          "l_returnflag",
-                                                          "l_linestatus",
-                                                          "l_shipdate",
-                                                          "l_commitdate",
-                                                          "l_receiptdate",
-                                                          "l_shipinstruct",
-                                                          "l_shipmode",
-                                                          "l_comment"
-                                                        ],
-                                                        "struct": {
-                                                          "types": [
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "i64": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "decimal": {
-                                                                "scale": 2,
-                                                                "precision": 15,
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "date": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            },
-                                                            {
-                                                              "string": {
-                                                                "nullability": "NULLABILITY_NULLABLE"
-                                                              }
-                                                            }
-                                                          ],
-                                                          "nullability": "NULLABILITY_REQUIRED"
-                                                        }
-                                                      },
-                                                      "namedTable": {
-                                                        "names": [
-                                                          "lineitem"
-                                                        ]
-                                                      }
-                                                    }
-                                                  },
-                                                  "condition": {
-                                                    "scalarFunction": {
-                                                      "functionReference": 2,
-                                                      "outputType": {
-                                                        "bool": {
-                                                          "nullability": "NULLABILITY_NULLABLE"
-                                                        }
-                                                      },
-                                                      "arguments": [
-                                                        {
-                                                          "value": {
-                                                            "scalarFunction": {
-                                                              "functionReference": 2,
-                                                              "outputType": {
-                                                                "bool": {
-                                                                  "nullability": "NULLABILITY_NULLABLE"
-                                                                }
-                                                              },
-                                                              "arguments": [
-                                                                {
-                                                                  "value": {
-                                                                    "scalarFunction": {
-                                                                      "functionReference": 1,
-                                                                      "outputType": {
-                                                                        "bool": {
-                                                                          "nullability": "NULLABILITY_NULLABLE"
-                                                                        }
-                                                                      },
-                                                                      "arguments": [
-                                                                        {
-                                                                          "value": {
-                                                                            "selection": {
-                                                                              "directReference": {
-                                                                                "structField": {}
-                                                                              },
-                                                                              "rootReference": {}
-                                                                            }
-                                                                          }
-                                                                        },
-                                                                        {
-                                                                          "value": {
-                                                                            "selection": {
-                                                                              "directReference": {
-                                                                                "structField": {
-                                                                                  "field": 7
-                                                                                }
-                                                                              },
-                                                                              "rootReference": {}
-                                                                            }
-                                                                          }
-                                                                        }
-                                                                      ]
-                                                                    }
-                                                                  }
-                                                                },
-                                                                {
-                                                                  "value": {
-                                                                    "scalarFunction": {
-                                                                      "functionReference": 4,
-                                                                      "outputType": {
-                                                                        "bool": {
-                                                                          "nullability": "NULLABILITY_NULLABLE"
-                                                                        }
-                                                                      },
-                                                                      "arguments": [
-                                                                        {
-                                                                          "value": {
-                                                                            "selection": {
-                                                                              "directReference": {
-                                                                                "structField": {
-                                                                                  "field": 2
-                                                                                }
-                                                                              },
-                                                                              "rootReference": {}
-                                                                            }
-                                                                          }
-                                                                        },
-                                                                        {
-                                                                          "value": {
-                                                                            "selection": {
-                                                                              "directReference": {
-                                                                                "structField": {
-                                                                                  "field": 9
-                                                                                }
-                                                                              },
-                                                                              "rootReference": {}
-                                                                            }
-                                                                          }
-                                                                        }
-                                                                      ]
-                                                                    }
-                                                                  }
-                                                                }
-                                                              ]
-                                                            }
-                                                          }
-                                                        },
-                                                        {
-                                                          "value": {
-                                                            "scalarFunction": {
-                                                              "functionReference": 3,
-                                                              "outputType": {
-                                                                "bool": {
-                                                                  "nullability": "NULLABILITY_NULLABLE"
-                                                                }
-                                                              },
-                                                              "arguments": [
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 12
-                                                                        }
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                },
-                                                                {
-                                                                  "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 11
-                                                                        }
-                                                                      },
-                                                                      "rootReference": {}
-                                                                    }
-                                                                  }
-                                                                }
-                                                              ]
-                                                            }
-                                                          }
-                                                        }
-                                                      ]
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
+                                "selection": {
+                                  "directReference": {
+                                    "structField": {
+                                      "field": 5
+                                    }
+                                  },
+                                  "rootReference": {}
                                 }
                               }
                             ]
                           }
-                        }
-                      }
-                    },
-                    "groupings": [
-                      {
-                        "groupingExpressions": [
+                        ],
+                        "measures": [
                           {
-                            "selection": {
-                              "directReference": {
-                                "structField": {
-                                  "field": 5
+                            "measure": {
+                              "functionReference": 6,
+                              "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
+                              "outputType": {
+                                "i64": {
+                                  "nullability": "NULLABILITY_NULLABLE"
                                 }
-                              },
-                              "rootReference": {}
+                              }
                             }
                           }
                         ]
                       }
-                    ],
-                    "measures": [
+                    },
+                    "expressions": [
                       {
-                        "measure": {
-                          "functionReference": 6,
-                          "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
-                          "outputType": {
-                            "i64": {
-                              "nullability": "NULLABILITY_NULLABLE"
+                        "selection": {
+                          "directReference": {
+                            "structField": {}
+                          },
+                          "rootReference": {}
+                        }
+                      },
+                      {
+                        "selection": {
+                          "directReference": {
+                            "structField": {
+                              "field": 1
                             }
-                          }
+                          },
+                          "rootReference": {}
                         }
                       }
                     ]

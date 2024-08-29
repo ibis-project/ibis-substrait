@@ -530,8 +530,8 @@ def test_groupby_multiple_keys(compiler):
     plan = translate(expr, compiler=compiler)
 
     # There should be one grouping with two separate expressions inside
-    assert len(plan.aggregate.groupings) == 1
-    assert len(plan.aggregate.groupings[0].grouping_expressions) == 2
+    assert len(plan.project.input.aggregate.groupings) == 1
+    assert len(plan.project.input.aggregate.groupings[0].grouping_expressions) == 2
 
 
 def test_join_chain_indexing_in_group_by(compiler):
@@ -556,7 +556,7 @@ def test_join_chain_indexing_in_group_by(compiler):
     # Check that the field index for the group_by key is correctly indexed
     assert (
         plan.relations[0]
-        .root.input.project.input.aggregate.groupings[0]
+        .root.input.project.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
         == 5
@@ -567,7 +567,7 @@ def test_join_chain_indexing_in_group_by(compiler):
     # Check that the field index for the group_by key is correctly indexed
     assert (
         plan.relations[0]
-        .root.input.project.input.aggregate.groupings[0]
+        .root.input.project.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
         == 3
@@ -579,7 +579,7 @@ def test_join_chain_indexing_in_group_by(compiler):
     # Check that the field index for the group_by key is correctly indexed
     assert (
         plan.relations[0]
-        .root.input.project.input.aggregate.groupings[0]
+        .root.input.project.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
         == 7

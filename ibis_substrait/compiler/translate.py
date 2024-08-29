@@ -1056,7 +1056,39 @@ def aggregate(
         ],
     )
 
-    return stalg.Rel(aggregate=aggregate)
+    rel = stalg.Rel(aggregate=aggregate)
+
+    # TODO: ProjectRel below is injected as a temporary workaround because datafusion seems to require projection after an aggregation
+
+    len_aggregate_output = len(op.groups.values()) + len(op.metrics.values())
+
+    mapping_counter = itertools.count(len_aggregate_output)
+
+    return stalg.Rel(
+        project=stalg.ProjectRel(
+            common=stalg.RelCommon(
+                emit=stalg.RelCommon.Emit(
+                    output_mapping=[
+                        next(mapping_counter) for _ in range(len_aggregate_output)
+                    ]
+                )
+            ),
+            input=rel,
+            expressions=[
+                stalg.Expression(
+                    selection=stalg.Expression.FieldReference(
+                        root_reference=stalg.Expression.FieldReference.RootReference(),
+                        direct_reference=stalg.Expression.ReferenceSegment(
+                            struct_field=stalg.Expression.ReferenceSegment.StructField(
+                                field=i,
+                            ),
+                        ),
+                    )
+                )
+                for i in range(len_aggregate_output)
+            ],
+        )
+    )
 
 
 @translate.register(ops.SimpleCase)
