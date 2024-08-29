@@ -62,4 +62,5 @@ class DatafusionSubstraitConsumer(SubstraitConsumer):
             df = df.with_column_renamed(
                 column_name, plan.relations[0].root.names[column_number]
             )
-        return df.to_arrow_table()
+        record_batch = df.collect()
+        return pa.Table.from_batches(record_batch)

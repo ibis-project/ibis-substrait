@@ -125,6 +125,14 @@ def test_inner_join(consumer: str, request):
     run_parity_test(request.getfixturevalue(consumer), expr)
 
 
+@pytest.mark.parametrize("consumer", ["acero_consumer", "datafusion_consumer"])
+def test_inner_join_projection(consumer: str, request):
+    expr = orders.join(stores, orders["fk_store_id"] == stores["store_id"]).select(
+        "store_id"
+    )
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
 @pytest.mark.parametrize(
     "consumer",
     [
@@ -197,13 +205,7 @@ def test_filter_groupby_count_distinct(consumer: str, request):
 
 @pytest.mark.parametrize(
     "consumer",
-    [
-        "acero_consumer",
-        pytest.param(
-            "datafusion_consumer",
-            marks=[pytest.mark.xfail(Exception, reason="")],
-        ),
-    ],
+    ["acero_consumer", "datafusion_consumer"],
 )
 def test_aggregate_having(consumer: str, request):
     expr = orders.aggregate(
