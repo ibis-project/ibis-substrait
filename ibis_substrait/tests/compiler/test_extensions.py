@@ -332,11 +332,11 @@ def test_extension_register_uri_override(tmp_path):
     register_extension_yaml(yaml_file, uri="orkbork")
 
     assert _extension_mapping["anotheradd"]
-    assert _extension_mapping["anotheradd"][("a", "b")].uri == "orkbork"
+    assert _extension_mapping["anotheradd"][(("a", "b"), "c")].uri == "orkbork"
 
     register_extension_yaml(yaml_file, prefix="orkbork")
     assert _extension_mapping["anotheradd"]
-    assert _extension_mapping["anotheradd"][("a", "b")].uri == "orkbork/foo.yaml"
+    assert _extension_mapping["anotheradd"][(("a", "b"), "c")].uri == "orkbork/foo.yaml"
 
 
 def test_extension_arithmetic_multiple_signatures(compiler):
@@ -388,13 +388,14 @@ def test_extension_round_upcast(compiler, col_dtype, digits_dtype):
 
 
 def test_ops_mapping_validity():
+    from ibis_substrait.compiler import translate
     from ibis_substrait.compiler.mapping import (
         IBIS_SUBSTRAIT_OP_MAPPING,
         _extension_mapping,
     )
 
     for op in IBIS_SUBSTRAIT_OP_MAPPING.keys():
-        assert hasattr(ops, op)
+        assert hasattr(ops, op) or hasattr(translate, op)
 
     # `any` isn't a valid mapping
     for target in IBIS_SUBSTRAIT_OP_MAPPING.values():
