@@ -584,3 +584,35 @@ def test_join_chain_indexing_in_group_by(compiler):
         .selection.direct_reference.struct_field.field
         == 7
     )
+
+
+_window_hows = {
+    "unspecified": "BOUNDS_TYPE_UNSPECIFIED",
+    "range": "BOUNDS_TYPE_RANGE",
+    "rows": "BOUNDS_TYPE_ROWS",
+}
+
+
+@pytest.mark.parametrize(
+    "bounds",
+    [
+        (-4, 2),
+        (1, 5),
+        (None, None),
+        (2, 4),
+    ],
+)
+@pytest.mark.parametrize("how", ["range", "rows"])
+def test_aggregation_window_how(t, compiler, bounds, how):
+    how_arg = {how: bounds}
+    expr = t.projection(
+        [t.full_name.length().mean().over(ibis.window(group_by="age", **how_arg))]
+    )
+    result = translate(expr, compiler=compiler)
+
+    bounds_type_int = result.project.expressions[0].window_function.bounds_type
+
+    assert (
+        stalg.Expression.WindowFunction.BoundsType.Name(bounds_type_int)
+        == _window_hows[how]
+    )
