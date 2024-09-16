@@ -32,6 +32,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "CountStar": "count",
     "CountDistinct": "count",
     "Divide": "divide",
+    "SubstraitDivide": "divide",
     "EndsWith": "ends_with",
     "Equals": "equal",
     "Exp": "exp",
@@ -69,6 +70,7 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "RegexReplace": "regexp_replace",
     "Repeat": "repeat",
     "Reverse": "reverse",
+    "SubstraitRound": "round",
     "Round": "round",
     "RPad": "rpad",
     "RStrip": "rtrim",
@@ -119,24 +121,50 @@ IBIS_SUBSTRAIT_TYPE_MAPPING = {
 }
 
 _normalized_key_names = {
-    # decimal precision and scale aren't part of the
-    # extension signature they're passed in separately
-    "decimal<p, s>": "dec",
-    "decimal<p,s>": "dec",
-    "decimal<p1,s1>": "dec",
-    "decimal<p2,s2>": "dec",
-    # we don't care about string length
-    "fixedchar<l1>": "str",
-    "fixedchar<l2>": "str",
-    "varchar<l1>": "str",
-    "varchar<l2>": "str",
-    "varchar<l3>": "str",
-    # for now ignore nullability marker
-    "boolean?": "bool",
-    # why is there a 1?
-    "any1": "any",
-    "Date": "date",
+    "binary": "vbin",
+    "interval_compound": "icompound",
+    "interval_day": "iday",
+    "interval_year": "iyear",
+    "string": "str",
+    "timestamp": "ts",
+    "timestamp_tz": "tstz",
 }
+
+
+def normalize_substrait_type_names(typ: str) -> str:
+    # First strip off any punctuation
+    typ = typ.strip("?").lower()
+
+    # Common prefixes whose information does not matter to an extension function
+    # signature
+    for complex_type, abbr in [
+        ("fixedchar", "fchar"),
+        ("varchar", "vchar"),
+        ("fixedbinary", "fbin"),
+        ("decimal", "dec"),
+        ("precision_timestamp", "pts"),
+        ("precision_timestamp_tz", "ptstz"),
+        ("struct", "struct"),
+        ("list", "list"),
+        ("map", "map"),
+        ("any", "any"),
+        ("boolean", "bool"),
+        # Absolute garbage type info
+        ("decimal", "dec"),
+        ("delta", "dec"),
+        ("prec", "dec"),
+        ("scale", "dec"),
+        ("init_", "dec"),
+        ("min_", "dec"),
+        ("max_", "dec"),
+    ]:
+        if typ.lower().startswith(complex_type):
+            typ = abbr
+
+    # Then pass through the dictionary of mappings, defaulting to just the
+    # existing string
+    typ = _normalized_key_names.get(typ.lower(), typ.lower())
+    return typ
 
 
 _extension_mapping: Mapping[str, Any] = defaultdict(dict)
@@ -151,13 +179,13 @@ class FunctionEntry:
         self.uri: str = ""
 
     def parse(self, impl: Mapping[str, Any]) -> None:
-        self.rtn = impl["return"]
+        self.rtn = normalize_substrait_type_names(impl["return"])
         self.nullability = impl.get("nullability", False)
         self.variadic = impl.get("variadic", False)
         if input_args := impl.get("args", []):
             for val in input_args:
-                if typ := val.get("value", None):
-                    typ = _normalized_key_names.get(typ.lower(), typ.lower())
+                if typ := val.get("value"):
+                    typ = normalize_substrait_type_names(typ)
                     self.inputs.append(typ)
                 elif arg_name := val.get("name", None):
                     self.arg_names.append(arg_name)
@@ -212,7 +240,9 @@ def register_extension_yaml(
         for function in named_functions:
             for func in _parse_func(function):
                 func.uri = uri or f"{prefix}/{fname.name}"
-                _extension_mapping[function["name"]][tuple(func.inputs)] = func
+                _extension_mapping[function["name"]][(tuple(func.inputs), func.rtn)] = (
+                    func
+                )
 
 
 def _populate_default_extensions() -> None:

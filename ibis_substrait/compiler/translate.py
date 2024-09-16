@@ -15,11 +15,12 @@ import math
 import operator
 import uuid
 from collections.abc import Iterable, Mapping, MutableMapping, Sequence
-from typing import Any, TypeVar, Union
+from typing import Any, Optional, TypeVar, Union
 
 import ibis
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
+import ibis.expr.rules as rlz
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 from ibis import util
@@ -29,6 +30,7 @@ from substrait.gen.proto import type_pb2 as stt
 from ibis_substrait.compiler.core import SubstraitCompiler, _get_fields
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
+    IBIS_SUBSTRAIT_TYPE_MAPPING,
     _extension_mapping,
 )
 
@@ -505,17 +507,17 @@ def value_op(
 ) -> stalg.Expression:
     # Check if scalar function is valid for input dtype(s) and insert casts as needed to
     # make sure inputs are correct.
-    op = _check_and_upcast(op)
+    newop = _check_and_upcast(op)
     # given the details of `op` -> function id
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(op),
-            output_type=translate(op.dtype),
+            function_reference=compiler.function_id(newop),
+            output_type=translate(newop.dtype),
             arguments=[
                 stalg.FunctionArgument(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
-                for arg in op.args
+                for arg in newop.args
                 if isinstance(arg, ops.Value)
             ],
         )
@@ -537,6 +539,8 @@ def window_op(
     func_args = op.func.args
 
     lower_bound, upper_bound = _translate_window_bounds(start, end)
+
+    func = _check_and_upcast(func)
 
     return stalg.Expression(
         window_function=stalg.Expression.WindowFunction(
@@ -565,6 +569,7 @@ def _reduction(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
+    op = _check_and_upcast(op)
     return stalg.AggregateFunction(
         function_reference=compiler.function_id(op),
         arguments=[
@@ -1408,8 +1413,11 @@ def _check_and_upcast(op: ops.Node) -> ops.Node:
     op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
     anykey = ("any",) * len([arg for arg in op.args if arg is not None])
 
+    output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
+    any_sigkey = (anykey, output_type_key)
+
     # First check if `any` is an option
-    function_extension = _extension_mapping[op_name].get(anykey)
+    function_extension = _extension_mapping[op_name].get(any_sigkey)
 
     # Otherwise, if the types don't match, cast up
     if function_extension is None:
@@ -1463,15 +1471,55 @@ def _upcast_string_op(op: string_op) -> string_op:
     return type(op)(*casted_args)
 
 
+# Ibis has (usually good) opinions about what the dtypes of certain ops should be
+# Substrait disagrees sometimes
+class SubstraitRound(ops.Value):
+    """Round a value."""
+
+    arg: ops.Value[dt.Numeric]
+    digits: Optional[ops.Value[dt.Integer]] = None
+
+    shape = rlz.shape_like("arg")
+
+    @property
+    def dtype(self) -> dt.DataType:
+        return self.arg.dtype
+
+
+class SubstraitDivide(ops.NumericBinary):
+    """Divide that always returns the same dtype as the inputs."""
+
+    @property
+    def dtype(self) -> dt.DataType:
+        return self.left.dtype
+
+
 @_upcast.register(ops.Round)
-def _upcast_round_digits(op: ops.Round) -> ops.Round:
+def _upcast_round_digits(op: ops.Round) -> SubstraitRound:
     # Substrait wants Int32 for decimal place argument to round
     if op.digits is None:
         raise ValueError(
             "Substrait requires that a rounding operation specify the number of digits to round to"
         )
     elif not isinstance(op.digits.dtype, dt.Int32):
-        return ops.Round(
+        return SubstraitRound(
             op.arg, op.digits.copy(dtype=dt.Int32(nullable=op.digits.dtype.nullable))
         )
+    return SubstraitRound(op.arg, op.digits)
+
+
+@_upcast.register(ops.Mean)
+def _upcast_mean(op: ops.Mean) -> ops.Mean:
+    # Substrait wants the input types and output types of reductions to match
+    # We cast the _input_ type to match the output type
+    # So mean(some_int) -> float will go to mean(cast(some_int as float)) -> float
+    if op.arg.dtype != op.dtype:
+        return ops.Mean(arg=ops.Cast(op.arg, to=op.dtype), where=op.where)
+
     return op
+
+
+@_upcast.register(ops.Divide)
+def _matchy_matchy_divide(op: ops.Divide) -> SubstraitDivide:
+    new_op = SubstraitDivide(op.left, op.right)
+    return _upcast_bin_op(new_op)

@@ -111,6 +111,7 @@ ignore = [
   "SIM117", # nested withs
   "SIM118", # remove .keys() calls from dictionaries
   "UP006", # use collections.deque instead of Deque for type annotation
+  "UP007",   # Optional[str] -> str | None
 ]
 
 [tool.ruff.lint.per-file-ignores]

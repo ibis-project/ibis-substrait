@@ -556,13 +556,25 @@
                                                                 "arguments": [
                                                                   {
                                                                     "value": {
-                                                                      "selection": {
-                                                                        "directReference": {
-                                                                          "structField": {
-                                                                            "field": 5
+                                                                      "cast": {
+                                                                        "type": {
+                                                                          "decimal": {
+                                                                            "scale": 2,
+                                                                            "precision": 15,
+                                                                            "nullability": "NULLABILITY_NULLABLE"
                                                                           }
                                                                         },
-                                                                        "rootReference": {}
+                                                                        "input": {
+                                                                          "selection": {
+                                                                            "directReference": {
+                                                                              "structField": {
+                                                                                "field": 5
+                                                                              }
+                                                                            },
+                                                                            "rootReference": {}
+                                                                          }
+                                                                        },
+                                                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                       }
                                                                     }
                                                                   }
