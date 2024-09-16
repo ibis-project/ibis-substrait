@@ -1011,7 +1011,9 @@
                 "scalarFunction": {
                   "functionReference": 7,
                   "outputType": {
-                    "fp64": {
+                    "decimal": {
+                      "scale": 2,
+                      "precision": 38,
                       "nullability": "NULLABILITY_NULLABLE"
                     }
                   },
