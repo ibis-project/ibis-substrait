@@ -524,6 +524,9 @@ def value_op(
     )
 
 
+_bounds_enum = {"rows": 1, "range": 2}
+
+
 @translate.register(ops.WindowOp)  # type: ignore
 def window_op(
     op: ops.WindowOp,  # type: ignore
@@ -537,6 +540,9 @@ def window_op(
     end = op.end
     func = op.func
     func_args = op.func.args
+    how = op.how
+
+    bounds_type = _bounds_enum[how]
 
     lower_bound, upper_bound = _translate_window_bounds(start, end)
 
@@ -558,6 +564,7 @@ def window_op(
             ],
             lower_bound=lower_bound,
             upper_bound=upper_bound,
+            bounds_type=bounds_type,
         )
     )
 
