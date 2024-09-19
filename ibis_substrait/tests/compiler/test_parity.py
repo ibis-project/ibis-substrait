@@ -158,22 +158,33 @@ def test_left_join(consumer: str, request):
 
 @pytest.mark.parametrize(
     "consumer",
-    [
-        "acero_consumer",
-        pytest.param(
-            "datafusion_consumer",
-            marks=[pytest.mark.xfail(Exception, reason="")],
-        ),
-    ],
+    ["acero_consumer", "datafusion_consumer"],
 )
 def test_filter_groupby(consumer: str, request):
     filter_table = orders.join(
         stores, orders["fk_store_id"] == stores["store_id"]
     ).filter(lambda t: t.order_total > 30)
 
-    expr = filter_table.group_by("city").aggregate(
-        sales=filter_table["order_id"].count()
+    expr = (
+        filter_table.group_by("city")
+        .aggregate(sales=filter_table["order_id"].count())
+        .filter(ibis.literal(True))
     )
+
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        pytest.param(
+            "datafusion_consumer",
+            marks=[pytest.mark.xfail(Exception, reason="")],
+        ),
+    ],
+)
+def test_groupby_datafusion(consumer: str, request):
+    expr = orders.group_by("fk_store_id").aggregate(sales=orders["order_id"].count())
 
     run_parity_test(request.getfixturevalue(consumer), expr)
 
@@ -187,10 +198,7 @@ def test_filter_groupby(consumer: str, request):
                 pytest.mark.xfail(pa.ArrowNotImplementedError, reason="Unimplemented")
             ],
         ),
-        pytest.param(
-            "datafusion_consumer",
-            marks=[pytest.mark.xfail(Exception, reason="")],
-        ),
+        "datafusion_consumer",
     ],
 )
 def test_filter_groupby_count_distinct(consumer: str, request):
@@ -198,7 +206,11 @@ def test_filter_groupby_count_distinct(consumer: str, request):
         stores, orders["fk_store_id"] == stores["store_id"]
     ).filter(lambda t: t.order_total > 30)
 
-    expr = filter_table.group_by("city").aggregate(sales=filter_table["city"].nunique())
+    expr = (
+        filter_table.group_by("city")
+        .aggregate(sales=filter_table["city"].nunique())
+        .filter(ibis.literal(True))
+    )
 
     run_parity_test(request.getfixturevalue(consumer), expr)
 
