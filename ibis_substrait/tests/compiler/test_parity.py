@@ -69,12 +69,12 @@ datasets = {
 }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def acero_consumer():
     return AceroSubstraitConsumer().with_tables(datasets)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def datafusion_consumer():
     return DatafusionSubstraitConsumer().with_tables(datasets)
 
@@ -287,4 +287,59 @@ def test_is_in(consumer: str, request):
 def test_scalar_subquery(consumer: str, request):
     expr = orders.filter(orders["order_total"] == orders["order_total"].max())
 
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
+@pytest.mark.parametrize("consumer", ["acero_consumer", "datafusion_consumer"])
+def test_projection_functions_arithmetic(consumer: str, request):
+    expr = orders.select(
+        orders["order_id"] + orders["order_total"],
+        orders["order_id"] - orders["order_total"],
+        orders["order_id"] * orders["order_total"],
+        orders["order_id"] / orders["order_total"],
+        orders["order_total"] ** ibis.literal(2),
+        orders["order_total"].sqrt(),
+        orders["order_total"].exp(),
+        (orders["order_id"] * 10 - orders["order_total"]).abs(),
+    )
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        "acero_consumer",
+        pytest.param(
+            "datafusion_consumer",
+            marks=[pytest.mark.xfail(Exception, reason="NotImplemented")],
+        ),
+    ],
+)
+def test_projection_functions_arithmetic_negation(consumer: str, request):
+    expr = orders.select(orders["order_total"].negate())
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        pytest.param(
+            "acero_consumer",
+            marks=[
+                pytest.mark.xfail(
+                    pa.ArrowNotImplementedError,
+                    reason="No conversion function exists to convert the Substrait function",
+                )
+            ],
+        ),
+        pytest.param(
+            "datafusion_consumer",
+            marks=[pytest.mark.xfail(Exception, reason="NotImplemented")],
+        ),
+    ],
+)
+def test_projection_functions_arithmetic_modulus(consumer: str, request):
+    expr = orders.select(
+        orders["order_id"] % orders["fk_store_id"],
+    )
     run_parity_test(request.getfixturevalue(consumer), expr)
