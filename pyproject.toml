@@ -39,7 +39,7 @@ types-pyyaml = ">=6.0.12.8"
 typing-extensions = ">=4"
 
 [tool.poetry.group.test.dependencies]
-datafusion = "^40.1.0"
+datafusion = "^41.0.0"
 duckdb = ">=0.8.1"
 pytest = "^8.0.0"
 pytest-clarity = "^1.0.1"
