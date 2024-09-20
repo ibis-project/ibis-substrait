@@ -1822,7 +1822,7 @@
     }
   ],
   "version": {
-    "minorNumber": 54,
+    "minorNumber": 56,
     "producer": "ibis-substrait"
   }
 }
