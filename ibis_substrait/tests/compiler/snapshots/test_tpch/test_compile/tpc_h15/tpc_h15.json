@@ -85,12 +85,53 @@
                   12,
                   13
                 ]
+              },
+              "hint": {
+                "outputNames": [
+                  "s_suppkey",
+                  "s_name",
+                  "s_address",
+                  "s_phone",
+                  "total_revenue"
+                ]
               }
             },
             "input": {
               "sort": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "s_suppkey",
+                      "s_name",
+                      "s_address",
+                      "s_nationkey",
+                      "s_phone",
+                      "s_acctbal",
+                      "s_comment",
+                      "l_suppkey",
+                      "total_revenue"
+                    ]
+                  }
+                },
                 "input": {
                   "filter": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "s_suppkey",
+                          "s_name",
+                          "s_address",
+                          "s_nationkey",
+                          "s_phone",
+                          "s_acctbal",
+                          "s_comment",
+                          "l_suppkey",
+                          "total_revenue"
+                        ]
+                      }
+                    },
                     "input": {
                       "project": {
                         "common": {
@@ -106,6 +147,19 @@
                               16,
                               17
                             ]
+                          },
+                          "hint": {
+                            "outputNames": [
+                              "s_suppkey",
+                              "s_name",
+                              "s_address",
+                              "s_nationkey",
+                              "s_phone",
+                              "s_acctbal",
+                              "s_comment",
+                              "l_suppkey",
+                              "total_revenue"
+                            ]
                           }
                         },
                         "input": {
@@ -113,7 +167,18 @@
                             "left": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "s_suppkey",
+                                      "s_name",
+                                      "s_address",
+                                      "s_nationkey",
+                                      "s_phone",
+                                      "s_acctbal",
+                                      "s_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
@@ -177,12 +242,64 @@
                             },
                             "right": {
                               "aggregate": {
+                                "common": {
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "l_suppkey",
+                                      "total_revenue"
+                                    ]
+                                  }
+                                },
                                 "input": {
                                   "filter": {
+                                    "common": {
+                                      "direct": {},
+                                      "hint": {
+                                        "outputNames": [
+                                          "l_orderkey",
+                                          "l_partkey",
+                                          "l_suppkey",
+                                          "l_linenumber",
+                                          "l_quantity",
+                                          "l_extendedprice",
+                                          "l_discount",
+                                          "l_tax",
+                                          "l_returnflag",
+                                          "l_linestatus",
+                                          "l_shipdate",
+                                          "l_commitdate",
+                                          "l_receiptdate",
+                                          "l_shipinstruct",
+                                          "l_shipmode",
+                                          "l_comment"
+                                        ]
+                                      }
+                                    },
                                     "input": {
                                       "read": {
                                         "common": {
-                                          "direct": {}
+                                          "direct": {},
+                                          "hint": {
+                                            "outputNames": [
+                                              "l_orderkey",
+                                              "l_partkey",
+                                              "l_suppkey",
+                                              "l_linenumber",
+                                              "l_quantity",
+                                              "l_extendedprice",
+                                              "l_discount",
+                                              "l_tax",
+                                              "l_returnflag",
+                                              "l_linestatus",
+                                              "l_shipdate",
+                                              "l_commitdate",
+                                              "l_receiptdate",
+                                              "l_shipinstruct",
+                                              "l_shipmode",
+                                              "l_comment"
+                                            ]
+                                          }
                                         },
                                         "baseSchema": {
                                           "names": [
@@ -650,6 +767,14 @@
                                 "scalar": {
                                   "input": {
                                     "aggregate": {
+                                      "common": {
+                                        "direct": {},
+                                        "hint": {
+                                          "outputNames": [
+                                            "Max(total_revenue)"
+                                          ]
+                                        }
+                                      },
                                       "input": {
                                         "project": {
                                           "common": {
@@ -665,6 +790,19 @@
                                                 16,
                                                 17
                                               ]
+                                            },
+                                            "hint": {
+                                              "outputNames": [
+                                                "s_suppkey",
+                                                "s_name",
+                                                "s_address",
+                                                "s_nationkey",
+                                                "s_phone",
+                                                "s_acctbal",
+                                                "s_comment",
+                                                "l_suppkey",
+                                                "total_revenue"
+                                              ]
                                             }
                                           },
                                           "input": {
@@ -672,7 +810,18 @@
                                               "left": {
                                                 "read": {
                                                   "common": {
-                                                    "direct": {}
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "s_suppkey",
+                                                        "s_name",
+                                                        "s_address",
+                                                        "s_nationkey",
+                                                        "s_phone",
+                                                        "s_acctbal",
+                                                        "s_comment"
+                                                      ]
+                                                    }
                                                   },
                                                   "baseSchema": {
                                                     "names": [
@@ -736,12 +885,64 @@
                                               },
                                               "right": {
                                                 "aggregate": {
+                                                  "common": {
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "l_suppkey",
+                                                        "total_revenue"
+                                                      ]
+                                                    }
+                                                  },
                                                   "input": {
                                                     "filter": {
+                                                      "common": {
+                                                        "direct": {},
+                                                        "hint": {
+                                                          "outputNames": [
+                                                            "l_orderkey",
+                                                            "l_partkey",
+                                                            "l_suppkey",
+                                                            "l_linenumber",
+                                                            "l_quantity",
+                                                            "l_extendedprice",
+                                                            "l_discount",
+                                                            "l_tax",
+                                                            "l_returnflag",
+                                                            "l_linestatus",
+                                                            "l_shipdate",
+                                                            "l_commitdate",
+                                                            "l_receiptdate",
+                                                            "l_shipinstruct",
+                                                            "l_shipmode",
+                                                            "l_comment"
+                                                          ]
+                                                        }
+                                                      },
                                                       "input": {
                                                         "read": {
                                                           "common": {
-                                                            "direct": {}
+                                                            "direct": {},
+                                                            "hint": {
+                                                              "outputNames": [
+                                                                "l_orderkey",
+                                                                "l_partkey",
+                                                                "l_suppkey",
+                                                                "l_linenumber",
+                                                                "l_quantity",
+                                                                "l_extendedprice",
+                                                                "l_discount",
+                                                                "l_tax",
+                                                                "l_returnflag",
+                                                                "l_linestatus",
+                                                                "l_shipdate",
+                                                                "l_commitdate",
+                                                                "l_receiptdate",
+                                                                "l_shipinstruct",
+                                                                "l_shipmode",
+                                                                "l_comment"
+                                                              ]
+                                                            }
                                                           },
                                                           "baseSchema": {
                                                             "names": [

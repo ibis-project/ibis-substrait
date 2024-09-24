@@ -62,12 +62,53 @@
       "root": {
         "input": {
           "fetch": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "s_name",
+                  "numwait"
+                ]
+              }
+            },
             "input": {
               "sort": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "s_name",
+                      "numwait"
+                    ]
+                  }
+                },
                 "input": {
                   "aggregate": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "s_name",
+                          "numwait"
+                        ]
+                      }
+                    },
                     "input": {
                       "filter": {
+                        "common": {
+                          "direct": {},
+                          "hint": {
+                            "outputNames": [
+                              "l1_orderkey",
+                              "o_orderstatus",
+                              "l_receiptdate",
+                              "l_commitdate",
+                              "l1_suppkey",
+                              "s_name",
+                              "n_name"
+                            ]
+                          }
+                        },
                         "input": {
                           "project": {
                             "common": {
@@ -81,6 +122,17 @@
                                   41,
                                   42
                                 ]
+                              },
+                              "hint": {
+                                "outputNames": [
+                                  "l1_orderkey",
+                                  "o_orderstatus",
+                                  "l_receiptdate",
+                                  "l_commitdate",
+                                  "l1_suppkey",
+                                  "s_name",
+                                  "n_name"
+                                ]
                               }
                             },
                             "input": {
@@ -92,7 +144,18 @@
                                         "left": {
                                           "read": {
                                             "common": {
-                                              "direct": {}
+                                              "direct": {},
+                                              "hint": {
+                                                "outputNames": [
+                                                  "s_suppkey",
+                                                  "s_name",
+                                                  "s_address",
+                                                  "s_nationkey",
+                                                  "s_phone",
+                                                  "s_acctbal",
+                                                  "s_comment"
+                                                ]
+                                              }
                                             },
                                             "baseSchema": {
                                               "names": [
@@ -157,7 +220,27 @@
                                         "right": {
                                           "read": {
                                             "common": {
-                                              "direct": {}
+                                              "direct": {},
+                                              "hint": {
+                                                "outputNames": [
+                                                  "l_orderkey",
+                                                  "l_partkey",
+                                                  "l_suppkey",
+                                                  "l_linenumber",
+                                                  "l_quantity",
+                                                  "l_extendedprice",
+                                                  "l_discount",
+                                                  "l_tax",
+                                                  "l_returnflag",
+                                                  "l_linestatus",
+                                                  "l_shipdate",
+                                                  "l_commitdate",
+                                                  "l_receiptdate",
+                                                  "l_shipinstruct",
+                                                  "l_shipmode",
+                                                  "l_comment"
+                                                ]
+                                              }
                                             },
                                             "baseSchema": {
                                               "names": [
@@ -319,7 +402,20 @@
                                     "right": {
                                       "read": {
                                         "common": {
-                                          "direct": {}
+                                          "direct": {},
+                                          "hint": {
+                                            "outputNames": [
+                                              "o_orderkey",
+                                              "o_custkey",
+                                              "o_orderstatus",
+                                              "o_totalprice",
+                                              "o_orderdate",
+                                              "o_orderpriority",
+                                              "o_clerk",
+                                              "o_shippriority",
+                                              "o_comment"
+                                            ]
+                                          }
                                         },
                                         "baseSchema": {
                                           "names": [
@@ -435,7 +531,15 @@
                                 "right": {
                                   "read": {
                                     "common": {
-                                      "direct": {}
+                                      "direct": {},
+                                      "hint": {
+                                        "outputNames": [
+                                          "n_nationkey",
+                                          "n_name",
+                                          "n_regionkey",
+                                          "n_comment"
+                                        ]
+                                      }
                                     },
                                     "baseSchema": {
                                       "names": [
@@ -748,10 +852,53 @@
                                               "predicateOp": "PREDICATE_OP_EXISTS",
                                               "tuples": {
                                                 "filter": {
+                                                  "common": {
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "l_orderkey",
+                                                        "l_partkey",
+                                                        "l_suppkey",
+                                                        "l_linenumber",
+                                                        "l_quantity",
+                                                        "l_extendedprice",
+                                                        "l_discount",
+                                                        "l_tax",
+                                                        "l_returnflag",
+                                                        "l_linestatus",
+                                                        "l_shipdate",
+                                                        "l_commitdate",
+                                                        "l_receiptdate",
+                                                        "l_shipinstruct",
+                                                        "l_shipmode",
+                                                        "l_comment"
+                                                      ]
+                                                    }
+                                                  },
                                                   "input": {
                                                     "read": {
                                                       "common": {
-                                                        "direct": {}
+                                                        "direct": {},
+                                                        "hint": {
+                                                          "outputNames": [
+                                                            "l_orderkey",
+                                                            "l_partkey",
+                                                            "l_suppkey",
+                                                            "l_linenumber",
+                                                            "l_quantity",
+                                                            "l_extendedprice",
+                                                            "l_discount",
+                                                            "l_tax",
+                                                            "l_returnflag",
+                                                            "l_linestatus",
+                                                            "l_shipdate",
+                                                            "l_commitdate",
+                                                            "l_receiptdate",
+                                                            "l_shipinstruct",
+                                                            "l_shipmode",
+                                                            "l_comment"
+                                                          ]
+                                                        }
                                                       },
                                                       "baseSchema": {
                                                         "names": [
@@ -986,10 +1133,53 @@
                                               "predicateOp": "PREDICATE_OP_EXISTS",
                                               "tuples": {
                                                 "filter": {
+                                                  "common": {
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "l_orderkey",
+                                                        "l_partkey",
+                                                        "l_suppkey",
+                                                        "l_linenumber",
+                                                        "l_quantity",
+                                                        "l_extendedprice",
+                                                        "l_discount",
+                                                        "l_tax",
+                                                        "l_returnflag",
+                                                        "l_linestatus",
+                                                        "l_shipdate",
+                                                        "l_commitdate",
+                                                        "l_receiptdate",
+                                                        "l_shipinstruct",
+                                                        "l_shipmode",
+                                                        "l_comment"
+                                                      ]
+                                                    }
+                                                  },
                                                   "input": {
                                                     "read": {
                                                       "common": {
-                                                        "direct": {}
+                                                        "direct": {},
+                                                        "hint": {
+                                                          "outputNames": [
+                                                            "l_orderkey",
+                                                            "l_partkey",
+                                                            "l_suppkey",
+                                                            "l_linenumber",
+                                                            "l_quantity",
+                                                            "l_extendedprice",
+                                                            "l_discount",
+                                                            "l_tax",
+                                                            "l_returnflag",
+                                                            "l_linestatus",
+                                                            "l_shipdate",
+                                                            "l_commitdate",
+                                                            "l_receiptdate",
+                                                            "l_shipinstruct",
+                                                            "l_shipmode",
+                                                            "l_comment"
+                                                          ]
+                                                        }
                                                       },
                                                       "baseSchema": {
                                                         "names": [

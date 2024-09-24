@@ -55,10 +55,62 @@
       "root": {
         "input": {
           "sort": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "l_shipmode",
+                  "high_line_count",
+                  "low_line_count"
+                ]
+              }
+            },
             "input": {
               "aggregate": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "l_shipmode",
+                      "high_line_count",
+                      "low_line_count"
+                    ]
+                  }
+                },
                 "input": {
                   "filter": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "o_orderkey",
+                          "o_custkey",
+                          "o_orderstatus",
+                          "o_totalprice",
+                          "o_orderdate",
+                          "o_orderpriority",
+                          "o_clerk",
+                          "o_shippriority",
+                          "o_comment",
+                          "l_orderkey",
+                          "l_partkey",
+                          "l_suppkey",
+                          "l_linenumber",
+                          "l_quantity",
+                          "l_extendedprice",
+                          "l_discount",
+                          "l_tax",
+                          "l_returnflag",
+                          "l_linestatus",
+                          "l_shipdate",
+                          "l_commitdate",
+                          "l_receiptdate",
+                          "l_shipinstruct",
+                          "l_shipmode",
+                          "l_comment"
+                        ]
+                      }
+                    },
                     "input": {
                       "project": {
                         "common": {
@@ -90,6 +142,35 @@
                               48,
                               49
                             ]
+                          },
+                          "hint": {
+                            "outputNames": [
+                              "o_orderkey",
+                              "o_custkey",
+                              "o_orderstatus",
+                              "o_totalprice",
+                              "o_orderdate",
+                              "o_orderpriority",
+                              "o_clerk",
+                              "o_shippriority",
+                              "o_comment",
+                              "l_orderkey",
+                              "l_partkey",
+                              "l_suppkey",
+                              "l_linenumber",
+                              "l_quantity",
+                              "l_extendedprice",
+                              "l_discount",
+                              "l_tax",
+                              "l_returnflag",
+                              "l_linestatus",
+                              "l_shipdate",
+                              "l_commitdate",
+                              "l_receiptdate",
+                              "l_shipinstruct",
+                              "l_shipmode",
+                              "l_comment"
+                            ]
                           }
                         },
                         "input": {
@@ -97,7 +178,20 @@
                             "left": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "o_orderkey",
+                                      "o_custkey",
+                                      "o_orderstatus",
+                                      "o_totalprice",
+                                      "o_orderdate",
+                                      "o_orderpriority",
+                                      "o_clerk",
+                                      "o_shippriority",
+                                      "o_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
@@ -174,7 +268,27 @@
                             "right": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "l_orderkey",
+                                      "l_partkey",
+                                      "l_suppkey",
+                                      "l_linenumber",
+                                      "l_quantity",
+                                      "l_extendedprice",
+                                      "l_discount",
+                                      "l_tax",
+                                      "l_returnflag",
+                                      "l_linestatus",
+                                      "l_shipdate",
+                                      "l_commitdate",
+                                      "l_receiptdate",
+                                      "l_shipinstruct",
+                                      "l_shipmode",
+                                      "l_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
