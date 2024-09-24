@@ -52,8 +52,38 @@
       "root": {
         "input": {
           "fetch": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "s_acctbal",
+                  "s_name",
+                  "n_name",
+                  "p_partkey",
+                  "p_mfgr",
+                  "s_address",
+                  "s_phone",
+                  "s_comment"
+                ]
+              }
+            },
             "input": {
               "sort": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "s_acctbal",
+                      "s_name",
+                      "n_name",
+                      "p_partkey",
+                      "p_mfgr",
+                      "s_address",
+                      "s_phone",
+                      "s_comment"
+                    ]
+                  }
+                },
                 "input": {
                   "project": {
                     "common": {
@@ -68,10 +98,57 @@
                           34,
                           35
                         ]
+                      },
+                      "hint": {
+                        "outputNames": [
+                          "s_acctbal",
+                          "s_name",
+                          "n_name",
+                          "p_partkey",
+                          "p_mfgr",
+                          "s_address",
+                          "s_phone",
+                          "s_comment"
+                        ]
                       }
                     },
                     "input": {
                       "filter": {
+                        "common": {
+                          "direct": {},
+                          "hint": {
+                            "outputNames": [
+                              "p_partkey",
+                              "p_name",
+                              "p_mfgr",
+                              "p_brand",
+                              "p_type",
+                              "p_size",
+                              "p_container",
+                              "p_retailprice",
+                              "p_comment",
+                              "ps_partkey",
+                              "ps_suppkey",
+                              "ps_availqty",
+                              "ps_supplycost",
+                              "ps_comment",
+                              "s_suppkey",
+                              "s_name",
+                              "s_address",
+                              "s_nationkey",
+                              "s_phone",
+                              "s_acctbal",
+                              "s_comment",
+                              "n_nationkey",
+                              "n_name",
+                              "n_regionkey",
+                              "n_comment",
+                              "r_regionkey",
+                              "r_name",
+                              "r_comment"
+                            ]
+                          }
+                        },
                         "input": {
                           "project": {
                             "common": {
@@ -106,6 +183,38 @@
                                   54,
                                   55
                                 ]
+                              },
+                              "hint": {
+                                "outputNames": [
+                                  "p_partkey",
+                                  "p_name",
+                                  "p_mfgr",
+                                  "p_brand",
+                                  "p_type",
+                                  "p_size",
+                                  "p_container",
+                                  "p_retailprice",
+                                  "p_comment",
+                                  "ps_partkey",
+                                  "ps_suppkey",
+                                  "ps_availqty",
+                                  "ps_supplycost",
+                                  "ps_comment",
+                                  "s_suppkey",
+                                  "s_name",
+                                  "s_address",
+                                  "s_nationkey",
+                                  "s_phone",
+                                  "s_acctbal",
+                                  "s_comment",
+                                  "n_nationkey",
+                                  "n_name",
+                                  "n_regionkey",
+                                  "n_comment",
+                                  "r_regionkey",
+                                  "r_name",
+                                  "r_comment"
+                                ]
                               }
                             },
                             "input": {
@@ -119,7 +228,20 @@
                                             "left": {
                                               "read": {
                                                 "common": {
-                                                  "direct": {}
+                                                  "direct": {},
+                                                  "hint": {
+                                                    "outputNames": [
+                                                      "p_partkey",
+                                                      "p_name",
+                                                      "p_mfgr",
+                                                      "p_brand",
+                                                      "p_type",
+                                                      "p_size",
+                                                      "p_container",
+                                                      "p_retailprice",
+                                                      "p_comment"
+                                                    ]
+                                                  }
                                                 },
                                                 "baseSchema": {
                                                   "names": [
@@ -196,7 +318,16 @@
                                             "right": {
                                               "read": {
                                                 "common": {
-                                                  "direct": {}
+                                                  "direct": {},
+                                                  "hint": {
+                                                    "outputNames": [
+                                                      "ps_partkey",
+                                                      "ps_suppkey",
+                                                      "ps_availqty",
+                                                      "ps_supplycost",
+                                                      "ps_comment"
+                                                    ]
+                                                  }
                                                 },
                                                 "baseSchema": {
                                                   "names": [
@@ -286,7 +417,18 @@
                                         "right": {
                                           "read": {
                                             "common": {
-                                              "direct": {}
+                                              "direct": {},
+                                              "hint": {
+                                                "outputNames": [
+                                                  "s_suppkey",
+                                                  "s_name",
+                                                  "s_address",
+                                                  "s_nationkey",
+                                                  "s_phone",
+                                                  "s_acctbal",
+                                                  "s_comment"
+                                                ]
+                                              }
                                             },
                                             "baseSchema": {
                                               "names": [
@@ -390,7 +532,15 @@
                                     "right": {
                                       "read": {
                                         "common": {
-                                          "direct": {}
+                                          "direct": {},
+                                          "hint": {
+                                            "outputNames": [
+                                              "n_nationkey",
+                                              "n_name",
+                                              "n_regionkey",
+                                              "n_comment"
+                                            ]
+                                          }
                                         },
                                         "baseSchema": {
                                           "names": [
@@ -474,7 +624,14 @@
                                 "right": {
                                   "read": {
                                     "common": {
-                                      "direct": {}
+                                      "direct": {},
+                                      "hint": {
+                                        "outputNames": [
+                                          "r_regionkey",
+                                          "r_name",
+                                          "r_comment"
+                                        ]
+                                      }
                                     },
                                     "baseSchema": {
                                       "names": [
@@ -995,8 +1152,42 @@
                                             "scalar": {
                                               "input": {
                                                 "aggregate": {
+                                                  "common": {
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "Min(ps_supplycost)"
+                                                      ]
+                                                    }
+                                                  },
                                                   "input": {
                                                     "filter": {
+                                                      "common": {
+                                                        "direct": {},
+                                                        "hint": {
+                                                          "outputNames": [
+                                                            "ps_partkey",
+                                                            "ps_suppkey",
+                                                            "ps_availqty",
+                                                            "ps_supplycost",
+                                                            "ps_comment",
+                                                            "s_suppkey",
+                                                            "s_name",
+                                                            "s_address",
+                                                            "s_nationkey",
+                                                            "s_phone",
+                                                            "s_acctbal",
+                                                            "s_comment",
+                                                            "n_nationkey",
+                                                            "n_name",
+                                                            "n_regionkey",
+                                                            "n_comment",
+                                                            "r_regionkey",
+                                                            "r_name",
+                                                            "r_comment"
+                                                          ]
+                                                        }
+                                                      },
                                                       "input": {
                                                         "project": {
                                                           "common": {
@@ -1022,6 +1213,29 @@
                                                                 36,
                                                                 37
                                                               ]
+                                                            },
+                                                            "hint": {
+                                                              "outputNames": [
+                                                                "ps_partkey",
+                                                                "ps_suppkey",
+                                                                "ps_availqty",
+                                                                "ps_supplycost",
+                                                                "ps_comment",
+                                                                "s_suppkey",
+                                                                "s_name",
+                                                                "s_address",
+                                                                "s_nationkey",
+                                                                "s_phone",
+                                                                "s_acctbal",
+                                                                "s_comment",
+                                                                "n_nationkey",
+                                                                "n_name",
+                                                                "n_regionkey",
+                                                                "n_comment",
+                                                                "r_regionkey",
+                                                                "r_name",
+                                                                "r_comment"
+                                                              ]
                                                             }
                                                           },
                                                           "input": {
@@ -1033,7 +1247,16 @@
                                                                       "left": {
                                                                         "read": {
                                                                           "common": {
-                                                                            "direct": {}
+                                                                            "direct": {},
+                                                                            "hint": {
+                                                                              "outputNames": [
+                                                                                "ps_partkey",
+                                                                                "ps_suppkey",
+                                                                                "ps_availqty",
+                                                                                "ps_supplycost",
+                                                                                "ps_comment"
+                                                                              ]
+                                                                            }
                                                                           },
                                                                           "baseSchema": {
                                                                             "names": [
@@ -1086,7 +1309,18 @@
                                                                       "right": {
                                                                         "read": {
                                                                           "common": {
-                                                                            "direct": {}
+                                                                            "direct": {},
+                                                                            "hint": {
+                                                                              "outputNames": [
+                                                                                "s_suppkey",
+                                                                                "s_name",
+                                                                                "s_address",
+                                                                                "s_nationkey",
+                                                                                "s_phone",
+                                                                                "s_acctbal",
+                                                                                "s_comment"
+                                                                              ]
+                                                                            }
                                                                           },
                                                                           "baseSchema": {
                                                                             "names": [
@@ -1190,7 +1424,15 @@
                                                                   "right": {
                                                                     "read": {
                                                                       "common": {
-                                                                        "direct": {}
+                                                                        "direct": {},
+                                                                        "hint": {
+                                                                          "outputNames": [
+                                                                            "n_nationkey",
+                                                                            "n_name",
+                                                                            "n_regionkey",
+                                                                            "n_comment"
+                                                                          ]
+                                                                        }
                                                                       },
                                                                       "baseSchema": {
                                                                         "names": [
@@ -1274,7 +1516,14 @@
                                                               "right": {
                                                                 "read": {
                                                                   "common": {
-                                                                    "direct": {}
+                                                                    "direct": {},
+                                                                    "hint": {
+                                                                      "outputNames": [
+                                                                        "r_regionkey",
+                                                                        "r_name",
+                                                                        "r_comment"
+                                                                      ]
+                                                                    }
                                                                   },
                                                                   "baseSchema": {
                                                                     "names": [

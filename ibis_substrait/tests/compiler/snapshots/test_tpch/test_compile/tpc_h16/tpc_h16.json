@@ -66,10 +66,53 @@
       "root": {
         "input": {
           "sort": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "p_brand",
+                  "p_type",
+                  "p_size",
+                  "supplier_cnt"
+                ]
+              }
+            },
             "input": {
               "aggregate": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "p_brand",
+                      "p_type",
+                      "p_size",
+                      "supplier_cnt"
+                    ]
+                  }
+                },
                 "input": {
                   "filter": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "ps_partkey",
+                          "ps_suppkey",
+                          "ps_availqty",
+                          "ps_supplycost",
+                          "ps_comment",
+                          "p_partkey",
+                          "p_name",
+                          "p_mfgr",
+                          "p_brand",
+                          "p_type",
+                          "p_size",
+                          "p_container",
+                          "p_retailprice",
+                          "p_comment"
+                        ]
+                      }
+                    },
                     "input": {
                       "project": {
                         "common": {
@@ -90,6 +133,24 @@
                               26,
                               27
                             ]
+                          },
+                          "hint": {
+                            "outputNames": [
+                              "ps_partkey",
+                              "ps_suppkey",
+                              "ps_availqty",
+                              "ps_supplycost",
+                              "ps_comment",
+                              "p_partkey",
+                              "p_name",
+                              "p_mfgr",
+                              "p_brand",
+                              "p_type",
+                              "p_size",
+                              "p_container",
+                              "p_retailprice",
+                              "p_comment"
+                            ]
                           }
                         },
                         "input": {
@@ -97,7 +158,16 @@
                             "left": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "ps_partkey",
+                                      "ps_suppkey",
+                                      "ps_availqty",
+                                      "ps_supplycost",
+                                      "ps_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
@@ -150,7 +220,20 @@
                             "right": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "p_partkey",
+                                      "p_name",
+                                      "p_mfgr",
+                                      "p_brand",
+                                      "p_type",
+                                      "p_size",
+                                      "p_container",
+                                      "p_retailprice",
+                                      "p_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
@@ -611,14 +694,44 @@
                                                   "outputMapping": [
                                                     7
                                                   ]
+                                                },
+                                                "hint": {
+                                                  "outputNames": [
+                                                    "s_suppkey"
+                                                  ]
                                                 }
                                               },
                                               "input": {
                                                 "filter": {
+                                                  "common": {
+                                                    "direct": {},
+                                                    "hint": {
+                                                      "outputNames": [
+                                                        "s_suppkey",
+                                                        "s_name",
+                                                        "s_address",
+                                                        "s_nationkey",
+                                                        "s_phone",
+                                                        "s_acctbal",
+                                                        "s_comment"
+                                                      ]
+                                                    }
+                                                  },
                                                   "input": {
                                                     "read": {
                                                       "common": {
-                                                        "direct": {}
+                                                        "direct": {},
+                                                        "hint": {
+                                                          "outputNames": [
+                                                            "s_suppkey",
+                                                            "s_name",
+                                                            "s_address",
+                                                            "s_nationkey",
+                                                            "s_phone",
+                                                            "s_acctbal",
+                                                            "s_comment"
+                                                          ]
+                                                        }
                                                       },
                                                       "baseSchema": {
                                                         "names": [

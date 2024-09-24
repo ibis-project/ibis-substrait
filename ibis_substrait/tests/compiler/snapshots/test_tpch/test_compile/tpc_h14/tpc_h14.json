@@ -92,6 +92,11 @@
                 "outputMapping": [
                   3
                 ]
+              },
+              "hint": {
+                "outputNames": [
+                  "promo_revenue"
+                ]
               }
             },
             "input": {
@@ -103,12 +108,60 @@
                       3,
                       4
                     ]
+                  },
+                  "hint": {
+                    "outputNames": [
+                      "promo_revenue_sum",
+                      "revenue_sum",
+                      "promo_revenue"
+                    ]
                   }
                 },
                 "input": {
                   "aggregate": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "promo_revenue_sum",
+                          "revenue_sum"
+                        ]
+                      }
+                    },
                     "input": {
                       "filter": {
+                        "common": {
+                          "direct": {},
+                          "hint": {
+                            "outputNames": [
+                              "l_orderkey",
+                              "l_partkey",
+                              "l_suppkey",
+                              "l_linenumber",
+                              "l_quantity",
+                              "l_extendedprice",
+                              "l_discount",
+                              "l_tax",
+                              "l_returnflag",
+                              "l_linestatus",
+                              "l_shipdate",
+                              "l_commitdate",
+                              "l_receiptdate",
+                              "l_shipinstruct",
+                              "l_shipmode",
+                              "l_comment",
+                              "p_partkey",
+                              "p_name",
+                              "p_mfgr",
+                              "p_brand",
+                              "p_type",
+                              "p_size",
+                              "p_container",
+                              "p_retailprice",
+                              "p_comment"
+                            ]
+                          }
+                        },
                         "input": {
                           "project": {
                             "common": {
@@ -140,6 +193,35 @@
                                   48,
                                   49
                                 ]
+                              },
+                              "hint": {
+                                "outputNames": [
+                                  "l_orderkey",
+                                  "l_partkey",
+                                  "l_suppkey",
+                                  "l_linenumber",
+                                  "l_quantity",
+                                  "l_extendedprice",
+                                  "l_discount",
+                                  "l_tax",
+                                  "l_returnflag",
+                                  "l_linestatus",
+                                  "l_shipdate",
+                                  "l_commitdate",
+                                  "l_receiptdate",
+                                  "l_shipinstruct",
+                                  "l_shipmode",
+                                  "l_comment",
+                                  "p_partkey",
+                                  "p_name",
+                                  "p_mfgr",
+                                  "p_brand",
+                                  "p_type",
+                                  "p_size",
+                                  "p_container",
+                                  "p_retailprice",
+                                  "p_comment"
+                                ]
                               }
                             },
                             "input": {
@@ -147,7 +229,27 @@
                                 "left": {
                                   "read": {
                                     "common": {
-                                      "direct": {}
+                                      "direct": {},
+                                      "hint": {
+                                        "outputNames": [
+                                          "l_orderkey",
+                                          "l_partkey",
+                                          "l_suppkey",
+                                          "l_linenumber",
+                                          "l_quantity",
+                                          "l_extendedprice",
+                                          "l_discount",
+                                          "l_tax",
+                                          "l_returnflag",
+                                          "l_linestatus",
+                                          "l_shipdate",
+                                          "l_commitdate",
+                                          "l_receiptdate",
+                                          "l_shipinstruct",
+                                          "l_shipmode",
+                                          "l_comment"
+                                        ]
+                                      }
                                     },
                                     "baseSchema": {
                                       "names": [
@@ -272,7 +374,20 @@
                                 "right": {
                                   "read": {
                                     "common": {
-                                      "direct": {}
+                                      "direct": {},
+                                      "hint": {
+                                        "outputNames": [
+                                          "p_partkey",
+                                          "p_name",
+                                          "p_mfgr",
+                                          "p_brand",
+                                          "p_type",
+                                          "p_size",
+                                          "p_container",
+                                          "p_retailprice",
+                                          "p_comment"
+                                        ]
+                                      }
                                     },
                                     "baseSchema": {
                                       "names": [

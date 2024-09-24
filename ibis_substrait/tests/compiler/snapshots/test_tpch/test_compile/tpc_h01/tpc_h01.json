@@ -69,14 +69,91 @@
       "root": {
         "input": {
           "sort": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "l_returnflag",
+                  "l_linestatus",
+                  "sum_qty",
+                  "sum_base_price",
+                  "sum_disc_price",
+                  "sum_charge",
+                  "avg_qty",
+                  "avg_price",
+                  "avg_disc",
+                  "count_order"
+                ]
+              }
+            },
             "input": {
               "aggregate": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "l_returnflag",
+                      "l_linestatus",
+                      "sum_qty",
+                      "sum_base_price",
+                      "sum_disc_price",
+                      "sum_charge",
+                      "avg_qty",
+                      "avg_price",
+                      "avg_disc",
+                      "count_order"
+                    ]
+                  }
+                },
                 "input": {
                   "filter": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "l_orderkey",
+                          "l_partkey",
+                          "l_suppkey",
+                          "l_linenumber",
+                          "l_quantity",
+                          "l_extendedprice",
+                          "l_discount",
+                          "l_tax",
+                          "l_returnflag",
+                          "l_linestatus",
+                          "l_shipdate",
+                          "l_commitdate",
+                          "l_receiptdate",
+                          "l_shipinstruct",
+                          "l_shipmode",
+                          "l_comment"
+                        ]
+                      }
+                    },
                     "input": {
                       "read": {
                         "common": {
-                          "direct": {}
+                          "direct": {},
+                          "hint": {
+                            "outputNames": [
+                              "l_orderkey",
+                              "l_partkey",
+                              "l_suppkey",
+                              "l_linenumber",
+                              "l_quantity",
+                              "l_extendedprice",
+                              "l_discount",
+                              "l_tax",
+                              "l_returnflag",
+                              "l_linestatus",
+                              "l_shipdate",
+                              "l_commitdate",
+                              "l_receiptdate",
+                              "l_shipinstruct",
+                              "l_shipmode",
+                              "l_comment"
+                            ]
+                          }
                         },
                         "baseSchema": {
                           "names": [

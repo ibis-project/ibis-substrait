@@ -62,12 +62,63 @@
       "root": {
         "input": {
           "aggregate": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "revenue"
+                ]
+              }
+            },
             "input": {
               "filter": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "l_orderkey",
+                      "l_partkey",
+                      "l_suppkey",
+                      "l_linenumber",
+                      "l_quantity",
+                      "l_extendedprice",
+                      "l_discount",
+                      "l_tax",
+                      "l_returnflag",
+                      "l_linestatus",
+                      "l_shipdate",
+                      "l_commitdate",
+                      "l_receiptdate",
+                      "l_shipinstruct",
+                      "l_shipmode",
+                      "l_comment"
+                    ]
+                  }
+                },
                 "input": {
                   "read": {
                     "common": {
-                      "direct": {}
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "l_orderkey",
+                          "l_partkey",
+                          "l_suppkey",
+                          "l_linenumber",
+                          "l_quantity",
+                          "l_extendedprice",
+                          "l_discount",
+                          "l_tax",
+                          "l_returnflag",
+                          "l_linestatus",
+                          "l_shipdate",
+                          "l_commitdate",
+                          "l_receiptdate",
+                          "l_shipinstruct",
+                          "l_shipmode",
+                          "l_comment"
+                        ]
+                      }
                     },
                     "baseSchema": {
                       "names": [

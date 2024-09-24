@@ -59,10 +59,37 @@
       "root": {
         "input": {
           "sort": {
+            "common": {
+              "direct": {},
+              "hint": {
+                "outputNames": [
+                  "c_count",
+                  "custdist"
+                ]
+              }
+            },
             "input": {
               "aggregate": {
+                "common": {
+                  "direct": {},
+                  "hint": {
+                    "outputNames": [
+                      "c_count",
+                      "custdist"
+                    ]
+                  }
+                },
                 "input": {
                   "aggregate": {
+                    "common": {
+                      "direct": {},
+                      "hint": {
+                        "outputNames": [
+                          "c_custkey",
+                          "c_count"
+                        ]
+                      }
+                    },
                     "input": {
                       "project": {
                         "common": {
@@ -86,6 +113,27 @@
                               32,
                               33
                             ]
+                          },
+                          "hint": {
+                            "outputNames": [
+                              "c_custkey",
+                              "c_name",
+                              "c_address",
+                              "c_nationkey",
+                              "c_phone",
+                              "c_acctbal",
+                              "c_mktsegment",
+                              "c_comment",
+                              "o_orderkey",
+                              "o_custkey",
+                              "o_orderstatus",
+                              "o_totalprice",
+                              "o_orderdate",
+                              "o_orderpriority",
+                              "o_clerk",
+                              "o_shippriority",
+                              "o_comment"
+                            ]
                           }
                         },
                         "input": {
@@ -93,7 +141,19 @@
                             "left": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "c_custkey",
+                                      "c_name",
+                                      "c_address",
+                                      "c_nationkey",
+                                      "c_phone",
+                                      "c_acctbal",
+                                      "c_mktsegment",
+                                      "c_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [
@@ -164,7 +224,20 @@
                             "right": {
                               "read": {
                                 "common": {
-                                  "direct": {}
+                                  "direct": {},
+                                  "hint": {
+                                    "outputNames": [
+                                      "o_orderkey",
+                                      "o_custkey",
+                                      "o_orderstatus",
+                                      "o_totalprice",
+                                      "o_orderdate",
+                                      "o_orderpriority",
+                                      "o_clerk",
+                                      "o_shippriority",
+                                      "o_comment"
+                                    ]
+                                  }
                                 },
                                 "baseSchema": {
                                   "names": [

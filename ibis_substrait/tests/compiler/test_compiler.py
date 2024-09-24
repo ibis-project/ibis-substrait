@@ -109,10 +109,13 @@ def test_translate_table_expansion(compiler):
     result = translate(expr, compiler=compiler)
     expected = {
         "project": {
-            "common": {"emit": {"outputMapping": [2, 3, 4]}},
+            "common": {
+                "emit": {"outputMapping": [2, 3, 4]},
+                "hint": {"outputNames": ["a", "b", "c"]},
+            },
             "input": {
                 "read": {
-                    "common": {"direct": {}},
+                    "common": {"direct": {}, "hint": {"outputNames": ["a", "b"]}},
                     "baseSchema": {
                         "names": ["a", "b"],
                         "struct": {
@@ -187,10 +190,13 @@ def test_emit_mutate_select_all(compiler):
     result = translate(expr, compiler=compiler)
     expected = {
         "project": {
-            "common": {"emit": {"outputMapping": [3, 4, 5, 6]}},
+            "common": {
+                "emit": {"outputMapping": [3, 4, 5, 6]},
+                "hint": {"outputNames": ["a", "b", "c", "d"]},
+            },
             "input": {
                 "read": {
-                    "common": {"direct": {}},
+                    "common": {"direct": {}, "hint": {"outputNames": ["a", "b", "c"]}},
                     "baseSchema": {
                         "names": ["a", "b", "c"],
                         "struct": {
