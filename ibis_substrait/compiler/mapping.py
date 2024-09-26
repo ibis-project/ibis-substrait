@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ibis.expr.datatypes.core import DataType
 
-IBIS_SUBSTRAIT_OP_MAPPING: dict[str, list[tuple[str]]] = {
+IBIS_SUBSTRAIT_OP_MAPPING: dict[str, list] = {
     "Abs": [("functions_arithmetic.yaml", "abs")],
     "Acos": [("functions_arithmetic.yaml", "acos")],
     "Add": [

@@ -3,7 +3,7 @@ import itertools
 from collections import defaultdict
 from collections.abc import Iterator, Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Union
 
 import yaml
 
@@ -41,7 +41,7 @@ class FunctionEntry:
     def castable(self) -> None:
         raise NotImplementedError
 
-    def satisfies_signature(self, signature) -> str:
+    def satisfies_signature(self, signature: tuple) -> Optional[str]:
         import re
 
         def is_any_variable(txt: str) -> bool:
@@ -68,11 +68,11 @@ class FunctionEntry:
         if len(inputs) != len(signature):
             return None
 
-        signature = [to_tuple_type(arg) for arg in signature]
+        signature_tuple = [to_tuple_type(arg) for arg in signature]
         inputs = [to_tuple_type(arg) for arg in inputs]
         rtn = to_tuple_type(self.rtn)
 
-        zipped_args = list(zip(inputs, signature))
+        zipped_args = list(zip(inputs, signature_tuple))
 
         var_mapping = {}
 
@@ -111,7 +111,7 @@ def _parse_func(entry: Mapping[str, Any]) -> Iterator[FunctionEntry]:
 
 class FunctionRegistry:
     def __init__(self) -> None:
-        self._extension_mapping = defaultdict(dict)
+        self._extension_mapping: dict = defaultdict(dict)
         self.id_generator = itertools.count(1)
 
         self.uri_aliases = {}
@@ -125,7 +125,10 @@ class FunctionRegistry:
             self.register_extension_yaml(fpath)
 
     def register_extension_yaml(
-        self, fname: str | Path, prefix: str | None = None, uri: str | None = None
+        self,
+        fname: Union[str, Path],
+        prefix: Optional[str] = None,
+        uri: Optional[str] = None,
     ) -> None:
         """Add a substrait extension YAML file to the ibis substrait compiler.
 
@@ -170,8 +173,8 @@ class FunctionRegistry:
 
     # TODO add an optional return type check
     def lookup_function(
-        self, uri: str, function_name: str, signature
-    ) -> tuple[FunctionEntry, str]:
+        self, uri: str, function_name: str, signature: tuple
+    ) -> Optional[tuple[FunctionEntry, str]]:
         uri = self.uri_aliases.get(uri, uri)
         if (
             uri not in self._extension_mapping
