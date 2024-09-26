@@ -435,13 +435,23 @@
                                 "arguments": [
                                   {
                                     "value": {
-                                      "selection": {
-                                        "directReference": {
-                                          "structField": {
-                                            "field": 16
+                                      "cast": {
+                                        "type": {
+                                          "i64": {
+                                            "nullability": "NULLABILITY_NULLABLE"
                                           }
                                         },
-                                        "rootReference": {}
+                                        "input": {
+                                          "selection": {
+                                            "directReference": {
+                                              "structField": {
+                                                "field": 16
+                                              }
+                                            },
+                                            "rootReference": {}
+                                          }
+                                        },
+                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                       }
                                     }
                                   },
@@ -1045,13 +1055,23 @@
                                                                 },
                                                                 {
                                                                   "value": {
-                                                                    "selection": {
-                                                                      "directReference": {
-                                                                        "structField": {
-                                                                          "field": 16
+                                                                    "cast": {
+                                                                      "type": {
+                                                                        "i64": {
+                                                                          "nullability": "NULLABILITY_NULLABLE"
                                                                         }
                                                                       },
-                                                                      "rootReference": {}
+                                                                      "input": {
+                                                                        "selection": {
+                                                                          "directReference": {
+                                                                            "structField": {
+                                                                              "field": 16
+                                                                            }
+                                                                          },
+                                                                          "rootReference": {}
+                                                                        }
+                                                                      },
+                                                                      "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                     }
                                                                   }
                                                                 }

@@ -28,11 +28,12 @@ from substrait.gen.proto import algebra_pb2 as stalg
 from substrait.gen.proto import type_pb2 as stt
 
 from ibis_substrait.compiler.core import SubstraitCompiler, _get_fields
-from ibis_substrait.compiler.mapping import (
-    IBIS_SUBSTRAIT_OP_MAPPING,
-    IBIS_SUBSTRAIT_TYPE_MAPPING,
-    _extension_mapping,
-)
+
+# from ibis_substrait.compiler.mapping import (
+#     IBIS_SUBSTRAIT_OP_MAPPING,
+#     IBIS_SUBSTRAIT_TYPE_MAPPING,
+#     # _extension_mapping,
+# )
 
 try:
     from typing import TypeAlias
@@ -505,19 +506,16 @@ def value_op(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.Expression:
-    # Check if scalar function is valid for input dtype(s) and insert casts as needed to
-    # make sure inputs are correct.
-    newop = _check_and_upcast(op)
-    # given the details of `op` -> function id
+    (op, function_reference) = get_function_reference(op, compiler)
     return stalg.Expression(
         scalar_function=stalg.Expression.ScalarFunction(
-            function_reference=compiler.function_id(newop),
-            output_type=translate(newop.dtype),
+            function_reference=function_reference,
+            output_type=translate(op.dtype),
             arguments=[
                 stalg.FunctionArgument(
                     value=translate(arg, compiler=compiler, **kwargs)
                 )
-                for arg in newop.args
+                for arg in op.args
                 if isinstance(arg, ops.Value)
             ],
         )
@@ -546,11 +544,11 @@ def window_op(
 
     lower_bound, upper_bound = _translate_window_bounds(start, end)
 
-    func = _check_and_upcast(func)
+    (func, function_reference) = get_function_reference(func, compiler)
 
     return stalg.Expression(
         window_function=stalg.Expression.WindowFunction(
-            function_reference=compiler.function_id(func),
+            function_reference=function_reference,
             partitions=[translate(gb, compiler=compiler, **kwargs) for gb in window_gb],
             sorts=[translate(ob, compiler=compiler, **kwargs) for ob in window_ob],
             output_type=translate(op.dtype),
@@ -576,9 +574,9 @@ def _reduction(
     compiler: SubstraitCompiler,
     **kwargs: Any,
 ) -> stalg.AggregateFunction:
-    op = _check_and_upcast(op)
+    (op, function_reference) = get_function_reference(op, compiler)
     return stalg.AggregateFunction(
-        function_reference=compiler.function_id(op),
+        function_reference=function_reference,
         arguments=[
             stalg.FunctionArgument(value=translate(op.arg, compiler=compiler, **kwargs))  # type: ignore
         ],
@@ -1447,22 +1445,15 @@ compiler has a `udf_uri` attached.
     )
 
 
-def _check_and_upcast(op: ops.Node) -> ops.Node:
+def get_function_reference(op: ops.Node, compiler: SubstraitCompiler) -> ops.Node:
     """Check that arguments to extension functions have consistent types."""
-    op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
-    anykey = ("any",) * len([arg for arg in op.args if arg is not None])
 
-    output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
-    any_sigkey = (anykey, output_type_key)
-
-    # First check if `any` is an option
-    function_extension = _extension_mapping[op_name].get(any_sigkey)
-
-    # Otherwise, if the types don't match, cast up
-    if function_extension is None:
+    try:
+        reference = compiler.function_id(op)
+    except Exception:  # noqa: BLE001
         op = _upcast(op)
-
-    return op
+        reference = compiler.function_id(op)
+    return (op, reference)
 
 
 @functools.singledispatch
@@ -1480,10 +1471,22 @@ def _upcast_bin_op(op: ops.Binary) -> ops.Binary:
         return type(op)(ops.Cast(op.left, to=right), op.right)  # type: ignore
     elif dt.castable(right, left):
         return type(op)(op.left, ops.Cast(op.right, to=left))  # type: ignore
+    # TODO is this cast valid
+    elif left.name == "Date" and right.name == "String":
+        return type(op)(op.left, ops.Cast(op.right, to=left))
     else:
         raise TypeError(
             f"binop {type(op).__name__} called with incompatible types {left=} {right=}"
         )
+
+
+@_upcast.register(ops.Between)
+def _upcast_between(op: ops.Between) -> ops.Between:
+    op_type = op.arg.dtype
+    # TODO check is castable before
+    return type(op)(
+        op.arg, ops.Cast(op.lower_bound, op_type), ops.Cast(op.upper_bound, op_type)
+    )
 
 
 string_op: TypeAlias = Union[

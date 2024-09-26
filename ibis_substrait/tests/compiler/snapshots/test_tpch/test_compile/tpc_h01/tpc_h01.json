@@ -60,7 +60,7 @@
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 7,
-        "name": "count:any"
+        "name": "count:"
       }
     }
   ],

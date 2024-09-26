@@ -1041,8 +1041,18 @@
                                                       },
                                                       {
                                                         "value": {
-                                                          "literal": {
-                                                            "i8": 25
+                                                          "cast": {
+                                                            "type": {
+                                                              "i32": {
+                                                                "nullability": "NULLABILITY_NULLABLE"
+                                                              }
+                                                            },
+                                                            "input": {
+                                                              "literal": {
+                                                                "i8": 25
+                                                              }
+                                                            },
+                                                            "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                           }
                                                         }
                                                       }

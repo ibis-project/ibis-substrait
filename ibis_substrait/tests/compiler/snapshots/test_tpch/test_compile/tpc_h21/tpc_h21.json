@@ -53,7 +53,7 @@
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 6,
-        "name": "count:any"
+        "name": "count:"
       }
     }
   ],
@@ -373,11 +373,21 @@
                                             "arguments": [
                                               {
                                                 "value": {
-                                                  "selection": {
-                                                    "directReference": {
-                                                      "structField": {}
+                                                  "cast": {
+                                                    "type": {
+                                                      "i64": {
+                                                        "nullability": "NULLABILITY_NULLABLE"
+                                                      }
                                                     },
-                                                    "rootReference": {}
+                                                    "input": {
+                                                      "selection": {
+                                                        "directReference": {
+                                                          "structField": {}
+                                                        },
+                                                        "rootReference": {}
+                                                      }
+                                                    },
+                                                    "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                   }
                                                 }
                                               },
@@ -500,13 +510,23 @@
                                         "arguments": [
                                           {
                                             "value": {
-                                              "selection": {
-                                                "directReference": {
-                                                  "structField": {
-                                                    "field": 23
+                                              "cast": {
+                                                "type": {
+                                                  "i64": {
+                                                    "nullability": "NULLABILITY_NULLABLE"
                                                   }
                                                 },
-                                                "rootReference": {}
+                                                "input": {
+                                                  "selection": {
+                                                    "directReference": {
+                                                      "structField": {
+                                                        "field": 23
+                                                      }
+                                                    },
+                                                    "rootReference": {}
+                                                  }
+                                                },
+                                                "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                               }
                                             }
                                           },

@@ -68,7 +68,7 @@
       "extensionFunction": {
         "extensionUriReference": 5,
         "functionAnchor": 7,
-        "name": "count:any"
+        "name": "count:"
       }
     },
     {
@@ -511,8 +511,20 @@
                                                                             },
                                                                             {
                                                                               "value": {
-                                                                                "literal": {
-                                                                                  "fp64": 0.0
+                                                                                "cast": {
+                                                                                  "type": {
+                                                                                    "decimal": {
+                                                                                      "scale": 2,
+                                                                                      "precision": 15,
+                                                                                      "nullability": "NULLABILITY_REQUIRED"
+                                                                                    }
+                                                                                  },
+                                                                                  "input": {
+                                                                                    "literal": {
+                                                                                      "fp64": 0.0
+                                                                                    }
+                                                                                  },
+                                                                                  "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                                 }
                                                                               }
                                                                             }
@@ -644,25 +656,13 @@
                                                                 "arguments": [
                                                                   {
                                                                     "value": {
-                                                                      "cast": {
-                                                                        "type": {
-                                                                          "decimal": {
-                                                                            "scale": 2,
-                                                                            "precision": 15,
-                                                                            "nullability": "NULLABILITY_NULLABLE"
+                                                                      "selection": {
+                                                                        "directReference": {
+                                                                          "structField": {
+                                                                            "field": 5
                                                                           }
                                                                         },
-                                                                        "input": {
-                                                                          "selection": {
-                                                                            "directReference": {
-                                                                              "structField": {
-                                                                                "field": 5
-                                                                              }
-                                                                            },
-                                                                            "rootReference": {}
-                                                                          }
-                                                                        },
-                                                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
+                                                                        "rootReference": {}
                                                                       }
                                                                     }
                                                                   }

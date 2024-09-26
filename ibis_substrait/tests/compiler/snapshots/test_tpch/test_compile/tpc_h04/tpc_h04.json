@@ -46,7 +46,7 @@
       "extensionFunction": {
         "extensionUriReference": 3,
         "functionAnchor": 5,
-        "name": "count:any"
+        "name": "count:"
       }
     }
   ],
@@ -408,11 +408,21 @@
                                                             },
                                                             {
                                                               "value": {
-                                                                "selection": {
-                                                                  "directReference": {
-                                                                    "structField": {}
+                                                                "cast": {
+                                                                  "type": {
+                                                                    "i64": {
+                                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                                    }
                                                                   },
-                                                                  "rootReference": {}
+                                                                  "input": {
+                                                                    "selection": {
+                                                                      "directReference": {
+                                                                        "structField": {}
+                                                                      },
+                                                                      "rootReference": {}
+                                                                    }
+                                                                  },
+                                                                  "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                 }
                                                               }
                                                             }
@@ -491,8 +501,18 @@
                                           },
                                           {
                                             "value": {
-                                              "literal": {
-                                                "string": "1993-07-01"
+                                              "cast": {
+                                                "type": {
+                                                  "date": {
+                                                    "nullability": "NULLABILITY_REQUIRED"
+                                                  }
+                                                },
+                                                "input": {
+                                                  "literal": {
+                                                    "string": "1993-07-01"
+                                                  }
+                                                },
+                                                "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                               }
                                             }
                                           }
@@ -528,8 +548,18 @@
                                   },
                                   {
                                     "value": {
-                                      "literal": {
-                                        "string": "1993-10-01"
+                                      "cast": {
+                                        "type": {
+                                          "date": {
+                                            "nullability": "NULLABILITY_REQUIRED"
+                                          }
+                                        },
+                                        "input": {
+                                          "literal": {
+                                            "string": "1993-10-01"
+                                          }
+                                        },
+                                        "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                       }
                                     }
                                   }

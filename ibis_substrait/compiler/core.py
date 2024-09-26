@@ -15,10 +15,10 @@ from substrait.gen.proto import plan_pb2 as stp
 from substrait.gen.proto.extensions import extensions_pb2 as ste
 
 from ibis_substrait import __substrait_hash__, __substrait_version__
+from ibis_substrait.compiler.function_registry import FunctionRegistry
 from ibis_substrait.compiler.mapping import (
     IBIS_SUBSTRAIT_OP_MAPPING,
-    IBIS_SUBSTRAIT_TYPE_MAPPING,
-    _extension_mapping,
+    ibis_type_to_substrait,
 )
 
 if TYPE_CHECKING:
@@ -28,6 +28,9 @@ if TYPE_CHECKING:
 def which_one_of(message: msg.Message, oneof_name: str) -> tuple[str, Any]:
     variant_name = message.WhichOneof(oneof_name)
     return variant_name, getattr(message, variant_name)
+
+
+default_registry = FunctionRegistry()
 
 
 class SubstraitCompiler:
@@ -59,6 +62,8 @@ class SubstraitCompiler:
 
         self.udf_uri = udf_uri
 
+        self.function_registry = default_registry
+
     def function_id(
         self,
         op: ops.Value,
@@ -78,134 +83,42 @@ class SubstraitCompiler:
 
         """
 
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
-        sig_key = self.get_signature(op)
+        substrait_ops = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
 
-        # the keys for lookup up scalar functions consist of
-        # tuple(tuple(input dtypes), output dtype)
-        # but the signature we generate in the substrait plan only needs the input types
-        input_key = sig_key[0]
+        input_signature = tuple(
+            [
+                ibis_type_to_substrait(arg.dtype)  # type: ignore
+                for arg in op.args
+                if arg is not None and isinstance(arg, ops.Value)
+            ]
+        )
 
-        extension_signature = f"{op_name}:{'_'.join(input_key)}"
+        for substrait_op in substrait_ops:
+            func_tuple = self.function_registry.lookup_function(
+                uri=substrait_op[0],
+                function_name=substrait_op[1],
+                signature=input_signature,
+            )
+            if func_tuple:
+                (func, rtn) = func_tuple
+                break
+
+        if func_tuple is None:
+            raise Exception(
+                f"Could't find a function that satisfies the requirements {type(op).__name__} with {input_signature}"
+            )
+
+        extension_signature = str(func)
 
         try:
             function_extension = self.function_extensions[extension_signature]
         except KeyError:
+            extension_uri = self.register_extension_uri(func.uri)
+
             function_extension = self.function_extensions[extension_signature] = (
-                self.create_extension(op_name, sig_key)
+                self.create_extension_function(extension_uri, extension_signature)
             )
         return function_extension.function_anchor
-
-    def get_signature(self, op: ops.Node) -> tuple[tuple[str, ...], str]:
-        """Validate and upcast (if necessary) scalar function extension signature."""
-
-        op_name = IBIS_SUBSTRAIT_OP_MAPPING[type(op).__name__]
-
-        if not _extension_mapping.get(op_name, False):
-            raise ValueError(
-                f"No available extension defined for function name {op_name}"
-            )
-
-        anykey = ("any",) * len([arg for arg in op.args if arg is not None])
-        input_type_key = anykey
-        output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
-        sigkey = (input_type_key, output_type_key)
-
-        any_sigkey = (anykey, output_type_key)
-
-        # First check if `any` is an option
-        # This function will take arguments of any type
-        # although we still want to check if the number of args is correct
-        function_extension = _extension_mapping[op_name].get(any_sigkey)
-
-        # Then try to look up extension based on input datatypes
-        # Each substrait function defines the types of the inputs and at this
-        # stage we should have performed the appropriate casts to ensure that
-        # argument types match.
-        if function_extension is None:
-            input_type_key = tuple(
-                [
-                    IBIS_SUBSTRAIT_TYPE_MAPPING[arg.dtype.name]  # type: ignore
-                    for arg in op.args
-                    if arg is not None and isinstance(arg, ops.Value)
-                ]
-            )
-            output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
-            sigkey = (input_type_key, output_type_key)
-            function_extension = _extension_mapping[op_name].get(sigkey)
-
-        # Then check if extension is variadic
-        # If we're here, then it's possible that we're trying to lookup a valid
-        # signature that looks like ("boolean", "boolean") but we aren't having any
-        # luck because the function is variadic.  In this case, the variadic argument
-        # type is only repeated once, so we try to perform a lookup that way, then
-        # assert, if we find anything, that the function is, indeed, variadic.
-        if function_extension is None:
-            # variadic signature would be in the form of
-            # ((oneof_input_arg_dype,), output_dtype)
-            variadic_sig = ((sigkey[0][0],), sigkey[1])
-            function_extension = _extension_mapping[op_name].get(variadic_sig)
-            if function_extension is not None:
-                assert function_extension.variadic
-                # Function signature for a variadic should contain the type of
-                # the argument(s) at _least_ once but ideally should contain
-                # types == the minimum number of variadic args allowed (but keep
-                # it nonzero)
-                arg_count_min = max(function_extension.variadic.get("min", 0), 1)
-                input_type_key = (sigkey[0][0],) * arg_count_min
-                output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
-                sigkey = (input_type_key, output_type_key)
-
-        # Then check if we have an op that has a `date` somewhere in the input
-        # args and the output listed as `i32`.
-        # Ibis assumes i32 for the output of all time extraction functions
-        # because no one is going to be around in i64 years, but Substrait
-        # expects i64 as the output
-        if function_extension is None:
-            if "date" in sigkey[0] and sigkey[1] == "i32":
-                sigkey = (sigkey[0], "i64")
-                function_extension = _extension_mapping[op_name].get(sigkey)
-
-        # Ibis doesn't always handle decimal promotion correctly (I think?)
-        # And all decimal inputs are expected to be decimal outputs, so we have
-        # to massage the signature key
-        if function_extension is None:
-            if set(sigkey[0]) == {"dec"} and sigkey[1] != "dec":
-                sigkey = (sigkey[0], "dec")
-                function_extension = _extension_mapping[op_name].get(sigkey)
-
-        # How many special cases do you want?  We've got lots.
-        # Some string functions can only have i64 outputs
-        if function_extension is None:
-            if isinstance(op, ops.StringLength):
-                sigkey = (sigkey[0], "i64")
-                function_extension = _extension_mapping[op_name].get(sigkey)
-
-        # If it's still None then we're borked.
-        if function_extension is None:
-            raise ValueError(
-                f"No matching extension type found for function {op_name} with input types {sigkey}"
-            )
-
-        return sigkey
-
-    def create_extension(
-        self,
-        op_name: str,
-        sigkey: tuple[tuple[str, ...], str],
-    ) -> ste.SimpleExtensionDeclaration.ExtensionFunction:
-        """Register extension uri and create extension function."""
-
-        function_extension = _extension_mapping[op_name][sigkey]
-        extension_uri = self.register_extension_uri(function_extension.uri)
-
-        input_key = sigkey[0]
-
-        extension_function = self.create_extension_function(
-            extension_uri, f"{op_name}:{'_'.join(input_key)}"
-        )
-
-        return extension_function
 
     def create_extension_function(
         self, extension_uri: ste.SimpleExtensionURI, scalar_func: str

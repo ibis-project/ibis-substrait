@@ -570,13 +570,23 @@
                                     "arguments": [
                                       {
                                         "value": {
-                                          "selection": {
-                                            "directReference": {
-                                              "structField": {
-                                                "field": 8
+                                          "cast": {
+                                            "type": {
+                                              "i64": {
+                                                "nullability": "NULLABILITY_NULLABLE"
                                               }
                                             },
-                                            "rootReference": {}
+                                            "input": {
+                                              "selection": {
+                                                "directReference": {
+                                                  "structField": {
+                                                    "field": 8
+                                                  }
+                                                },
+                                                "rootReference": {}
+                                              }
+                                            },
+                                            "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                           }
                                         }
                                       },
@@ -1194,8 +1204,20 @@
                                             },
                                             {
                                               "value": {
-                                                "literal": {
-                                                  "i16": 300
+                                                "cast": {
+                                                  "type": {
+                                                    "decimal": {
+                                                      "scale": 2,
+                                                      "precision": 38,
+                                                      "nullability": "NULLABILITY_NULLABLE"
+                                                    }
+                                                  },
+                                                  "input": {
+                                                    "literal": {
+                                                      "i16": 300
+                                                    }
+                                                  },
+                                                  "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                 }
                                               }
                                             }

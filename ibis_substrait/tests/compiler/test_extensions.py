@@ -309,36 +309,6 @@ def test_extension_udf_compile(compiler):
     assert plan.extensions[1].extension_function.name == "sub1"
 
 
-def test_extension_register_uri_override(tmp_path):
-    from ibis_substrait.compiler.mapping import (
-        _extension_mapping,
-        register_extension_yaml,
-    )
-
-    sample_yaml = """scalar_functions:
-  -
-    name: "anotheradd"
-    impls:
-      - args:
-          - name: x
-            value: a
-          - name: y
-            value: b
-        return: c"""
-
-    yaml_file = tmp_path / "foo.yaml"
-    yaml_file.write_text(sample_yaml)
-
-    register_extension_yaml(yaml_file, uri="orkbork")
-
-    assert _extension_mapping["anotheradd"]
-    assert _extension_mapping["anotheradd"][(("a", "b"), "c")].uri == "orkbork"
-
-    register_extension_yaml(yaml_file, prefix="orkbork")
-    assert _extension_mapping["anotheradd"]
-    assert _extension_mapping["anotheradd"][(("a", "b"), "c")].uri == "orkbork/foo.yaml"
-
-
 def test_extension_arithmetic_multiple_signatures(compiler):
     t = ibis.table([("left", "int64"), ("right", "float32")], name="t")
 
@@ -385,21 +355,3 @@ def test_extension_round_upcast(compiler, col_dtype, digits_dtype):
     ]
 
     assert f"round:{_TYPE_MAPPING[col_dtype]}_i32" in scalar_func_names
-
-
-def test_ops_mapping_validity():
-    from ibis_substrait.compiler import translate
-    from ibis_substrait.compiler.mapping import (
-        IBIS_SUBSTRAIT_OP_MAPPING,
-        _extension_mapping,
-    )
-
-    for op in IBIS_SUBSTRAIT_OP_MAPPING.keys():
-        assert hasattr(ops, op) or hasattr(translate, op)
-
-    # `any` isn't a valid mapping
-    for target in IBIS_SUBSTRAIT_OP_MAPPING.values():
-        if target == "any":
-            # any is special-cased
-            continue
-        assert target in _extension_mapping.keys()

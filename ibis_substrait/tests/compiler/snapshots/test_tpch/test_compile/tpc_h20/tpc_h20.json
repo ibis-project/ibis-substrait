@@ -793,13 +793,25 @@
                                                       "arguments": [
                                                         {
                                                           "value": {
-                                                            "selection": {
-                                                              "directReference": {
-                                                                "structField": {
-                                                                  "field": 2
+                                                            "cast": {
+                                                              "type": {
+                                                                "decimal": {
+                                                                  "scale": 2,
+                                                                  "precision": 38,
+                                                                  "nullability": "NULLABILITY_NULLABLE"
                                                                 }
                                                               },
-                                                              "rootReference": {}
+                                                              "input": {
+                                                                "selection": {
+                                                                  "directReference": {
+                                                                    "structField": {
+                                                                      "field": 2
+                                                                    }
+                                                                  },
+                                                                  "rootReference": {}
+                                                                }
+                                                              },
+                                                              "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                             }
                                                           }
                                                         },
@@ -1052,11 +1064,21 @@
                                                                                                               },
                                                                                                               {
                                                                                                                 "value": {
-                                                                                                                  "selection": {
-                                                                                                                    "directReference": {
-                                                                                                                      "structField": {}
+                                                                                                                  "cast": {
+                                                                                                                    "type": {
+                                                                                                                      "i64": {
+                                                                                                                        "nullability": "NULLABILITY_NULLABLE"
+                                                                                                                      }
                                                                                                                     },
-                                                                                                                    "rootReference": {}
+                                                                                                                    "input": {
+                                                                                                                      "selection": {
+                                                                                                                        "directReference": {
+                                                                                                                          "structField": {}
+                                                                                                                        },
+                                                                                                                        "rootReference": {}
+                                                                                                                      }
+                                                                                                                    },
+                                                                                                                    "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                                                                   }
                                                                                                                 }
                                                                                                               }
@@ -1088,13 +1110,23 @@
                                                                                                               },
                                                                                                               {
                                                                                                                 "value": {
-                                                                                                                  "selection": {
-                                                                                                                    "directReference": {
-                                                                                                                      "structField": {
-                                                                                                                        "field": 1
+                                                                                                                  "cast": {
+                                                                                                                    "type": {
+                                                                                                                      "i64": {
+                                                                                                                        "nullability": "NULLABILITY_NULLABLE"
                                                                                                                       }
                                                                                                                     },
-                                                                                                                    "rootReference": {}
+                                                                                                                    "input": {
+                                                                                                                      "selection": {
+                                                                                                                        "directReference": {
+                                                                                                                          "structField": {
+                                                                                                                            "field": 1
+                                                                                                                          }
+                                                                                                                        },
+                                                                                                                        "rootReference": {}
+                                                                                                                      }
+                                                                                                                    },
+                                                                                                                    "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                                                                   }
                                                                                                                 }
                                                                                                               }
@@ -1130,8 +1162,18 @@
                                                                                                       },
                                                                                                       {
                                                                                                         "value": {
-                                                                                                          "literal": {
-                                                                                                            "string": "1994-01-01"
+                                                                                                          "cast": {
+                                                                                                            "type": {
+                                                                                                              "date": {
+                                                                                                                "nullability": "NULLABILITY_NULLABLE"
+                                                                                                              }
+                                                                                                            },
+                                                                                                            "input": {
+                                                                                                              "literal": {
+                                                                                                                "string": "1994-01-01"
+                                                                                                              }
+                                                                                                            },
+                                                                                                            "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                                                           }
                                                                                                         }
                                                                                                       }
@@ -1167,8 +1209,18 @@
                                                                                               },
                                                                                               {
                                                                                                 "value": {
-                                                                                                  "literal": {
-                                                                                                    "string": "1995-01-01"
+                                                                                                  "cast": {
+                                                                                                    "type": {
+                                                                                                      "date": {
+                                                                                                        "nullability": "NULLABILITY_NULLABLE"
+                                                                                                      }
+                                                                                                    },
+                                                                                                    "input": {
+                                                                                                      "literal": {
+                                                                                                        "string": "1995-01-01"
+                                                                                                      }
+                                                                                                    },
+                                                                                                    "failureBehavior": "FAILURE_BEHAVIOR_THROW_EXCEPTION"
                                                                                                   }
                                                                                                 }
                                                                                               }

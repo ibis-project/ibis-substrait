@@ -52,6 +52,13 @@
         "functionAnchor": 5,
         "name": "count:any"
       }
+    },
+    {
+      "extensionFunction": {
+        "extensionUriReference": 4,
+        "functionAnchor": 6,
+        "name": "count:"
+      }
     }
   ],
   "relations": [
@@ -643,7 +650,7 @@
                 "measures": [
                   {
                     "measure": {
-                      "functionReference": 5,
+                      "functionReference": 6,
                       "phase": "AGGREGATION_PHASE_INITIAL_TO_RESULT",
                       "outputType": {
                         "i64": {
