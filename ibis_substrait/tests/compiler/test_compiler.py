@@ -565,7 +565,7 @@ def test_join_chain_indexing_in_group_by(compiler):
         .root.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
-        == 5
+        == 3
     )
 
     expr = join_chain.group_by("c").count().select("c")
@@ -576,7 +576,7 @@ def test_join_chain_indexing_in_group_by(compiler):
         .root.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
-        == 3
+        == 2
     )
 
     # Group-by on a column that will be renamed by the joinchain
@@ -588,7 +588,7 @@ def test_join_chain_indexing_in_group_by(compiler):
         .root.input.project.input.aggregate.groupings[0]
         .grouping_expressions[0]
         .selection.direct_reference.struct_field.field
-        == 7
+        == 4
     )
 
 
