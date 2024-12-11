@@ -21,6 +21,12 @@ cd ibis-substrait
 nix-shell
 ```
 
+### Building the library
+
+```sh
+nix develop '.#release' --extra-experimental-features nix-command --extra-experimental-features flakes -c poetry build
+```
+
 
 # Writing commit messages
 
