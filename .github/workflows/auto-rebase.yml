@@ -13,7 +13,7 @@ jobs:
     name: AutoRebase
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v1.11.0
+      - uses: actions/create-github-app-token@v1.11.3
         id: generate-token
         with:
           app-id: ${{ secrets.APP_ID }}
