@@ -128,17 +128,17 @@ toml = ["tomli"]
 
 [[package]]
 name = "datafusion"
-version = "41.0.0"
+version = "44.0.0"
 description = "Build and run queries against data"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "datafusion-41.0.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:4b484035765a4f239737d6313af3cc3822448dfa86738ec44db02dfc4e08057f"},
-    {file = "datafusion-41.0.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:fe324048a63bf462d49cca3b046821fcb546cdab3a13b1fe860aab038c4e4ad4"},
-    {file = "datafusion-41.0.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b7c6987ad20b238a555fac09851f2329cd8b7e829de98446159ea27a172a5f1f"},
-    {file = "datafusion-41.0.0-cp38-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:a10179610c8d211d215ff3533bbd8f5faf3b47b00c0e8371ca9656e98c420380"},
-    {file = "datafusion-41.0.0-cp38-abi3-win_amd64.whl", hash = "sha256:a862f6667979a367c30ae58d8770bba044bab09d1da9012ee37cb3bb86fccdf2"},
-    {file = "datafusion-41.0.0.tar.gz", hash = "sha256:b2124bcd976520a8dbcb456c200f2cb8b1343285e9329fe757aa628bbd0b08f7"},
+    {file = "datafusion-44.0.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:4786f0a09c6b422ac18c6ea095650c14454be5af3df880b5c169688f610ab41a"},
+    {file = "datafusion-44.0.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:bbad11b33c424a658edbc52db39dfe4ddc30339ffac7c43cdc1aa128c260ae76"},
+    {file = "datafusion-44.0.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4ca3b47fd34e1c96cf6d40a877245afd36f3ccf8b39dda1e5b6f811f273af781"},
+    {file = "datafusion-44.0.0-cp38-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:22d2e3ecf5d0b1b75c8ad48c8d9af14a0ac4de1633e86d3b397614f68aa8123c"},
+    {file = "datafusion-44.0.0-cp38-abi3-win_amd64.whl", hash = "sha256:b36774dca54a0e1c88c8080b8c72cc2df5e95f4340a0cdbdd18a0473401551c5"},
+    {file = "datafusion-44.0.0.tar.gz", hash = "sha256:5fc3740406ff531527aa8baa5954fe0bf1f02ea72170e172746b38cffc0d8d50"},
 ]
 
 [package.dependencies]
@@ -1337,4 +1337,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "5bf14e2190f3dcc64c96b7a09c33f544fbc19a9b20b889015172d7ec704c83ad"
+content-hash = "04f6e4f1df79a942f543e729be79c2b5f4219a2e31eb96f83dab22a7e4c79e26"
