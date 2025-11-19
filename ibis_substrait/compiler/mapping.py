@@ -236,6 +236,7 @@ def register_extension_yaml(
         else "https://github.com/substrait-io/substrait/blob/main/extensions"
     )
 
+    extension_definitions.pop("urn", None)
     for named_functions in extension_definitions.values():
         for function in named_functions:
             for func in _parse_func(function):
