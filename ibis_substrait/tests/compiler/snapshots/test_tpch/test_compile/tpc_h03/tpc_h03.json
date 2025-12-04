@@ -1243,6 +1243,7 @@
                 ]
               }
             },
+            "offset": "0",
             "count": "10"
           }
         },
@@ -1256,7 +1257,7 @@
     }
   ],
   "version": {
-    "minorNumber": 56,
+    "minorNumber": 77,
     "producer": "ibis-substrait"
   }
 }

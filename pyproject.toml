@@ -23,7 +23,7 @@ python = ">=3.9,<4"
 ibis-framework = ">=9,<10"
 packaging = ">=21.3"
 pyyaml = ">=5"
-substrait = ">=0.23.0"
+substrait = ">=0.25.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = ">=8.2.0"
@@ -139,6 +139,7 @@ filterwarnings = [
   "ignore:`Value.output_dtype` is deprecated:FutureWarning",
   # ignore elementwise deprecation warnings to keep testing them until it's removed
   "ignore:`elementwise` is deprecated as of v9.0; use the ibis.udf.* api",
+  "ignore:datetime.datetime.utcfromtimestamp\\(\\) is deprecated.*:DeprecationWarning",
 ]
 markers = ["no_decompile"]
 norecursedirs = ["site-packages", "dist-packages", ".direnv"]
