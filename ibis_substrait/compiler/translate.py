@@ -1132,6 +1132,7 @@ def _cast(
 
 
 @translate.register(ops.ExtractDateField)
+@translate.register(ops.ExtractTimeField)
 def _extractdatefield(
     op: ops.ExtractDateField,
     *,

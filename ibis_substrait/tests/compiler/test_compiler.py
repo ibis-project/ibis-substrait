@@ -622,3 +622,17 @@ def test_aggregation_window_how(t, compiler, bounds, how):
         stalg.Expression.WindowFunction.BoundsType.Name(bounds_type_int)
         == _window_hows[how]
     )
+
+
+@pytest.mark.parametrize("component", ["hour", "minute", "second", "millisecond"])
+def test_extract_from_time(compiler, component):
+    t = ibis.table([("d", dt.time)], name="dates")
+    plan = compiler.compile(t.select(x=getattr(t.d, component)()))
+
+    (extension,) = plan.extensions
+    assert extension.extension_function.name == "extract:time"
+
+    func = plan.relations[0].root.input.project.expressions[0].scalar_function
+    assert func.function_reference == extension.extension_function.function_anchor
+    assert func.arguments[0].enum == component.upper()
+    assert func.arguments[1].value.selection.direct_reference.struct_field.field == 0

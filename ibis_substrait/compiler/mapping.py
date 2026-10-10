@@ -39,6 +39,10 @@ IBIS_SUBSTRAIT_OP_MAPPING = {
     "ExtractYear": "extract",
     "ExtractMonth": "extract",
     "ExtractDay": "extract",
+    "ExtractHour": "extract",
+    "ExtractMinute": "extract",
+    "ExtractSecond": "extract",
+    "ExtractMillisecond": "extract",
     "Floor": "floor",
     "Greater": "gt",
     "GreaterEqual": "gte",
@@ -117,6 +121,7 @@ IBIS_SUBSTRAIT_TYPE_MAPPING = {
     "string": "str",
     "Boolean": "bool",
     "Date": "date",
+    "Time": "time",
     "Decimal": "dec",
 }
 
