@@ -13,6 +13,7 @@ import functools
 import itertools
 import math
 import operator
+import string
 import uuid
 from collections.abc import Iterable, Mapping, MutableMapping, Sequence
 from typing import Any, Optional, TypeVar, Union
@@ -1481,6 +1482,50 @@ class SubstraitDivide(ops.NumericBinary):
     @property
     def dtype(self) -> dt.DataType:
         return self.left.dtype
+
+
+class _SubstraitTrim(ops.Value):
+    """Trim the given characters from a string.
+
+    Ibis' strip operations take no arguments and remove whitespace, while
+    Substrait's trim functions take the set of characters to remove.
+    """
+
+    arg: ops.Value[dt.String]
+    characters: ops.Value[dt.String]
+
+    shape = rlz.shape_like("arg")
+
+    @property
+    def dtype(self) -> dt.DataType:
+        return self.arg.dtype
+
+
+class SubstraitStrip(_SubstraitTrim):
+    pass
+
+
+class SubstraitLStrip(_SubstraitTrim):
+    pass
+
+
+class SubstraitRStrip(_SubstraitTrim):
+    pass
+
+
+_STRIP_OPS = {
+    ops.Strip: SubstraitStrip,
+    ops.LStrip: SubstraitLStrip,
+    ops.RStrip: SubstraitRStrip,
+}
+
+
+@_upcast.register(ops.Strip)
+@_upcast.register(ops.LStrip)
+@_upcast.register(ops.RStrip)
+def _upcast_strip(op: ops.Value) -> _SubstraitTrim:
+    # remove the same characters ibis' SQL backends do
+    return _STRIP_OPS[type(op)](op.arg, ops.Literal(string.whitespace, dt.string))
 
 
 @_upcast.register(ops.Round)

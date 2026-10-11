@@ -58,14 +58,18 @@ customers_raw = [
     ("name", "string", ["Ann", "Bob", "Chris"]),
 ]
 
+padded_raw = [("text", "string", ["  a", "b\t\n", " \tc d \r", "e"])]
+
 orders = ibis.table([(x[0], x[1]) for x in orders_raw], name="orders")
 stores = ibis.table([(x[0], x[1]) for x in stores_raw], name="stores")
 customers = ibis.table([(x[0], x[1]) for x in customers_raw], name="customers")
+padded = ibis.table([(x[0], x[1]) for x in padded_raw], name="padded")
 
 datasets = {
     "orders": pa.Table.from_pydict({x[0]: x[2] for x in orders_raw}),
     "stores": pa.Table.from_pydict({x[0]: x[2] for x in stores_raw}),
     "customers": pa.Table.from_pydict({x[0]: x[2] for x in customers_raw}),
+    "padded": pa.Table.from_pydict({x[0]: x[2] for x in padded_raw}),
 }
 
 
@@ -92,6 +96,24 @@ def run_parity_test(consumer: SubstraitConsumer, expr):
 @pytest.mark.parametrize("consumer", ["acero_consumer", "datafusion_consumer"])
 def test_projection(consumer: str, request):
     expr = orders["order_id", "order_total"]
+    run_parity_test(request.getfixturevalue(consumer), expr)
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        pytest.param(
+            "acero_consumer",
+            marks=[
+                pytest.mark.xfail(pa.ArrowNotImplementedError, reason="Unimplemented")
+            ],
+        ),
+        "datafusion_consumer",
+    ],
+)
+@pytest.mark.parametrize("method", ["strip", "lstrip", "rstrip"])
+def test_strip(consumer: str, method: str, request):
+    expr = padded.select(stripped=getattr(padded.text, method)())
     run_parity_test(request.getfixturevalue(consumer), expr)
 
 
