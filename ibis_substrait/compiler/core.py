@@ -156,13 +156,13 @@ class SubstraitCompiler:
                 output_type_key = IBIS_SUBSTRAIT_TYPE_MAPPING[op.dtype.name]
                 sigkey = (input_type_key, output_type_key)
 
-        # Then check if we have an op that has a `date` somewhere in the input
-        # args and the output listed as `i32`.
+        # Then check if we have an op that has a `date` or `time` somewhere in
+        # the input args and the output listed as `i32`.
         # Ibis assumes i32 for the output of all time extraction functions
         # because no one is going to be around in i64 years, but Substrait
         # expects i64 as the output
         if function_extension is None:
-            if "date" in sigkey[0] and sigkey[1] == "i32":
+            if {"date", "time"} & set(sigkey[0]) and sigkey[1] == "i32":
                 sigkey = (sigkey[0], "i64")
                 function_extension = _extension_mapping[op_name].get(sigkey)
 
